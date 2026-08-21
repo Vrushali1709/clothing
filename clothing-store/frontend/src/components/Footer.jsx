@@ -23,6 +23,7 @@ export default function Footer() {
             <li><Link to="/shop" className="hover:text-white transition block py-0.5">Shop Collection</Link></li>
             <li><Link to="/cart" className="hover:text-white transition block py-0.5">Shopping Cart</Link></li>
             <li><Link to="/my-orders" className="hover:text-white transition block py-0.5">My Orders</Link></li>
+            <li><Link to="/about" className="hover:text-white transition tracking-wide block">About Us / Atelier</Link></li>
           </ul>
         </div>
 
