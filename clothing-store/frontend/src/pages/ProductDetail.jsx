@@ -765,7 +765,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
@@ -916,11 +915,11 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-10 px-4 sm:px-8 lg:px-16 font-sans">
-      <div className="max-w-[1300px] mx-auto bg-[#F9F6F0] rounded-[2.5pax] sm:rounded-[3rem] shadow-xl border border-[#EBE3D5] p-6 sm:p-12 relative overflow-hidden">
+    <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans">
+      <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
         
         {/* Breadcrumb */}
-        <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-8 flex items-center gap-2">
+        <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
           <span>/</span>
           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/shop')}>Dresses</span>
@@ -928,20 +927,19 @@ export default function ProductDetail() {
           <span className="text-neutral-800 font-medium">{product.category_name || 'Daily Wear'}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        {/* 3-Column Layout: Left Gallery | Center Info | Right Image Showcase */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* LEFT: Mini Sidebar Gallery (Card Style) */}
+          {/* 1. LEFT COLUMN: Gallery Cards Stack */}
           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-neutral-400 hidden lg:block mb-2">Gallery</span>
-            
             {product.image && (
               <div 
                 onClick={() => setSelectedImage(getImageUrl(product.image))}
-                className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all ${
-                  selectedImage === getImageUrl(product.image) ? 'border-neutral-900 shadow-md ring-1 ring-neutral-900' : 'border-[#E8DFD1] opacity-70 hover:opacity-100'
+                className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
+                  selectedImage === getImageUrl(product.image) ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
                 }`}
               >
-                <img src={getImageUrl(product.image)} alt="Thumb" className="w-20 h-24 object-cover rounded-xl mx-auto mb-2" />
+                <img src={getImageUrl(product.image)} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
                 <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
               </div>
             )}
@@ -952,21 +950,21 @@ export default function ProductDetail() {
                 <div
                   key={imgObj.id}
                   onClick={() => setSelectedImage(galleryUrl)}
-                  className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all ${
-                    selectedImage === galleryUrl ? 'border-neutral-900 shadow-md ring-1 ring-neutral-900' : 'border-[#E8DFD1] opacity-70 hover:opacity-100'
+                  className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
+                    selectedImage === galleryUrl ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
                   }`}
                 >
-                  <img src={galleryUrl} alt="Thumb" className="w-20 h-24 object-cover rounded-xl mx-auto mb-2" />
+                  <img src={galleryUrl} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
                   <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
                 </div>
               );
             })}
           </div>
 
-          {/* CENTER: Product Details & Options */}
-          <div className="lg:col-span-5 flex flex-col justify-center">
+          {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
+          <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
               {product.name}
             </h1>
 
@@ -975,13 +973,13 @@ export default function ProductDetail() {
             </div>
 
             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8 max-w-md">
-              {product.description || "Lightweight and elegant dress crafted with precision, perfect for sunny days and graceful occasions."}
+              {product.description || "Lightweight and elegant piece crafted with precision, perfect for sunny days and graceful occasions."}
             </p>
 
-            {/* Color Selector (Circular Swatches) */}
+            {/* Color Selector */}
             {colors.length > 0 && (
               <div className="mb-6">
-                <label className="text-[11px] uppercase tracking-[0.2em] font-semibold text-neutral-700 block mb-3">Color</label>
+                <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Color</label>
                 <div className="flex items-center gap-3">
                   {colors.map((c) => (
                     <button
@@ -998,10 +996,10 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Size Selector (Circular Buttons) */}
+            {/* Size Selector */}
             {sizes.length > 0 && (
               <div className="mb-8">
-                <label className="text-[11px] uppercase tracking-[0.2em] font-semibold text-neutral-700 block mb-3">Size</label>
+                <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Size</label>
                 <div className="flex items-center gap-3">
                   {sizes.map((s) => (
                     <button
@@ -1009,7 +1007,7 @@ export default function ProductDetail() {
                       onClick={() => setSelectedSize(s)}
                       className={`w-11 h-11 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
                         selectedSize === s 
-                          ? 'bg-[#D2B48C] border-[#C2A47C] text-white shadow-md' 
+                          ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' 
                           : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
                       }`}
                     >
@@ -1027,7 +1025,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Add to Cart & Wishlist Buttons */}
+            {/* Action Buttons */}
             <div className="flex items-center gap-4">
               <button
                 onClick={handleAddToCart}
@@ -1047,23 +1045,22 @@ export default function ProductDetail() {
 
           </div>
 
-          {/* RIGHT: Floating Product Showcase with Soft Circle Backdrop */}
-          <div className="lg:col-span-4 relative flex items-center justify-center min-h-[420px] sm:min-h-[500px]">
-            {/* Soft background aura circle */}
-            <div className="absolute w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] bg-[#EFE6D8] rounded-full blur-2xl opacity-75 z-0" />
+          {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
+          <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
+            <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
             
             <img
               src={selectedImage || getImageUrl(product.image)}
               alt={product.name}
-              className="relative z-10 w-full max-h-[480px] object-cover object-top rounded-3xl drop-shadow-2xl hover:scale-105 transition-transform duration-700"
+              className="relative z-10 w-full max-h-[500px] object-cover object-top rounded-[2rem] shadow-2xl hover:scale-105 transition-transform duration-700"
               onError={(e) => { e.target.src = "https://placehold.co/800x1000?text=Haute+Couture"; }}
             />
           </div>
 
         </div>
 
-        {/* Bottom Trust Badges Bar */}
-        <div className="mt-12 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        {/* Bottom Trust Badges */}
+        <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
             <Sparkles size={18} className="text-[#C8A882] shrink-0" />
             <div className="text-left">
