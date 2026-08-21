@@ -238,7 +238,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award } from 'lucide-react';
@@ -248,6 +247,43 @@ export default function Home() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [wishlistMap, setWishlistMap] = useState({});
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Hero Slider Data (Offer, Clothing, New Collection)
+  const heroSlides = [
+    {
+      subtitle: "SPECIAL OFFER - UP TO 40% OFF",
+      title: "Season's Best\nStyles & Trends",
+      description: "Upgrade your wardrobe with our exclusive collection. Limited time offers available.",
+      image: "https://plus.unsplash.com/premium_photo-1740354613210-c474b08f022c?q=80&w=1170&auto=format&fit=crop",
+      btnText: "SHOP OFFERS",
+      link: "/shop"
+    },
+    {
+      subtitle: "NEW COLLECTION",
+      title: "Dress\nBetter. Live\nBetter.",
+      description: "Timeless styles. Premium fabrics. Made for every you.",
+      image: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1000&auto=format&fit=crop",
+      btnText: "SHOP NEW ARRIVALS",
+      link: "/shop"
+    },
+    {
+      subtitle: "EXCLUSIVE WARDROBE",
+      title: "Elegance\nRedefined Everyday",
+      description: "Discover curated outfits designed to give you both comfort and class.",
+      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop",
+      btnText: "EXPLORE COLLECTION",
+      link: "/shop"
+    }
+  ];
+
+  // Auto Scroll Effect for Hero Section (Changes every 4 seconds)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   const getImageUrl = (product) => {
     let imagePath = product?.image;
@@ -327,55 +363,69 @@ export default function Home() {
   return (
     <div className="bg-[#FAF8F5] text-[#1A1A1A] font-sans antialiased selection:bg-neutral-900 selection:text-white pb-12">
 
-      {/* 1. HERO SECTION */}
-      <section className="pt-6 px-4 sm:px-6 md:px-8 max-w-[1400px] mx-auto">
-        <div className="relative rounded-[2rem] overflow-hidden min-h-[520px] md:min-h-[600px] bg-[#E8DFD5] flex items-center">
-          
-          <img
-            src="https://plus.unsplash.com/premium_photo-1740354613210-c474b08f022c?q=80&w=1170&auto=format&fit=crop"
-            alt="Fashion Model"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
+      {/* 1. FULL SCREEN AUTO-SCROLLING HERO SECTION */}
+      <section className="relative w-full overflow-hidden min-h-[550px] sm:min-h-[620px] bg-[#E8DFD5] flex items-center">
+        {heroSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          >
+            {/* Background Image */}
+            <img
+              src={slide.image}
+              alt="Hero Slide"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
 
-          <div className="absolute inset-y-0 left-0 w-full md:w-1/2 bg-gradient-to-r from-black/50 via-black/20 to-transparent pointer-events-none" />
+            {/* Dark Gradient Overlay */}
+            <div className="absolute inset-0 w-full md:w-1/2 bg-gradient-to-r from-black/60 via-black/30 to-transparent pointer-events-none" />
 
-          <div className="relative z-10 pl-8 sm:pl-12 md:pl-16 max-w-lg text-white">
-            <span className="text-[11px] uppercase tracking-[0.3em] font-medium opacity-90 block mb-6">
-              NEW COLLECTION
-            </span>
+            {/* Text Content */}
+            <div className="relative z-10 pl-6 sm:pl-16 md:pl-24 max-w-xl text-white">
+              <span className="text-[11px] uppercase tracking-[0.3em] font-medium opacity-90 block mb-4">
+                {slide.subtitle}
+              </span>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-normal leading-[1.1] mb-6 tracking-tight">
-              Dress <br />
-              Better. Live <br />
-              Better.
-            </h1>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-normal leading-[1.1] mb-6 tracking-tight whitespace-pre-line">
+                {slide.title}
+              </h1>
 
-            <p className="text-xs sm:text-sm font-light leading-relaxed opacity-80 mb-8 max-w-xs">
-              Timeless styles. Premium fabrics. <br />
-              Made for every you.
-            </p>
+              <p className="text-xs sm:text-sm font-light leading-relaxed opacity-85 mb-8 max-w-sm">
+                {slide.description}
+              </p>
 
-            <button
-              onClick={() => navigate('/shop')}
-              className="bg-[#1C1C1C] text-white px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-semibold rounded-md hover:bg-black transition-all"
-            >
-              SHOP NEW ARRIVALS
-            </button>
+              <button
+                onClick={() => navigate(slide.link)}
+                className="bg-[#1C1C1C] text-white px-7 py-3.5 text-[11px] uppercase tracking-[0.2em] font-semibold rounded-md hover:bg-black transition-all"
+              >
+                {slide.btnText}
+              </button>
+            </div>
           </div>
+        ))}
 
-          <div className="absolute right-8 sm:right-12 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-6 text-white z-10">
-            <span className="text-xs font-serif font-bold tracking-widest text-white border-b border-white/60 pb-1 cursor-pointer">01</span>
-            <div className="w-[1px] h-8 bg-white/30" />
-            <span className="text-xs font-serif font-normal tracking-widest text-white/60 hover:text-white cursor-pointer transition-colors">02</span>
-            <div className="w-[1px] h-8 bg-white/30" />
-            <span className="text-xs font-serif font-normal tracking-widest text-white/60 hover:text-white cursor-pointer transition-colors">03</span>
-          </div>
-
+        {/* Floating Slide Indicators (01 - 02 - 03) */}
+        <div className="absolute right-8 sm:right-12 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
+          {heroSlides.map((_, idx) => (
+            <React.Fragment key={idx}>
+              <span 
+                onClick={() => setCurrentSlide(idx)}
+                className={`text-xs font-serif tracking-widest cursor-pointer transition-all ${
+                  idx === currentSlide ? 'font-bold border-b border-white pb-1 text-white' : 'font-normal text-white/50 hover:text-white'
+                }`}
+              >
+                0{idx + 1}
+              </span>
+              {idx < heroSlides.length - 1 && <div className="w-[1px] h-6 bg-white/30" />}
+            </React.Fragment>
+          ))}
         </div>
       </section>
 
       {/* 2. GENDER CARDS */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-8">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-10">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           
           <div 
