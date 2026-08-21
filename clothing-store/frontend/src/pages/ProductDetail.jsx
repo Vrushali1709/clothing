@@ -766,6 +766,7 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
@@ -774,9 +775,9 @@ import {
   Truck, 
   RefreshCw, 
   Heart, 
-  Share2, 
   Sparkles,
-  Check
+  Check,
+  Star
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import API, { getWishlist, addToWishlist, removeFromWishlist } from '../services/api';
@@ -793,9 +794,16 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState('');
   const [addedNotice, setAddedNotice] = useState(false);
   const [wishlistId, setWishlistId] = useState(null);
-  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false); // 👈 Size Guide Modal State
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
-  // Helper function to dynamically construct absolute Image URLs
+  // Reviews State
+  const [reviews, setReviews] = useState([
+    { id: 1, name: 'Vrushali P.', rating: 5, date: 'May 12, 2026', comment: 'Absolute masterpiece! The fabric quality and embroidery are stunning.' },
+    { id: 2, name: 'Aarav M.', rating: 4, date: 'April 28, 2026', comment: 'Great fitting and premium texture. Worth the luxury price.' }
+  ]);
+  const [newReview, setNewReview] = useState({ name: '', rating: 5, comment: '' });
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "https://placehold.co/800x1000?text=Luxury+Collection";
     if (typeof imagePath === 'string' && (imagePath.startsWith("http://") || imagePath.startsWith("https://"))) {
@@ -807,19 +815,16 @@ export default function ProductDetail() {
   useEffect(() => {
     setLoading(true);
 
-    // Fetch Product Data
     API.get(`products/${id}/`)
       .then((res) => {
         setProduct(res.data);
 
-        // Initial Main Image Setup
         if (res.data.image) {
           setSelectedImage(getImageUrl(res.data.image));
         } else if (res.data.images && res.data.images.length > 0) {
           setSelectedImage(getImageUrl(res.data.images[0].image));
         }
 
-        // Set default size & color options
         const sizesArr = res.data.sizes ? res.data.sizes.split(',').map(s => s.trim()) : [];
         const colorsArr = res.data.colors ? res.data.colors.split(',').map(c => c.trim()) : [];
         if (sizesArr.length > 0) setSelectedSize(sizesArr[0]);
@@ -832,7 +837,6 @@ export default function ProductDetail() {
         setLoading(false);
       });
 
-    // Check if item exists in user's Wishlist
     const token = localStorage.getItem('access_token');
     if (token) {
       getWishlist()
@@ -850,7 +854,6 @@ export default function ProductDetail() {
     }
   }, [id]);
 
-  // Wishlist Handler
   const handleWishlistToggle = async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -875,6 +878,24 @@ export default function ProductDetail() {
     addToCart(product, selectedSize, selectedColor);
     setAddedNotice(true);
     setTimeout(() => setAddedNotice(false), 3500);
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!newReview.name || !newReview.comment) return;
+
+    const reviewObj = {
+      id: Date.now(),
+      name: newReview.name,
+      rating: Number(newReview.rating),
+      date: 'Today',
+      comment: newReview.comment
+    };
+
+    setReviews([reviewObj, ...reviews]);
+    setNewReview({ name: '', rating: 5, comment: '' });
+    setReviewSubmitted(true);
+    setTimeout(() => setReviewSubmitted(false), 4000);
   };
 
   if (loading) {
@@ -903,7 +924,6 @@ export default function ProductDetail() {
   const sizes = product.sizes ? product.sizes.split(',').map((s) => s.trim()) : [];
   const colors = product.colors ? product.colors.split(',').map((c) => c.trim()) : [];
 
-  // Helper for color circles styling
   const getColorHex = (colorName) => {
     const name = colorName.toLowerCase();
     if (name.includes('black')) return '#1a1a1a';
@@ -916,6 +936,9 @@ export default function ProductDetail() {
     return '#c5b5a4';
   };
 
+  // Average Rating Calculation
+  const avgRating = (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1);
+
   return (
     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
@@ -924,15 +947,15 @@ export default function ProductDetail() {
         <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
           <span>/</span>
-          <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/shop')}>Dresses</span>
+          <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/shop')}>Shop</span>
           <span>/</span>
-          <span className="text-neutral-800 font-medium">{product.category_name || 'Daily Wear'}</span>
+          <span className="text-neutral-800 font-medium">{product.category_name || 'Haute Couture'}</span>
         </nav>
 
-        {/* 3-Column Layout: Left Gallery | Center Info | Right Image Showcase */}
+        {/* 3-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* 1. LEFT COLUMN: Gallery Cards Stack */}
+          {/* Gallery Stack */}
           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
             {product.image && (
               <div 
@@ -963,12 +986,23 @@ export default function ProductDetail() {
             })}
           </div>
 
-          {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
+          {/* Center Info */}
           <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
               {product.name}
             </h1>
+
+            {/* Rating Stars Summary Header */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex text-amber-500">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} className={i < Math.floor(avgRating) ? "fill-amber-500" : "text-neutral-300"} />
+                ))}
+              </div>
+              <span className="text-xs font-semibold text-neutral-700">{avgRating}</span>
+              <span className="text-xs text-neutral-400">({reviews.length} Client Reviews)</span>
+            </div>
 
             <div className="text-2xl sm:text-3xl font-serif text-[#2C241D] mb-4">
               ₹{Number(product.price).toLocaleString('en-IN')}
@@ -998,7 +1032,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Size Selector with Size Guide Trigger */}
+            {/* Size Selector */}
             {sizes.length > 0 && (
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-2.5">
@@ -1028,14 +1062,12 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Notification alert */}
             {addedNotice && (
               <div className="mb-4 p-3 bg-neutral-900 text-white text-xs tracking-widest uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
                 <Check size={14} className="text-emerald-400" /> Added to your Bag
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex items-center gap-4">
               <button
                 onClick={handleAddToCart}
@@ -1055,10 +1087,9 @@ export default function ProductDetail() {
 
           </div>
 
-          {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
+          {/* Right Image Showcase */}
           <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
             <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
-            
             <img
               src={selectedImage || getImageUrl(product.image)}
               alt={product.name}
@@ -1067,6 +1098,100 @@ export default function ProductDetail() {
             />
           </div>
 
+        </div>
+
+        {/* ================= REVIEWS & RATINGS SECTION ================= */}
+        <div className="mt-20 pt-12 border-t border-[#EBE3D5]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* Left: Review List & Average Summary */}
+            <div className="lg:col-span-7 space-y-6">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Client Feedback</span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900">Ratings & Reviews</h3>
+              </div>
+
+              <div className="space-y-4">
+                {reviews.map((rev) => (
+                  <div key={rev.id} className="bg-white/80 border border-[#EFE8DC] p-6 rounded-2xl shadow-sm">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="font-serif text-sm font-semibold text-neutral-900">{rev.name}</h4>
+                        <div className="flex text-amber-500 mt-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={12} className={i < rev.rating ? "fill-amber-500" : "text-neutral-300"} />
+                          ))}
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-neutral-400 tracking-wider">{rev.date}</span>
+                    </div>
+                    <p className="text-xs text-neutral-600 font-light leading-relaxed mt-2">{rev.comment}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Write a Review Form */}
+            <div className="lg:col-span-5 bg-white border border-[#EFE8DC] p-8 rounded-3xl shadow-sm">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Share Your Experience</span>
+              <h3 className="font-serif text-xl text-neutral-900 mb-6">Write a Review</h3>
+
+              {reviewSubmitted && (
+                <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs tracking-wider text-center font-medium rounded-xl">
+                  Thank you! Your review has been added successfully.
+                </div>
+              )}
+
+              <form onSubmit={handleReviewSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-1.5">Your Name</label>
+                  <input 
+                    type="text"
+                    required
+                    value={newReview.name}
+                    onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                    placeholder="e.g. Vrushali"
+                    className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-1.5">Rating (1 to 5 Stars)</label>
+                  <select 
+                    value={newReview.rating}
+                    onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })}
+                    className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
+                  >
+                    <option value={5}>★★★★★ (5 Stars - Exceptional)</option>
+                    <option value={4}>★★★★☆ (4 Stars - Excellent)</option>
+                    <option value={3}>★★★☆☆ (3 Stars - Good)</option>
+                    <option value={2}>★★☆☆☆ (2 Stars - Fair)</option>
+                    <option value={1}>★☆☆☆☆ (1 Star - Poor)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-1.5">Your Review Comment</label>
+                  <textarea 
+                    rows="3"
+                    required
+                    value={newReview.comment}
+                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                    placeholder="Describe the fabric quality, fitting, and your overall experience..."
+                    className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 resize-none"
+                  ></textarea>
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full bg-neutral-900 text-white py-3.5 text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-black transition rounded-xl shadow-md"
+                >
+                  Submit Review
+                </button>
+              </form>
+            </div>
+
+          </div>
         </div>
 
         {/* Bottom Trust Badges */}
