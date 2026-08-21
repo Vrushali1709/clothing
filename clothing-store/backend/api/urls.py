@@ -16,7 +16,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CategoryViewSet, ProductViewSet, OrderViewSet, WishlistViewSet, create_razorpay_order
+from .views import CategoryViewSet, ProductViewSet, OrderViewSet, WishlistViewSet, ReviewViewSet, create_razorpay_order
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet, basename='category')
