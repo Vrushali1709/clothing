@@ -33,7 +33,7 @@ export default function Footer() {
           <ul className="space-y-2.5 text-sm text-gray-400">
             <li><span className="hover:text-white transition cursor-pointer block py-0.5">Shipping Policy</span></li>
             <li><span className="hover:text-white transition cursor-pointer block py-0.5">Returns & Exchanges</span></li>
-            <li><span className="hover:text-white transition cursor-pointer block py-0.5">FAQs</span></li>
+            <li><Link to="/faq" className="hover:text-white transition tracking-wide block">FAQs & Support</Link></li>
           </ul>
         </div>
 

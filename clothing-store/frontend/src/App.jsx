@@ -60,6 +60,7 @@ import ScrollToTop from './ScrollToTop';
 import UserProfile from './pages/UserProfile';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import FAQ from './pages/FAQ';
 
 export default function App() {
   return (
@@ -84,6 +85,7 @@ export default function App() {
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
+              <Route path="/faq" element={<FAQ />} />
             </Routes>
           </main>
           <Footer />
