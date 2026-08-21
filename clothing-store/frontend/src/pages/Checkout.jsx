@@ -767,26 +767,35 @@ export default function Checkout() {
   // PLACE ORDER
   // ============================================================
 
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault();
+// Checkout submit function ma direct aa rite order place thai jase:
+const handlePlaceOrder = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await API.post('orders/', {
+      full_name: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+      shipping_address: formData.address,
+      city: formData.city,
+      pincode: formData.pincode,
+      total_price: totalPrice,
+      payment_method: 'COD', // Or Direct Order
+      items: cartItems.map(item => ({
+        product_id: item.product || item.id,
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+        price: item.price
+      }))
+    });
 
-    if (!cart || cart.length === 0) {
-      alert('Your cart is empty.');
-      navigate('/shop');
-      return;
-    }
-
-    const token =
-      localStorage.getItem('access_token');
-
-    if (!token) {
-      alert(
-        'Session expired. Please log in again.'
-      );
-
-      navigate('/login');
-      return;
-    }
+    alert('Order placed successfully!');
+    navigate('/my-orders');
+  } catch (err) {
+    console.error("Order error:", err.response?.data);
+    alert('Failed to place order. Please login again.');
+  }
+};
 
     // Basic shipping validation
     const requiredFields = [
