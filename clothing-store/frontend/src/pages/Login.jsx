@@ -11,11 +11,13 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await API.post('token/', { username, password });
-      localStorage.getItem('access_token', response.data.access);
+      
+      // ✅ Corrected: localStorage.setItem use karo
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
+      
       alert('Login successful!');
-      navigate('/cart');
+      navigate('/'); // Cart na badle Home ya Profile par redirect karo
     } catch (error) {
       console.error("Login error:", error);
       alert('Invalid username or password');
