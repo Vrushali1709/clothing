@@ -767,13 +767,415 @@
 
 
 
+
+// import React, { useEffect, useState } from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import { 
+//   ShoppingBag, 
+//   ShieldCheck, 
+//   Truck, 
+//   RefreshCw, 
+//   Heart, 
+//   Share2, 
+//   Sparkles,
+//   Check
+// } from 'lucide-react';
+// import { useCart } from '../context/CartContext';
+// import API, { getWishlist, addToWishlist, removeFromWishlist } from '../services/api';
+
+// export default function ProductDetail() {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { addToCart } = useCart();
+
+//   const [product, setProduct] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [selectedSize, setSelectedSize] = useState('');
+//   const [selectedColor, setSelectedColor] = useState('');
+//   const [selectedImage, setSelectedImage] = useState('');
+//   const [addedNotice, setAddedNotice] = useState(false);
+//   const [wishlistId, setWishlistId] = useState(null);
+//   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false); // 👈 Size Guide Modal State
+
+//   // Helper function to dynamically construct absolute Image URLs
+//   const getImageUrl = (imagePath) => {
+//     if (!imagePath) return "https://placehold.co/800x1000?text=Luxury+Collection";
+//     if (typeof imagePath === 'string' && (imagePath.startsWith("http://") || imagePath.startsWith("https://"))) {
+//       return imagePath;
+//     }
+//     return `https://clothing-backend-gynt.onrender.com${imagePath}`;
+//   };
+
+//   useEffect(() => {
+//     setLoading(true);
+
+//     // Fetch Product Data
+//     API.get(`products/${id}/`)
+//       .then((res) => {
+//         setProduct(res.data);
+
+//         // Initial Main Image Setup
+//         if (res.data.image) {
+//           setSelectedImage(getImageUrl(res.data.image));
+//         } else if (res.data.images && res.data.images.length > 0) {
+//           setSelectedImage(getImageUrl(res.data.images[0].image));
+//         }
+
+//         // Set default size & color options
+//         const sizesArr = res.data.sizes ? res.data.sizes.split(',').map(s => s.trim()) : [];
+//         const colorsArr = res.data.colors ? res.data.colors.split(',').map(c => c.trim()) : [];
+//         if (sizesArr.length > 0) setSelectedSize(sizesArr[0]);
+//         if (colorsArr.length > 0) setSelectedColor(colorsArr[0]);
+
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.error("Error fetching product:", err);
+//         setLoading(false);
+//       });
+
+//     // Check if item exists in user's Wishlist
+//     const token = localStorage.getItem('access_token');
+//     if (token) {
+//       getWishlist()
+//         .then((res) => {
+//           const list = Array.isArray(res.data) ? res.data : res.data.results || [];
+//           const found = list.find((item) => {
+//             const pId = typeof item.product === 'object' ? item.product.id : item.product;
+//             return String(pId) === String(id);
+//           });
+//           if (found) {
+//             setWishlistId(found.id);
+//           }
+//         })
+//         .catch((err) => console.error("Wishlist fetch error:", err));
+//     }
+//   }, [id]);
+
+//   // Wishlist Handler
+//   const handleWishlistToggle = async () => {
+//     const token = localStorage.getItem('access_token');
+//     if (!token) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     try {
+//       if (wishlistId) {
+//         await removeFromWishlist(wishlistId);
+//         setWishlistId(null);
+//       } else {
+//         const res = await addToWishlist(id);
+//         setWishlistId(res.data.id);
+//       }
+//     } catch (err) {
+//       console.error("Wishlist operation failed:", err);
+//     }
+//   };
+
+//   const handleAddToCart = () => {
+//     addToCart(product, selectedSize, selectedColor);
+//     setAddedNotice(true);
+//     setTimeout(() => setAddedNotice(false), 3500);
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
+//         <div className="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin mb-4"></div>
+//         <p className="font-serif uppercase tracking-[0.3em] text-xs text-neutral-600">Curating Luxury Piece...</p>
+//       </div>
+//     );
+//   }
+
+//   if (!product) {
+//     return (
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
+//         <p className="font-serif text-xl text-neutral-800 mb-4">Masterpiece Not Found.</p>
+//         <button 
+//           onClick={() => navigate('/shop')}
+//           className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition"
+//         >
+//           Return to Atelier
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   const sizes = product.sizes ? product.sizes.split(',').map((s) => s.trim()) : [];
+//   const colors = product.colors ? product.colors.split(',').map((c) => c.trim()) : [];
+
+//   // Helper for color circles styling
+//   const getColorHex = (colorName) => {
+//     const name = colorName.toLowerCase();
+//     if (name.includes('black')) return '#1a1a1a';
+//     if (name.includes('white')) return '#f4f4f4';
+//     if (name.includes('beige') || name.includes('cream') || name.includes('nude')) return '#d8c2a3';
+//     if (name.includes('green')) return '#7a8b79';
+//     if (name.includes('blue')) return '#6b829c';
+//     if (name.includes('red')) return '#a84c4c';
+//     if (name.includes('brown')) return '#8c6752';
+//     return '#c5b5a4';
+//   };
+
+//   return (
+//     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
+//       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
+        
+//         {/* Breadcrumb */}
+//         <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
+//           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
+//           <span>/</span>
+//           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/shop')}>Dresses</span>
+//           <span>/</span>
+//           <span className="text-neutral-800 font-medium">{product.category_name || 'Daily Wear'}</span>
+//         </nav>
+
+//         {/* 3-Column Layout: Left Gallery | Center Info | Right Image Showcase */}
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+//           {/* 1. LEFT COLUMN: Gallery Cards Stack */}
+//           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+//             {product.image && (
+//               <div 
+//                 onClick={() => setSelectedImage(getImageUrl(product.image))}
+//                 className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
+//                   selectedImage === getImageUrl(product.image) ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
+//                 }`}
+//               >
+//                 <img src={getImageUrl(product.image)} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
+//                 <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
+//               </div>
+//             )}
+
+//             {product.images && product.images.map((imgObj) => {
+//               const galleryUrl = getImageUrl(imgObj.image);
+//               return (
+//                 <div
+//                   key={imgObj.id}
+//                   onClick={() => setSelectedImage(galleryUrl)}
+//                   className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
+//                     selectedImage === galleryUrl ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
+//                   }`}
+//                 >
+//                   <img src={galleryUrl} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
+//                   <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
+//                 </div>
+//               );
+//             })}
+//           </div>
+
+//           {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
+//           <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
+            
+//             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
+//               {product.name}
+//             </h1>
+
+//             <div className="text-2xl sm:text-3xl font-serif text-[#2C241D] mb-4">
+//               ₹{Number(product.price).toLocaleString('en-IN')}
+//             </div>
+
+//             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8 max-w-md">
+//               {product.description || "Lightweight and elegant piece crafted with precision, perfect for sunny days and graceful occasions."}
+//             </p>
+
+//             {/* Color Selector */}
+//             {colors.length > 0 && (
+//               <div className="mb-6">
+//                 <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Color</label>
+//                 <div className="flex items-center gap-3">
+//                   {colors.map((c) => (
+//                     <button
+//                       key={c}
+//                       onClick={() => setSelectedColor(c)}
+//                       style={{ backgroundColor: getColorHex(c) }}
+//                       className={`w-8 h-8 rounded-full border-2 transition-all shadow-sm ${
+//                         selectedColor === c ? 'border-neutral-900 scale-110 ring-2 ring-neutral-900/20' : 'border-white hover:scale-105'
+//                       }`}
+//                       title={c}
+//                     />
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* Size Selector with Size Guide Trigger */}
+//             {sizes.length > 0 && (
+//               <div className="mb-8">
+//                 <div className="flex justify-between items-center mb-2.5">
+//                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">Size</label>
+//                   <button 
+//                     onClick={() => setIsSizeGuideOpen(true)}
+//                     className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition"
+//                   >
+//                     Size Guide
+//                   </button>
+//                 </div>
+//                 <div className="flex items-center gap-3">
+//                   {sizes.map((s) => (
+//                     <button
+//                       key={s}
+//                       onClick={() => setSelectedSize(s)}
+//                       className={`w-11 h-11 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
+//                         selectedSize === s 
+//                           ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' 
+//                           : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
+//                       }`}
+//                     >
+//                       {s}
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* Notification alert */}
+//             {addedNotice && (
+//               <div className="mb-4 p-3 bg-neutral-900 text-white text-xs tracking-widest uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
+//                 <Check size={14} className="text-emerald-400" /> Added to your Bag
+//               </div>
+//             )}
+
+//             {/* Action Buttons */}
+//             <div className="flex items-center gap-4">
+//               <button
+//                 onClick={handleAddToCart}
+//                 className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+//               >
+//                 <ShoppingBag size={16} /> Add to Cart
+//               </button>
+
+//               <button
+//                 onClick={handleWishlistToggle}
+//                 className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all"
+//                 title="Wishlist"
+//               >
+//                 <Heart size={20} className={wishlistId ? "fill-red-600 text-red-600" : "text-neutral-700"} />
+//               </button>
+//             </div>
+
+//           </div>
+
+//           {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
+//           <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
+//             <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
+            
+//             <img
+//               src={selectedImage || getImageUrl(product.image)}
+//               alt={product.name}
+//               className="relative z-10 w-full max-h-[500px] object-cover object-top rounded-[2rem] shadow-2xl hover:scale-105 transition-transform duration-700"
+//               onError={(e) => { e.target.src = "https://placehold.co/800x1000?text=Haute+Couture"; }}
+//             />
+//           </div>
+
+//         </div>
+
+//         {/* Bottom Trust Badges */}
+//         <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
+//             <Sparkles size={18} className="text-[#C8A882] shrink-0" />
+//             <div className="text-left">
+//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Light & Breathable</h4>
+//               <p className="text-[10px] text-neutral-500">Comfort all day</p>
+//             </div>
+//           </div>
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
+//             <ShieldCheck size={18} className="text-[#C8A882] shrink-0" />
+//             <div className="text-left">
+//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Quality You Trust</h4>
+//               <p className="text-[10px] text-neutral-500">Premium materials</p>
+//             </div>
+//           </div>
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
+//             <Truck size={18} className="text-[#C8A882] shrink-0" />
+//             <div className="text-left">
+//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Free Shipping</h4>
+//               <p className="text-[10px] text-neutral-500">On orders over ₹999</p>
+//             </div>
+//           </div>
+//         </div>
+
+//       </div>
+
+//       {/* Size Guide Modal Popup */}
+//       {isSizeGuideOpen && (
+//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+//           <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-md w-full p-6 sm:p-8 relative shadow-2xl rounded-3xl">
+//             <button 
+//               onClick={() => setIsSizeGuideOpen(false)}
+//               className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold"
+//             >
+//               ✕ Close
+//             </button>
+            
+//             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Atelier Measurements</span>
+//             <h3 className="font-serif text-2xl text-neutral-900 mb-6">Size Guide (Inches)</h3>
+
+//             <div className="overflow-x-auto">
+//               <table className="w-full text-left text-xs mb-6 border-collapse">
+//                 <thead>
+//                   <tr className="border-b border-neutral-300 text-neutral-500 uppercase tracking-widest text-[9px]">
+//                     <th className="py-2.5">Size</th>
+//                     <th className="py-2.5">Chest</th>
+//                     <th className="py-2.5">Waist</th>
+//                     <th className="py-2.5">Length</th>
+//                   </tr>
+//                 </thead>
+//                 <tbody className="divide-y divide-neutral-200 text-neutral-800">
+//                   <tr>
+//                     <td className="py-2.5 font-bold">S</td>
+//                     <td className="py-2.5">36-38"</td>
+//                     <td className="py-2.5">30-32"</td>
+//                     <td className="py-2.5">40"</td>
+//                   </tr>
+//                   <tr>
+//                     <td className="py-2.5 font-bold">M</td>
+//                     <td className="py-2.5">38-40"</td>
+//                     <td className="py-2.5">32-34"</td>
+//                     <td className="py-2.5">41"</td>
+//                   </tr>
+//                   <tr>
+//                     <td className="py-2.5 font-bold">L</td>
+//                     <td className="py-2.5">40-42"</td>
+//                     <td className="py-2.5">34-36"</td>
+//                     <td className="py-2.5">42"</td>
+//                   </tr>
+//                   <tr>
+//                     <td className="py-2.5 font-bold">XL</td>
+//                     <td className="py-2.5">42-44"</td>
+//                     <td className="py-2.5">36-38"</td>
+//                     <td className="py-2.5">43"</td>
+//                   </tr>
+//                 </tbody>
+//               </table>
+//             </div>
+
+//             <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
+//               * Measurements are given in inches. For custom tailoring inquiries, please contact our concierge support.
+//             </p>
+//           </div>
+//         </div>
+//       )}
+
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ShoppingBag, 
   ShieldCheck, 
   Truck, 
-  RefreshCw, 
   Heart, 
   Sparkles,
   Check,
@@ -797,12 +1199,10 @@ export default function ProductDetail() {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   // Reviews State
-  const [reviews, setReviews] = useState([
-    { id: 1, name: 'Vrushali P.', rating: 5, date: 'May 12, 2026', comment: 'Absolute masterpiece! The fabric quality and embroidery are stunning.' },
-    { id: 2, name: 'Aarav M.', rating: 4, date: 'April 28, 2026', comment: 'Great fitting and premium texture. Worth the luxury price.' }
-  ]);
-  const [newReview, setNewReview] = useState({ name: '', rating: 5, comment: '' });
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewError, setReviewError] = useState('');
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "https://placehold.co/800x1000?text=Luxury+Collection";
@@ -815,6 +1215,7 @@ export default function ProductDetail() {
   useEffect(() => {
     setLoading(true);
 
+    // Fetch Product Data
     API.get(`products/${id}/`)
       .then((res) => {
         setProduct(res.data);
@@ -836,6 +1237,14 @@ export default function ProductDetail() {
         console.error("Error fetching product:", err);
         setLoading(false);
       });
+
+    // Fetch Product Reviews from Backend
+    API.get(`reviews/?product=${id}`)
+      .then((res) => {
+        const list = Array.isArray(res.data) ? res.data : res.data.results || [];
+        setReviews(list);
+      })
+      .catch((err) => console.error("Error fetching reviews:", err));
 
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -880,22 +1289,32 @@ export default function ProductDetail() {
     setTimeout(() => setAddedNotice(false), 3500);
   };
 
-  const handleReviewSubmit = (e) => {
+  // Handle Review Submit to Backend Database
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!newReview.name || !newReview.comment) return;
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('Please login to submit a review.');
+      navigate('/login');
+      return;
+    }
 
-    const reviewObj = {
-      id: Date.now(),
-      name: newReview.name,
-      rating: Number(newReview.rating),
-      date: 'Today',
-      comment: newReview.comment
-    };
+    try {
+      const res = await API.post('reviews/', {
+        product: id,
+        rating: Number(newReview.rating),
+        comment: newReview.comment
+      });
 
-    setReviews([reviewObj, ...reviews]);
-    setNewReview({ name: '', rating: 5, comment: '' });
-    setReviewSubmitted(true);
-    setTimeout(() => setReviewSubmitted(false), 4000);
+      setReviews([res.data, ...reviews]);
+      setNewReview({ rating: 5, comment: '' });
+      setReviewSubmitted(true);
+      setReviewError('');
+      setTimeout(() => setReviewSubmitted(false), 4000);
+    } catch (err) {
+      console.error("Failed to post review:", err);
+      setReviewError('Failed to submit review. Make sure you are logged in.');
+    }
   };
 
   if (loading) {
@@ -937,7 +1356,9 @@ export default function ProductDetail() {
   };
 
   // Average Rating Calculation
-  const avgRating = (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1);
+  const avgRating = reviews.length > 0 
+    ? (reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviews.length).toFixed(1) 
+    : "0.0";
 
   return (
     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
@@ -997,7 +1418,7 @@ export default function ProductDetail() {
             <div className="flex items-center gap-2 mb-3">
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className={i < Math.floor(avgRating) ? "fill-amber-500" : "text-neutral-300"} />
+                  <Star key={i} size={14} className={i < Math.floor(Number(avgRating)) ? "fill-amber-500" : "text-neutral-300"} />
                 ))}
               </div>
               <span className="text-xs font-semibold text-neutral-700">{avgRating}</span>
@@ -1112,22 +1533,28 @@ export default function ProductDetail() {
               </div>
 
               <div className="space-y-4">
-                {reviews.map((rev) => (
-                  <div key={rev.id} className="bg-white/80 border border-[#EFE8DC] p-6 rounded-2xl shadow-sm">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h4 className="font-serif text-sm font-semibold text-neutral-900">{rev.name}</h4>
-                        <div className="flex text-amber-500 mt-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={12} className={i < rev.rating ? "fill-amber-500" : "text-neutral-300"} />
-                          ))}
+                {reviews.length === 0 ? (
+                  <p className="text-xs text-neutral-500 italic">No reviews yet. Be the first to share your experience!</p>
+                ) : (
+                  reviews.map((rev) => (
+                    <div key={rev.id} className="bg-white/80 border border-[#EFE8DC] p-6 rounded-2xl shadow-sm">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="font-serif text-sm font-semibold text-neutral-900">{rev.user_name || 'Verified Client'}</h4>
+                          <div className="flex text-amber-500 mt-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} size={12} className={i < rev.rating ? "fill-amber-500" : "text-neutral-300"} />
+                            ))}
+                          </div>
                         </div>
+                        <span className="text-[10px] text-neutral-400 tracking-wider">
+                          {new Date(rev.created_at).toLocaleDateString()}
+                        </span>
                       </div>
-                      <span className="text-[10px] text-neutral-400 tracking-wider">{rev.date}</span>
+                      <p className="text-xs text-neutral-600 font-light leading-relaxed mt-2">{rev.comment}</p>
                     </div>
-                    <p className="text-xs text-neutral-600 font-light leading-relaxed mt-2">{rev.comment}</p>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -1138,23 +1565,17 @@ export default function ProductDetail() {
 
               {reviewSubmitted && (
                 <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs tracking-wider text-center font-medium rounded-xl">
-                  Thank you! Your review has been added successfully.
+                  Thank you! Your review has been saved to the database.
+                </div>
+              )}
+
+              {reviewError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-800 border border-red-200 text-xs tracking-wider text-center font-medium rounded-xl">
+                  {reviewError}
                 </div>
               )}
 
               <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-1.5">Your Name</label>
-                  <input 
-                    type="text"
-                    required
-                    value={newReview.name}
-                    onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                    placeholder="e.g. Vrushali"
-                    className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
-                  />
-                </div>
-
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-1.5">Rating (1 to 5 Stars)</label>
                   <select 
