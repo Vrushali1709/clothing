@@ -636,7 +636,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award, Sparkles } from 'lucide-react';
@@ -760,10 +759,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white pb-24">
+    <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white pb-12">
 
       {/* 1. LUXURY HERO SLIDER */}
-      <section className="relative w-full h-[88vh] min-h-[600px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
+      <section className="relative w-full h-[85vh] min-h-[550px] max-h-[750px] bg-[#E8DFD5] flex items-center overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -774,7 +773,7 @@ export default function Home() {
             <img
               src={slide.image}
               alt="Hero Slide"
-              className="absolute inset-0 w-full h-full object-cover object-center scale-105 animate-subtle-zoom"
+              className="absolute inset-0 w-full h-full object-cover object-center scale-105"
             />
             {/* Elegant Gradient Overlay */}
             <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
@@ -823,23 +822,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. EDITORIAL GENDER CARDS (High-End Grid) */}
-      <section className="w-full px-6 sm:px-10 md:px-16 -mt-16 relative z-20 max-w-[1500px] mx-auto">
+      {/* 2. EDITORIAL GENDER CARDS */}
+      <section className="w-full px-6 sm:px-10 md:px-16 -mt-14 relative z-20 max-w-[1500px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           
           <div 
             onClick={() => navigate('/shop?gender=men')}
-            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
-              <h3 className="font-serif text-2xl tracking-tight text-neutral-900">MEN</h3>
-              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-1">Tailored Excellence</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-6 group-hover:translate-x-2 transition-transform">
+              <h3 className="font-serif text-xl tracking-tight text-neutral-900">MEN</h3>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Tailored Excellence</p>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
                 Discover <ArrowRight size={13} />
               </span>
             </div>
-            <div className="w-28 h-36 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+            <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
               <img 
                 src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" 
                 alt="Men" 
@@ -850,17 +849,17 @@ export default function Home() {
 
           <div 
             onClick={() => navigate('/shop?gender=women')}
-            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
-              <h3 className="font-serif text-2xl tracking-tight text-neutral-900">WOMEN</h3>
-              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-1">Haute Couture</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-6 group-hover:translate-x-2 transition-transform">
+              <h3 className="font-serif text-xl tracking-tight text-neutral-900">WOMEN</h3>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Haute Couture</p>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
                 Discover <ArrowRight size={13} />
               </span>
             </div>
-            <div className="w-28 h-36 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+            <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
               <img 
                 src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" 
                 alt="Women" 
@@ -871,17 +870,17 @@ export default function Home() {
 
           <div 
             onClick={() => navigate('/shop?gender=kids')}
-            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
-              <h3 className="font-serif text-2xl tracking-tight text-neutral-900">KIDS</h3>
-              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-1">Little Luxury</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-6 group-hover:translate-x-2 transition-transform">
+              <h3 className="font-serif text-xl tracking-tight text-neutral-900">KIDS</h3>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Little Luxury</p>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
                 Discover <ArrowRight size={13} />
               </span>
             </div>
-            <div className="w-28 h-36 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+            <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
               <img 
                 src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=300" 
                 alt="Kids" 
@@ -894,26 +893,26 @@ export default function Home() {
       </section>
 
       {/* 3. CURATED CATEGORIES */}
-      <section className="w-full px-6 sm:px-10 md:px-16 mt-28 max-w-[1500px] mx-auto">
-        <div className="text-center mb-12">
-          <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-2">
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+        <div className="text-center mb-8">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
             EXPLORE THE BOUTIQUE
           </span>
-          <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
-          <div className="w-12 h-[1px] bg-neutral-400 mx-auto mt-4"></div>
+          <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
+          <div className="w-10 h-[1px] bg-neutral-400 mx-auto mt-3"></div>
         </div>
 
-        <div className="flex items-center justify-start sm:justify-center gap-8 sm:gap-14 overflow-x-auto pb-4 scrollbar-none">
+        <div className="flex items-center justify-start sm:justify-center gap-6 sm:gap-12 overflow-x-auto pb-3 scrollbar-none">
           {categoriesList.map((cat, idx) => (
             <div 
               key={idx}
               onClick={() => navigate(`/shop?category=${cat.slug}`)}
-              className="flex flex-col items-center gap-3 cursor-pointer group shrink-0"
+              className="flex flex-col items-center gap-2.5 cursor-pointer group shrink-0"
             >
-              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-neutral-200 border border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-200 border border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
                 <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700" />
               </div>
-              <span className="text-xs font-medium tracking-widest uppercase text-neutral-800 group-hover:text-black">
+              <span className="text-[11px] font-medium tracking-widest uppercase text-neutral-800 group-hover:text-black">
                 {cat.name}
               </span>
             </div>
@@ -921,31 +920,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. TRENDING NOW / BEST SELLERS */}
-      <section className="w-full px-6 sm:px-10 md:px-16 mt-28 max-w-[1500px] mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 border-b border-neutral-200 pb-6">
+      {/* 4. TRENDING PIECES */}
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-neutral-200 pb-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
               CURATED FAVORITES
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 tracking-tight">Trending Pieces</h2>
+            <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Trending Pieces</h2>
           </div>
           <button 
             onClick={() => navigate('/shop')}
-            className="mt-4 sm:mt-0 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-900 underline underline-offset-8 hover:text-neutral-600 transition"
+            className="mt-2 sm:mt-0 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-900 underline underline-offset-8 hover:text-neutral-600 transition"
           >
             View Entire Collection →
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
           {products.slice(0, 5).map((product) => (
             <div 
               key={product.id}
               onClick={() => navigate(`/product/${product.id}`)}
-              className="group cursor-pointer flex flex-col bg-white p-3.5 border border-neutral-200/80 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden"
+              className="group cursor-pointer flex flex-col bg-white p-3 border border-neutral-200/80 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden"
             >
-              <div className="relative aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-4">
+              <div className="relative aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-3">
                 <img 
                   src={getImageUrl(product)} 
                   alt={product.name} 
@@ -955,17 +954,17 @@ export default function Home() {
 
                 <button
                   onClick={(e) => handleWishlistToggle(e, product.id)}
-                  className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur rounded-full text-neutral-700 hover:scale-110 transition-transform shadow-md"
+                  className="absolute top-2.5 right-2.5 p-2 bg-white/90 backdrop-blur rounded-full text-neutral-700 hover:scale-110 transition-transform shadow-md"
                 >
                   <Heart 
-                    size={15} 
+                    size={14} 
                     className={wishlistMap[product.id] ? "fill-red-500 text-red-500" : "text-neutral-600"} 
                   />
                 </button>
               </div>
 
-              <h4 className="text-xs font-medium text-neutral-800 truncate px-1">{product.name}</h4>
-              <p className="text-xs font-serif font-bold text-neutral-900 mt-1.5 px-1">
+              <h4 className="text-xs font-medium text-neutral-800 truncate px-0.5">{product.name}</h4>
+              <p className="text-xs font-serif font-bold text-neutral-900 mt-1 px-0.5">
                 ₹{Number(product.price).toLocaleString('en-IN')}
               </p>
             </div>
@@ -974,9 +973,9 @@ export default function Home() {
       </section>
 
       {/* 5. FULL WIDTH EDITORIAL BANNER */}
-      <section className="w-full mt-32 bg-[#EBE5DC] border-y border-neutral-200">
+      <section className="w-full mt-16 bg-[#EBE5DC] border-y border-neutral-200">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full">
-          <div className="h-[400px] sm:h-[500px] w-full overflow-hidden">
+          <div className="h-[320px] sm:h-[420px] w-full overflow-hidden">
             <img 
               src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200" 
               alt="Wardrobe" 
@@ -984,19 +983,19 @@ export default function Home() {
             />
           </div>
 
-          <div className="p-12 sm:p-20 lg:p-28">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-bold block mb-3">
+          <div className="p-8 sm:p-14 lg:p-20">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-bold block mb-2">
               THE ATELIER PHILOSOPHY
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-neutral-900 mb-6 leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-neutral-900 mb-4 leading-tight">
               Crafted For <br /> Enduring Elegance
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 font-light mb-10 max-w-md leading-relaxed">
+            <p className="text-xs sm:text-sm text-neutral-600 font-light mb-8 max-w-md leading-relaxed">
               Every garment we create is an ode to refined luxury, using sustainably sourced natural fabrics and uncompromising attention to detail.
             </p>
             <button 
               onClick={() => navigate('/about')}
-              className="bg-neutral-900 text-white px-9 py-4 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-black transition-all shadow-md"
+              className="bg-neutral-900 text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-black transition-all shadow-md"
             >
               Discover Our Story
             </button>
@@ -1004,29 +1003,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. LUXURY TRUST BADGES */}
-      <section className="w-full px-6 sm:px-10 md:px-16 mt-28 max-w-[1500px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-white border border-neutral-200/80 p-12 rounded-2xl shadow-sm">
-          <div className="flex flex-col items-center">
-            <Award size={24} className="text-neutral-800 mb-3 stroke-1" />
-            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Exquisite Quality</h4>
-            <p className="text-[11px] text-neutral-500 font-light mt-1">Finest global textiles</p>
+      {/* 6. COMPACT LUXURY TRUST BADGES */}
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6 border-t border-b border-neutral-200">
+          
+          <div className="flex items-center gap-3.5 p-3 group">
+            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+              <Award size={18} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Exquisite Quality</h4>
+              <p className="text-[10px] text-neutral-500 font-light mt-0.5">Finest global textiles</p>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
-            <RefreshCw size={24} className="text-neutral-800 mb-3 stroke-1" />
-            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Complimentary Returns</h4>
-            <p className="text-[11px] text-neutral-500 font-light mt-1">Hassle-free 14-day policy</p>
+
+          <div className="flex items-center gap-3.5 p-3 group">
+            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+              <RefreshCw size={18} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Easy Returns</h4>
+              <p className="text-[10px] text-neutral-500 font-light mt-0.5">14-day hassle-free exchange</p>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
-            <ShieldCheck size={24} className="text-neutral-800 mb-3 stroke-1" />
-            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Secure Checkout</h4>
-            <p className="text-[11px] text-neutral-500 font-light mt-1">Encrypted transactions</p>
+
+          <div className="flex items-center gap-3.5 p-3 group">
+            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+              <ShieldCheck size={18} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Secure Checkout</h4>
+              <p className="text-[10px] text-neutral-500 font-light mt-0.5">100% encrypted gateway</p>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
-            <Headphones size={24} className="text-neutral-800 mb-3 stroke-1" />
-            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Concierge</h4>
-            <p className="text-[11px] text-neutral-500 font-light mt-1">Dedicated client support</p>
+
+          <div className="flex items-center gap-3.5 p-3 group">
+            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+              <Headphones size= {18} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Support</h4>
+              <p className="text-[10px] text-neutral-500 font-light mt-0.5">Dedicated concierge desk</p>
+            </div>
           </div>
+
         </div>
       </section>
 
