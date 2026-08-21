@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white py-12 mt-12 md:mt-20">
+    <footer className="bg-black text-white py-12 mt-12 md:mt-20 font-sans">
       <div className="container mx-auto px-6 sm:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         
         {/* Brand Info */}
@@ -19,6 +19,7 @@ export default function Footer() {
           <h4 className="font-semibold mb-4 text-gray-200">Quick Links</h4>
           <ul className="space-y-2.5 text-sm text-gray-400">
             <li><Link to="/" className="hover:text-white transition block py-0.5">Home</Link></li>
+            <li><Link to="/new-arrivals" className="hover:text-white transition block py-0.5">New Arrivals</Link></li>
             <li><Link to="/shop" className="hover:text-white transition block py-0.5">Shop Collection</Link></li>
             <li><Link to="/cart" className="hover:text-white transition block py-0.5">Shopping Cart</Link></li>
             <li><Link to="/my-orders" className="hover:text-white transition block py-0.5">My Orders</Link></li>
