@@ -170,7 +170,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 # =========================
 
-CORS_ALLOW_ALL_ORIGINS = True
+# =========================
+# CORS
+# =========================
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://clothing-frontend-r77i.onrender.com',
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 # =========================
