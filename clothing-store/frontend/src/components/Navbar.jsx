@@ -270,7 +270,6 @@
 
 
 
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, User, LogOut, Package, ChevronDown, Search, Heart, Menu, X } from 'lucide-react';
@@ -346,7 +345,7 @@ export default function Navbar() {
             Home
           </Link>
 
-          {/* New Arrivals Link added */}
+          {/* New Arrivals Link */}
           <Link to="/new-arrivals" className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-800 hover:text-black py-2">
             New Arrivals
           </Link>
@@ -424,6 +423,10 @@ export default function Navbar() {
 
           {token ? (
             <div className="hidden sm:flex items-center space-x-4 border-l pl-4 border-neutral-300">
+              {/* Profile Link */}
+              <Link to="/profile" className="text-neutral-700 hover:text-black transition" title="Client Profile">
+                <User size={20} />
+              </Link>
               <Link to="/my-orders" className="text-neutral-700 hover:text-black transition" title="My Orders">
                 <Package size={20} />
               </Link>
@@ -450,7 +453,6 @@ export default function Navbar() {
             Home
           </Link>
 
-          {/* New Arrivals Mobile Link */}
           <Link 
             to="/new-arrivals" 
             onClick={() => setIsMobileMenuOpen(false)}
@@ -515,9 +517,16 @@ export default function Navbar() {
             All Shop
           </Link>
 
-          <div className="pt-2">
+          <div className="pt-2 space-y-3">
             {token ? (
-              <div className="flex items-center space-x-6">
+              <>
+                <Link 
+                  to="/profile" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-neutral-800"
+                >
+                  <User size={18} /> My Profile
+                </Link>
                 <Link 
                   to="/my-orders" 
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -531,7 +540,7 @@ export default function Navbar() {
                 >
                   <LogOut size={18} /> Logout
                 </button>
-              </div>
+              </>
             ) : (
               <Link 
                 to="/login" 
