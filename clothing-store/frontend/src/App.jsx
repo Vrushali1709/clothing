@@ -63,6 +63,7 @@ import About from './pages/About';
 import FAQ from './pages/FAQ';
 import ShippingPolicy from './pages/ShippingPolicy';
 import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 export default function App() {
   return (
@@ -90,6 +91,7 @@ export default function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/shipping-policy" element={<ShippingPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
           </main>
           <Footer />

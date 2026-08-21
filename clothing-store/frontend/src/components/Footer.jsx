@@ -28,16 +28,15 @@ export default function Footer() {
         </div>
 
         {/* Customer Care */}
-        {/* Customer Care */}
-<div>
-  <h4 className="font-semibold mb-4 text-gray-200">Customer Care</h4>
-  <ul className="space-y-2.5 text-sm text-gray-400">
-    {/* <li><span className="hover:text-white transition cursor-pointer block py-0.5">Shipping Policy</span></li> */}
-    <li><span className="hover:text-white transition cursor-pointer block py-0.5">Returns & Exchanges</span></li>
-    <li><Link to="/faq" className="hover:text-white transition tracking-wide block py-0.5">FAQs & Support</Link></li>
-    <li><Link to="/shipping-policy" className="hover:text-white transition tracking-wide block py-0.5">Shipping Policy</Link></li>
-  </ul>
-</div>
+        <div>
+          <h4 className="font-semibold mb-4 text-gray-200">Customer Care</h4>
+          <ul className="space-y-2.5 text-sm text-gray-400">
+            <li><span className="hover:text-white transition cursor-pointer block py-0.5">Returns & Exchanges</span></li>
+            <li><Link to="/faq" className="hover:text-white transition tracking-wide block py-0.5">FAQs & Support</Link></li>
+            <li><Link to="/shipping-policy" className="hover:text-white transition tracking-wide block py-0.5">Shipping Policy</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition tracking-wide block py-0.5">Contact Us</Link></li>
+          </ul>
+        </div>
 
         {/* Newsletter Subscription */}
         <div>
@@ -60,13 +59,12 @@ export default function Footer() {
 
       </div>
 
-      {/* Bottom Copyright */}
-     {/* Bottom Copyright & Legal Links */}
+      {/* Bottom Copyright & Legal Links */}
       <div className="container mx-auto px-4 mt-12 pt-6 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
         <p>&copy; 2026 CLOTHING STORE. All rights reserved.</p>
         <div className="flex space-x-6 text-[10px] uppercase tracking-widest">
           <Link to="/terms" className="hover:text-white transition">Terms of Service</Link>
-          <span className="hover:text-white transition cursor-pointer">Privacy Policy</span>
+          <Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link>
         </div>
       </div>
     </footer>
