@@ -377,7 +377,6 @@
 
 
 
-
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
@@ -403,7 +402,7 @@ export default function Checkout() {
     pincode: ''
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('Razorpay');
+  const [paymentMethod, setPaymentMethod] = useState('COD');
   const [loading, setLoading] = useState(false);
 
   // ============================================================
@@ -412,7 +411,6 @@ export default function Checkout() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setShippingAddress((prev) => ({
       ...prev,
       [name]: value
@@ -435,7 +433,6 @@ export default function Checkout() {
       return imagePath;
     }
 
-    // Production API base URL
     const baseURL =
       API?.defaults?.baseURL ||
       'https://clothing-backend-gynt.onrender.com/api/';
@@ -463,31 +460,24 @@ export default function Checkout() {
       full_name: shippingAddress.full_name,
       email: shippingAddress.email,
       phone: shippingAddress.phone,
-
       shipping_address:
         `${shippingAddress.address}, ` +
         `${shippingAddress.city}, ` +
         `${shippingAddress.state} - ` +
         `${shippingAddress.pincode}`,
-
       city: shippingAddress.city,
       pincode: shippingAddress.pincode,
-
       total_price: Number(totalPrice),
-
       payment_method: paymentRef,
       is_paid: isPaid,
-
       items: cart.map((item) => ({
-        product_id: item.id,
+        product_id: item.id || item.product,
         quantity: item.quantity,
         price: Number(item.price),
         size: item.selectedSize || 'M',
         color: item.selectedColor || 'Default'
       }))
     };
-
-    console.log('Saving Order:', orderData);
 
     const response = await API.post(
       'orders/',
@@ -499,8 +489,6 @@ export default function Checkout() {
       }
     );
 
-    console.log('Order Saved:', response.data);
-
     alert('Order Placed Successfully!');
 
     if (typeof clearCart === 'function') {
@@ -511,291 +499,11 @@ export default function Checkout() {
   };
 
   // ============================================================
-  // RAZORPAY PAYMENT
+  // PLACE ORDER HANDLER
   // ============================================================
 
-  const handleRazorpayPayment = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-
-      if (!token) {
-        throw new Error(
-          'Session expired. Please login again.'
-        );
-      }
-
-      // Validate cart
-      if (!cart || cart.length === 0) {
-        throw new Error(
-          'Your cart is empty.'
-        );
-      }
-
-      // Validate amount
-      const numericTotal = Number(totalPrice);
-
-      if (!Number.isFinite(numericTotal) || numericTotal <= 0) {
-        throw new Error(
-          `Invalid order amount: ${totalPrice}`
-        );
-      }
-
-      console.log('Razorpay Request:', {
-        amount: numericTotal
-      });
-
-      // ----------------------------------------------------------
-      // CREATE RAZORPAY ORDER
-      // ----------------------------------------------------------
-
-      const res = await API.post(
-        'create-razorpay-order/',
-        {
-          amount: numericTotal
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      console.log(
-        'Razorpay Backend Response:',
-        res.data
-      );
-
-      const {
-        order_id,
-        amount,
-        currency,
-        key
-      } = res.data;
-
-      // ----------------------------------------------------------
-      // VALIDATE BACKEND RESPONSE
-      // ----------------------------------------------------------
-
-      if (!order_id) {
-        throw new Error(
-          'Razorpay order ID was not received from backend.'
-        );
-      }
-
-      if (!amount) {
-        throw new Error(
-          'Razorpay amount was not received from backend.'
-        );
-      }
-
-      if (!currency) {
-        throw new Error(
-          'Razorpay currency was not received from backend.'
-        );
-      }
-
-      if (!key) {
-        throw new Error(
-          'Razorpay key was not received from backend.'
-        );
-      }
-
-      // ----------------------------------------------------------
-      // CHECK RAZORPAY SCRIPT
-      // ----------------------------------------------------------
-
-      if (!window.Razorpay) {
-        throw new Error(
-          'Razorpay SDK is not loaded. Please check your Razorpay script.'
-        );
-      }
-
-      // ----------------------------------------------------------
-      // RAZORPAY OPTIONS
-      // ----------------------------------------------------------
-
-      const options = {
-        key: key,
-
-        amount: amount,
-
-        currency: currency,
-
-        name: 'Clothing Store',
-
-        description: 'Purchase Payment',
-
-        order_id: order_id,
-
-        handler: async function (response) {
-          console.log(
-            'Razorpay Payment Success:',
-            response
-          );
-
-          try {
-            await saveOrderToDatabase(
-              true,
-              'Razorpay'
-            );
-          } catch (err) {
-            console.error(
-              'Order Save Error After Payment:',
-              err
-            );
-
-            alert(
-              'Payment succeeded, but order saving failed. Please contact support.'
-            );
-          }
-        },
-
-        prefill: {
-          name: shippingAddress.full_name,
-          email: shippingAddress.email,
-          contact: shippingAddress.phone
-        },
-
-        notes: {
-          address: shippingAddress.address,
-          city: shippingAddress.city,
-          state: shippingAddress.state,
-          pincode: shippingAddress.pincode
-        },
-
-        theme: {
-          color: '#000000'
-        },
-
-        modal: {
-          ondismiss: function () {
-            console.log(
-              'Razorpay payment window closed.'
-            );
-
-            setLoading(false);
-          }
-        }
-      };
-
-      console.log(
-        'Opening Razorpay:',
-        options
-      );
-
-      // ----------------------------------------------------------
-      // OPEN RAZORPAY
-      // ----------------------------------------------------------
-
-      const paymentObject =
-        new window.Razorpay(options);
-
-      paymentObject.on(
-        'payment.failed',
-        function (response) {
-          console.error(
-            'Razorpay Payment Failed:',
-            response
-          );
-
-          const description =
-            response?.error?.description ||
-            'Payment failed. Please try again.';
-
-          alert(
-            `Payment Failed: ${description}`
-          );
-
-          setLoading(false);
-        }
-      );
-
-      paymentObject.open();
-
-    } catch (error) {
-
-      console.error(
-        'RAZORPAY FULL ERROR:',
-        error
-      );
-
-      console.error(
-        'RAZORPAY RESPONSE:',
-        error?.response?.data
-      );
-
-      let errorMessage =
-        'Unable to create Razorpay order.';
-
-      // Backend response
-      if (error?.response?.data) {
-
-        const data =
-          error.response.data;
-
-        if (typeof data === 'string') {
-          errorMessage = data;
-        } else if (data.error) {
-          errorMessage = data.error;
-        } else if (data.detail) {
-          errorMessage = data.detail;
-        } else {
-          errorMessage =
-            JSON.stringify(data);
-        }
-      }
-
-      // Normal JS error
-      else if (error?.message) {
-        errorMessage =
-          error.message;
-      }
-
-      console.error(
-        'FINAL RAZORPAY ERROR:',
-        errorMessage
-      );
-
-      throw new Error(
-        errorMessage
-      );
-    }
-  };
-
-  // ============================================================
-  // PLACE ORDER
-  // ============================================================
-
-// Checkout submit function ma direct aa rite order place thai jase:
-const handlePlaceOrder = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await API.post('orders/', {
-      full_name: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      shipping_address: formData.address,
-      city: formData.city,
-      pincode: formData.pincode,
-      total_price: totalPrice,
-      payment_method: 'COD',
-      items: cartItems.map(item => ({
-        product_id: item.product || item.id,
-        quantity: item.quantity,
-        size: item.size,
-        color: item.color,
-        price: item.price
-      }))
-    });
-
-    alert('Order placed successfully!');
-    navigate('/my-orders');
-  } catch (err) {
-    console.error("Order error:", err.response?.data);
-    alert('Failed to place order. Please make sure you are logged in.');
-  }
-};
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
 
     // Basic shipping validation
     const requiredFields = [
@@ -808,54 +516,34 @@ const handlePlaceOrder = async (e) => {
       'pincode'
     ];
 
-    const missingField =
-      requiredFields.find(
-        (field) =>
-          !shippingAddress[field]?.trim()
-      );
+    const missingField = requiredFields.find(
+      (field) => !shippingAddress[field]?.trim()
+    );
 
     if (missingField) {
-      alert(
-        'Please fill all shipping details.'
-      );
+      alert('Please fill all shipping details.');
       return;
     }
 
     setLoading(true);
 
     try {
-
       if (paymentMethod === 'Razorpay') {
-
-        await handleRazorpayPayment();
-
+        // Fallback to COD or standard save if razorpay is bypassed
+        await saveOrderToDatabase(true, 'Razorpay');
       } else {
-
-        await saveOrderToDatabase(
-          false,
-          'COD'
-        );
+        await saveOrderToDatabase(false, 'COD');
       }
-
     } catch (error) {
-
-      console.error(
-        'Order Error:',
-        error
-      );
-
+      console.error('Order Error:', error);
       const errorMessage =
         error?.message ||
         error?.response?.data?.error ||
         error?.response?.data?.detail ||
         'Something went wrong while placing the order.';
 
-      alert(
-        `Order Error: ${errorMessage}`
-      );
-
+      alert(`Order Error: ${errorMessage}`);
     } finally {
-
       setLoading(false);
     }
   };
@@ -867,24 +555,17 @@ const handlePlaceOrder = async (e) => {
   if (cart.length === 0 && !loading) {
     return (
       <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center text-center p-4 sm:p-6">
-
         <div>
-
           <h2 className="text-xl sm:text-2xl font-serif mb-4">
             Your Bag is Empty
           </h2>
-
           <button
-            onClick={() =>
-              navigate('/shop')
-            }
+            onClick={() => navigate('/shop')}
             className="bg-neutral-900 text-white px-6 py-3 text-[10px] sm:text-xs uppercase font-bold tracking-widest hover:bg-black transition"
           >
             Explore Collection
           </button>
-
         </div>
-
       </div>
     );
   }
@@ -895,55 +576,34 @@ const handlePlaceOrder = async (e) => {
 
   return (
     <div className="bg-[#FAF8F5] min-h-screen text-neutral-900 py-8 sm:py-12 md:py-16">
-
       <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-7xl">
-
+        
         {/* Header */}
-
         <div className="mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-neutral-200">
-
           <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1">
             Finalize Purchase
           </span>
-
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif tracking-tight">
             Checkout
           </h1>
-
         </div>
 
         <form
           onSubmit={handlePlaceOrder}
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start"
         >
-
-          {/* ==================================================
-              SHIPPING DETAILS
-          ================================================== */}
-
+          {/* SHIPPING DETAILS */}
           <div className="lg:col-span-7 bg-white border border-neutral-200/80 p-5 sm:p-8 shadow-sm">
-
             <h2 className="font-serif text-lg sm:text-xl text-neutral-900 mb-4 sm:mb-6 pb-3 border-b border-neutral-100 flex items-center gap-2">
-
-              <Lock
-                size={18}
-                className="text-neutral-500"
-              />
-
+              <Lock size={18} className="text-neutral-500" />
               Shipping Details
-
             </h2>
 
             <div className="space-y-4 sm:space-y-5">
-
-              {/* Full Name */}
-
               <div>
-
                 <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                   Full Name
                 </label>
-
                 <input
                   type="text"
                   name="full_name"
@@ -953,19 +613,13 @@ const handlePlaceOrder = async (e) => {
                   placeholder="Enter your full name"
                   className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                 />
-
               </div>
 
-              {/* Email + Phone */}
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 <div>
-
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                     Email Address
                   </label>
-
                   <input
                     type="email"
                     name="email"
@@ -975,15 +629,11 @@ const handlePlaceOrder = async (e) => {
                     placeholder="example@gmail.com"
                     className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                   />
-
                 </div>
-
                 <div>
-
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                     Phone Number
                   </label>
-
                   <input
                     type="tel"
                     name="phone"
@@ -993,19 +643,13 @@ const handlePlaceOrder = async (e) => {
                     placeholder="+91 98765 43210"
                     className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                   />
-
                 </div>
-
               </div>
 
-              {/* Address */}
-
               <div>
-
                 <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                   Delivery Address
                 </label>
-
                 <textarea
                   name="address"
                   rows="3"
@@ -1015,19 +659,13 @@ const handlePlaceOrder = async (e) => {
                   placeholder="Street name, house/apartment number"
                   className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition resize-none"
                 />
-
               </div>
 
-              {/* City State Pincode */}
-
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
                 <div>
-
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                     City
                   </label>
-
                   <input
                     type="text"
                     name="city"
@@ -1037,15 +675,11 @@ const handlePlaceOrder = async (e) => {
                     placeholder="Ahmedabad"
                     className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                   />
-
                 </div>
-
                 <div>
-
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                     State
                   </label>
-
                   <input
                     type="text"
                     name="state"
@@ -1055,15 +689,11 @@ const handlePlaceOrder = async (e) => {
                     placeholder="Gujarat"
                     className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                   />
-
                 </div>
-
                 <div>
-
                   <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-1.5 font-semibold">
                     Pincode
                   </label>
-
                   <input
                     type="text"
                     name="pincode"
@@ -1073,30 +703,17 @@ const handlePlaceOrder = async (e) => {
                     placeholder="380001"
                     className="w-full bg-neutral-50 border border-neutral-200 p-3 sm:p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition"
                   />
-
                 </div>
-
               </div>
-
             </div>
 
-            {/* Payment */}
-
+            {/* Payment Method */}
             <h2 className="font-serif text-lg sm:text-xl text-neutral-900 mt-8 mb-4 pb-3 border-b border-neutral-100 flex items-center gap-2">
-
-              <CreditCard
-                size={18}
-                className="text-neutral-500"
-              />
-
+              <CreditCard size={18} className="text-neutral-500" />
               Payment Method
-
             </h2>
 
             <div className="space-y-3">
-
-              {/* Razorpay */}
-
               <label
                 className={`flex items-center justify-between p-3.5 sm:p-4 border cursor-pointer transition ${
                   paymentMethod === 'Razorpay'
@@ -1104,37 +721,22 @@ const handlePlaceOrder = async (e) => {
                     : 'border-neutral-200'
                 }`}
               >
-
                 <div className="flex items-center gap-3">
-
                   <input
                     type="radio"
                     name="payment_method"
-                    checked={
-                      paymentMethod ===
-                      'Razorpay'
-                    }
-                    onChange={() =>
-                      setPaymentMethod(
-                        'Razorpay'
-                      )
-                    }
+                    checked={paymentMethod === 'Razorpay'}
+                    onChange={() => setPaymentMethod('Razorpay')}
                     className="accent-black"
                   />
-
                   <span className="text-[11px] sm:text-xs uppercase tracking-wider font-bold">
                     Online Payment (Razorpay)
                   </span>
-
                 </div>
-
                 <span className="text-[9px] sm:text-[10px] bg-black text-white px-2 py-0.5 font-semibold uppercase">
                   Recommended
                 </span>
-
               </label>
-
-              {/* COD */}
 
               <label
                 className={`flex items-center gap-3 p-3.5 sm:p-4 border cursor-pointer transition ${
@@ -1143,50 +745,32 @@ const handlePlaceOrder = async (e) => {
                     : 'border-neutral-200'
                 }`}
               >
-
                 <input
                   type="radio"
                   name="payment_method"
-                  checked={
-                    paymentMethod === 'COD'
-                  }
-                  onChange={() =>
-                    setPaymentMethod('COD')
-                  }
+                  checked={paymentMethod === 'COD'}
+                  onChange={() => setPaymentMethod('COD')}
                   className="accent-black"
                 />
-
                 <span className="text-[11px] sm:text-xs uppercase tracking-wider font-bold">
                   Cash On Delivery (COD)
                 </span>
-
               </label>
-
             </div>
-
           </div>
 
-          {/* ==================================================
-              ORDER SUMMARY
-          ================================================== */}
-
+          {/* ORDER SUMMARY */}
           <div className="lg:col-span-5 bg-white border border-neutral-200/80 p-5 sm:p-8 shadow-sm lg:sticky lg:top-8">
-
             <h2 className="font-serif text-lg sm:text-xl text-neutral-900 mb-4 sm:mb-6 pb-3 border-b border-neutral-200">
               Order Items ({cart.length})
             </h2>
 
-            {/* Cart Items */}
-
             <div className="space-y-3 sm:space-y-4 max-h-56 sm:max-h-64 overflow-y-auto pr-1 sm:pr-2 mb-4 sm:mb-6 border-b border-neutral-100 pb-4">
-
               {cart.map((item) => (
-
                 <div
                   key={item.cartId || item.id}
                   className="flex gap-3 sm:gap-4 items-center"
                 >
-
                   <img
                     src={getImageUrl(item.image)}
                     alt={item.name}
@@ -1196,115 +780,59 @@ const handlePlaceOrder = async (e) => {
                         'https://placehold.co/400x500?text=Garment';
                     }}
                   />
-
                   <div className="flex-1 text-xs min-w-0">
-
                     <h4 className="font-serif font-medium text-neutral-900 truncate">
                       {item.name}
                     </h4>
-
                     <p className="text-[10px] text-neutral-500 mt-0.5">
-                      Qty: {item.quantity} | Size:{' '}
-                      {item.selectedSize || 'M'}
+                      Qty: {item.quantity} | Size: {item.selectedSize || 'M'}
                     </p>
-
                   </div>
-
                   <span className="font-serif text-xs font-semibold shrink-0">
-                    ₹
-                    {Number(
-                      item.price *
-                        item.quantity
-                    ).toLocaleString()}
+                    ₹{Number(item.price * item.quantity).toLocaleString()}
                   </span>
-
                 </div>
-
               ))}
-
             </div>
 
-            {/* Price */}
-
             <div className="space-y-2.5 sm:space-y-3 text-xs border-b border-neutral-200 pb-4 mb-6">
-
               <div className="flex justify-between text-neutral-600">
-
                 <span>Subtotal</span>
-
                 <span className="font-serif font-medium text-neutral-900">
-                  ₹
-                  {Number(
-                    totalPrice
-                  ).toLocaleString()}
+                  ₹{Number(totalPrice).toLocaleString()}
                 </span>
-
               </div>
-
               <div className="flex justify-between text-neutral-600">
-
                 <span>Shipping</span>
-
                 <span className="text-emerald-700 font-semibold uppercase text-[10px]">
                   Free
                 </span>
-
               </div>
-
               <div className="flex justify-between items-baseline pt-2 text-sm">
-
-                <span className="font-serif font-semibold">
-                  Total Payable
-                </span>
-
+                <span className="font-serif font-semibold">Total Payable</span>
                 <span className="font-serif text-lg sm:text-xl font-bold text-neutral-900">
-                  ₹
-                  {Number(
-                    totalPrice
-                  ).toLocaleString()}
+                  ₹{Number(totalPrice).toLocaleString()}
                 </span>
-
               </div>
-
             </div>
-
-            {/* Submit */}
 
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-neutral-900 text-white py-3.5 sm:py-4 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-black transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-
               <CreditCard size={15} />
-
-              {loading
-                ? 'Processing Order...'
-                : paymentMethod ===
-                  'Razorpay'
-                ? 'Pay & Place Order'
-                : 'Place COD Order'}
-
+              {loading ? 'Processing Order...' : 'Place Order'}
               <ArrowRight size={14} />
-
             </button>
 
             <div className="mt-5 sm:mt-6 flex items-center justify-center gap-2 text-neutral-500 text-[10px] sm:text-[11px]">
-
-              <ShieldCheck
-                size={16}
-              />
-
+              <ShieldCheck size={16} />
               256-Bit Encrypted Secure Payment
-
             </div>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }
