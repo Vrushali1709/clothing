@@ -779,7 +779,7 @@ const handlePlaceOrder = async (e) => {
       city: formData.city,
       pincode: formData.pincode,
       total_price: totalPrice,
-      payment_method: 'COD', // Or Direct Order
+      payment_method: 'COD',
       items: cartItems.map(item => ({
         product_id: item.product || item.id,
         quantity: item.quantity,
@@ -793,7 +793,7 @@ const handlePlaceOrder = async (e) => {
     navigate('/my-orders');
   } catch (err) {
     console.error("Order error:", err.response?.data);
-    alert('Failed to place order. Please login again.');
+    alert('Failed to place order. Please make sure you are logged in.');
   }
 };
 
