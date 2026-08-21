@@ -636,6 +636,427 @@
 
 
 
+// import React, { useEffect, useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award, Sparkles } from 'lucide-react';
+// import API, { addToWishlist, removeFromWishlist, getWishlist } from '../services/api';
+
+// export default function Home() {
+//   const navigate = useNavigate();
+//   const [products, setProducts] = useState([]);
+//   const [wishlistMap, setWishlistMap] = useState({});
+//   const [currentSlide, setCurrentSlide] = useState(0);
+
+//   // Hero Slider Data (High-end Atelier Vibe)
+//   const heroSlides = [
+//     {
+//       subtitle: "THE HAUTE COUTURE EDIT",
+//       title: "Timeless Elegance\nModern Silhouettes",
+//       description: "Discover meticulously crafted pieces designed for the discerning wardrobe.",
+//       image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop",
+//       btnText: "EXPLORE COLLECTION",
+//       link: "/shop"
+//     },
+//     {
+//       subtitle: "SEASONAL DROPS • AW '26",
+//       title: "Refined Luxury\nUncompromised Quality",
+//       description: "Immerse yourself in exceptional textiles and bespoke tailoring.",
+//       image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400&auto=format&fit=crop",
+//       btnText: "SHOP NEW ARRIVALS",
+//       link: "/new-arrivals"
+//     },
+//     {
+//       subtitle: "BESPOKE ARTISTRY",
+//       title: "Grace Redefined\nEvery Single Day",
+//       description: "Elevate your personal style with pieces curated for pure sophistication.",
+//       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1400&auto=format&fit=crop",
+//       btnText: "VIEW LOOKBOOK",
+//       link: "/shop"
+//     }
+//   ];
+
+//   // Auto Scroll Effect for Hero Section (Changes every 5 seconds)
+//   useEffect(() => {
+//     const timer = setInterval(() => {
+//       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+//     }, 5000);
+//     return () => clearInterval(timer);
+//   }, [heroSlides.length]);
+
+//   const getImageUrl = (product) => {
+//     let imagePath = product?.image;
+//     if (!imagePath && product?.images && product.images.length > 0) {
+//       imagePath = product.images[0]?.image || product.images[0];
+//     }
+//     if (!imagePath) return "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800";
+
+//     if (typeof imagePath === 'string' && (imagePath.startsWith('http://') || imagePath.startsWith('https://'))) {
+//       return imagePath;
+//     }
+
+//     const cleanPath = typeof imagePath === 'string' && imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+//     return `https://clothing-backend-gynt.onrender.com${cleanPath}`;
+//   };
+
+//   useEffect(() => {
+//     API.get('products/')
+//       .then(res => {
+//         const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+//         setProducts(data);
+//       })
+//       .catch(err => console.error(err));
+
+//     const token = localStorage.getItem('access_token');
+//     if (token) {
+//       getWishlist()
+//         .then(res => {
+//           const list = Array.isArray(res.data) ? res.data : res.data.results || [];
+//           const map = {};
+//           list.forEach(item => {
+//             map[item.product] = item.id;
+//           });
+//           setWishlistMap(map);
+//         })
+//         .catch(err => console.error(err));
+//     }
+//   }, []);
+
+//   const handleWishlistToggle = async (e, productId) => {
+//     e.stopPropagation();
+//     const token = localStorage.getItem('access_token');
+//     if (!token) {
+//       alert('Please login to add items to your wishlist.');
+//       navigate('/login');
+//       return;
+//     }
+
+//     try {
+//       if (wishlistMap[productId]) {
+//         const wishlistId = wishlistMap[productId];
+//         await removeFromWishlist(wishlistId);
+//         setWishlistMap(prev => {
+//           const newMap = { ...prev };
+//           delete newMap[productId];
+//           return newMap;
+//         });
+//       } else {
+//         const res = await addToWishlist(productId);
+//         setWishlistMap(prev => ({ ...prev, [productId]: res.data.id }));
+//       }
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   const categoriesList = [
+//     { name: 'Shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=400', slug: 'shirts' },
+//     { name: 'T-Shirts', img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=400', slug: 't-shirts' },
+//     { name: 'Jeans', img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=400', slug: 'jeans' },
+//     { name: 'Dresses', img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=400', slug: 'dresses' },
+//     { name: 'Kurtas', img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=400', slug: 'kurtas' },
+//     { name: 'Jackets', img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=400', slug: 'jackets' },
+//     { name: 'Accessories', img: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=400', slug: 'accessories' },
+//   ];
+
+//   return (
+//     <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white pb-12">
+
+//       {/* 1. LUXURY HERO SLIDER */}
+//       <section className="relative w-full h-[85vh] min-h-[550px] max-h-[750px] bg-[#E8DFD5] flex items-center overflow-hidden">
+//         {heroSlides.map((slide, index) => (
+//           <div
+//             key={index}
+//             className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ease-in-out ${
+//               index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+//             }`}
+//           >
+//             <img
+//               src={slide.image}
+//               alt="Hero Slide"
+//               className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+//             />
+//             {/* Elegant Gradient Overlay */}
+//             <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
+
+//             <div className="relative z-10 px-8 sm:px-16 md:px-24 max-w-2xl text-white">
+//               <div className="flex items-center gap-2 mb-4">
+//                 <Sparkles size={14} className="text-amber-200" />
+//                 <span className="text-[10px] uppercase tracking-[0.4em] font-medium text-amber-100 block">
+//                   {slide.subtitle}
+//                 </span>
+//               </div>
+
+//               <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-light leading-[1.1] mb-6 tracking-tight whitespace-pre-line">
+//                 {slide.title}
+//               </h1>
+
+//               <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-8 max-w-md">
+//                 {slide.description}
+//               </p>
+
+//               <button
+//                 onClick={() => navigate(slide.link)}
+//                 className="bg-white text-neutral-900 px-9 py-4 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-neutral-900 hover:text-white transition-all duration-300 shadow-xl"
+//               >
+//                 {slide.btnText}
+//               </button>
+//             </div>
+//           </div>
+//         ))}
+
+//         {/* Floating Slide Indicators */}
+//         <div className="absolute right-8 sm:right-12 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
+//           {heroSlides.map((_, idx) => (
+//             <React.Fragment key={idx}>
+//               <span 
+//                 onClick={() => setCurrentSlide(idx)}
+//                 className={`text-xs font-serif tracking-widest cursor-pointer transition-all ${
+//                   idx === currentSlide ? 'font-bold border-b border-white pb-1 text-white scale-110' : 'font-normal text-white/40 hover:text-white'
+//                 }`}
+//               >
+//                 0{idx + 1}
+//               </span>
+//               {idx < heroSlides.length - 1 && <div className="w-[1px] h-6 bg-white/20" />}
+//             </React.Fragment>
+//           ))}
+//         </div>
+//       </section>
+
+//       {/* 2. EDITORIAL GENDER CARDS */}
+//       <section className="w-full px-6 sm:px-10 md:px-16 -mt-14 relative z-20 max-w-[1500px] mx-auto">
+//         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          
+//           <div 
+//             onClick={() => navigate('/shop?gender=men')}
+//             className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+//           >
+//             <div>
+//               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
+//               <h3 className="font-serif text-xl tracking-tight text-neutral-900">MEN</h3>
+//               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Tailored Excellence</p>
+//               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+//                 Discover <ArrowRight size={13} />
+//               </span>
+//             </div>
+//             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+//               <img 
+//                 src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" 
+//                 alt="Men" 
+//                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+//               />
+//             </div>
+//           </div>
+
+//           <div 
+//             onClick={() => navigate('/shop?gender=women')}
+//             className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+//           >
+//             <div>
+//               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
+//               <h3 className="font-serif text-xl tracking-tight text-neutral-900">WOMEN</h3>
+//               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Haute Couture</p>
+//               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+//                 Discover <ArrowRight size={13} />
+//               </span>
+//             </div>
+//             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+//               <img 
+//                 src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" 
+//                 alt="Women" 
+//                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+//               />
+//             </div>
+//           </div>
+
+//           <div 
+//             onClick={() => navigate('/shop?gender=kids')}
+//             className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+//           >
+//             <div>
+//               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
+//               <h3 className="font-serif text-xl tracking-tight text-neutral-900">KIDS</h3>
+//               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Little Luxury</p>
+//               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+//                 Discover <ArrowRight size={13} />
+//               </span>
+//             </div>
+//             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+//               <img 
+//                 src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=300" 
+//                 alt="Kids" 
+//                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+//               />
+//             </div>
+//           </div>
+
+//         </div>
+//       </section>
+
+//       {/* 3. CURATED CATEGORIES */}
+//       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+//         <div className="text-center mb-8">
+//           <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
+//             EXPLORE THE BOUTIQUE
+//           </span>
+//           <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
+//           <div className="w-10 h-[1px] bg-neutral-400 mx-auto mt-3"></div>
+//         </div>
+
+//         <div className="flex items-center justify-start sm:justify-center gap-6 sm:gap-12 overflow-x-auto pb-3 scrollbar-none">
+//           {categoriesList.map((cat, idx) => (
+//             <div 
+//               key={idx}
+//               onClick={() => navigate(`/shop?category=${cat.slug}`)}
+//               className="flex flex-col items-center gap-2.5 cursor-pointer group shrink-0"
+//             >
+//               <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-200 border border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
+//                 <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700" />
+//               </div>
+//               <span className="text-[11px] font-medium tracking-widest uppercase text-neutral-800 group-hover:text-black">
+//                 {cat.name}
+//               </span>
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+
+//       {/* 4. TRENDING PIECES */}
+//       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+//         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-neutral-200 pb-4">
+//           <div>
+//             <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
+//               CURATED FAVORITES
+//             </span>
+//             <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Trending Pieces</h2>
+//           </div>
+//           <button 
+//             onClick={() => navigate('/shop')}
+//             className="mt-2 sm:mt-0 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-900 underline underline-offset-8 hover:text-neutral-600 transition"
+//           >
+//             View Entire Collection →
+//           </button>
+//         </div>
+
+//         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+//           {products.slice(0, 5).map((product) => (
+//             <div 
+//               key={product.id}
+//               onClick={() => navigate(`/product/${product.id}`)}
+//               className="group cursor-pointer flex flex-col bg-white p-3 border border-neutral-200/80 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden"
+//             >
+//               <div className="relative aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-3">
+//                 <img 
+//                   src={getImageUrl(product)} 
+//                   alt={product.name} 
+//                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+//                   onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800"; }}
+//                 />
+
+//                 <button
+//                   onClick={(e) => handleWishlistToggle(e, product.id)}
+//                   className="absolute top-2.5 right-2.5 p-2 bg-white/90 backdrop-blur rounded-full text-neutral-700 hover:scale-110 transition-transform shadow-md"
+//                 >
+//                   <Heart 
+//                     size={14} 
+//                     className={wishlistMap[product.id] ? "fill-red-500 text-red-500" : "text-neutral-600"} 
+//                   />
+//                 </button>
+//               </div>
+
+//               <h4 className="text-xs font-medium text-neutral-800 truncate px-0.5">{product.name}</h4>
+//               <p className="text-xs font-serif font-bold text-neutral-900 mt-1 px-0.5">
+//                 ₹{Number(product.price).toLocaleString('en-IN')}
+//               </p>
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+
+//       {/* 5. FULL WIDTH EDITORIAL BANNER */}
+//       <section className="w-full mt-16 bg-[#EBE5DC] border-y border-neutral-200">
+//         <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full">
+//           <div className="h-[320px] sm:h-[420px] w-full overflow-hidden">
+//             <img 
+//               src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200" 
+//               alt="Wardrobe" 
+//               className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+//             />
+//           </div>
+
+//           <div className="p-8 sm:p-14 lg:p-20">
+//             <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 font-bold block mb-2">
+//               THE ATELIER PHILOSOPHY
+//             </span>
+//             <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-neutral-900 mb-4 leading-tight">
+//               Crafted For <br /> Enduring Elegance
+//             </h2>
+//             <p className="text-xs sm:text-sm text-neutral-600 font-light mb-8 max-w-md leading-relaxed">
+//               Every garment we create is an ode to refined luxury, using sustainably sourced natural fabrics and uncompromising attention to detail.
+//             </p>
+//             <button 
+//               onClick={() => navigate('/about')}
+//               className="bg-neutral-900 text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-black transition-all shadow-md"
+//             >
+//               Discover Our Story
+//             </button>
+//           </div>
+//         </div>
+//       </section>
+
+//       {/* 6. COMPACT LUXURY TRUST BADGES */}
+//       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6 border-t border-b border-neutral-200">
+          
+//           <div className="flex items-center gap-3.5 p-3 group">
+//             <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+//               <Award size={18} strokeWidth={1.5} />
+//             </div>
+//             <div>
+//               <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Exquisite Quality</h4>
+//               <p className="text-[10px] text-neutral-500 font-light mt-0.5">Finest global textiles</p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-3.5 p-3 group">
+//             <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+//               <RefreshCw size={18} strokeWidth={1.5} />
+//             </div>
+//             <div>
+//               <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Easy Returns</h4>
+//               <p className="text-[10px] text-neutral-500 font-light mt-0.5">14-day hassle-free exchange</p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-3.5 p-3 group">
+//             <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+//               <ShieldCheck size={18} strokeWidth={1.5} />
+//             </div>
+//             <div>
+//               <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Secure Checkout</h4>
+//               <p className="text-[10px] text-neutral-500 font-light mt-0.5">100% encrypted gateway</p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-3.5 p-3 group">
+//             <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+//               <Headphones size= {18} strokeWidth={1.5} />
+//             </div>
+//             <div>
+//               <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Support</h4>
+//               <p className="text-[10px] text-neutral-500 font-light mt-0.5">Dedicated concierge desk</p>
+//             </div>
+//           </div>
+
+//         </div>
+//       </section>
+
+//     </div>
+//   );
+// }
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award, Sparkles } from 'lucide-react';
@@ -647,35 +1068,43 @@ export default function Home() {
   const [wishlistMap, setWishlistMap] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Hero Slider Data (High-end Atelier Vibe)
+  // Brand accent used consistently across the site — matches ProductDetail's gold (#C8A882)
+  const GOLD = '#C8A882';
+
   const heroSlides = [
     {
-      subtitle: "THE HAUTE COUTURE EDIT",
-      title: "Timeless Elegance\nModern Silhouettes",
-      description: "Discover meticulously crafted pieces designed for the discerning wardrobe.",
-      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop",
-      btnText: "EXPLORE COLLECTION",
-      link: "/shop"
+      subtitle: 'THE HAUTE COUTURE EDIT',
+      title: 'Timeless Elegance\nModern Silhouettes',
+      description: 'Discover meticulously crafted pieces designed for the discerning wardrobe.',
+      image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop',
+      btnText: 'EXPLORE COLLECTION',
+      link: '/shop',
     },
     {
       subtitle: "SEASONAL DROPS • AW '26",
-      title: "Refined Luxury\nUncompromised Quality",
-      description: "Immerse yourself in exceptional textiles and bespoke tailoring.",
-      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400&auto=format&fit=crop",
-      btnText: "SHOP NEW ARRIVALS",
-      link: "/new-arrivals"
+      title: 'Refined Luxury\nUncompromised Quality',
+      description: 'Immerse yourself in exceptional textiles and bespoke tailoring.',
+      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400&auto=format&fit=crop',
+      btnText: 'SHOP NEW ARRIVALS',
+      link: '/new-arrivals',
     },
     {
-      subtitle: "BESPOKE ARTISTRY",
-      title: "Grace Redefined\nEvery Single Day",
-      description: "Elevate your personal style with pieces curated for pure sophistication.",
-      image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1400&auto=format&fit=crop",
-      btnText: "VIEW LOOKBOOK",
-      link: "/shop"
-    }
+      subtitle: 'BESPOKE ARTISTRY',
+      title: 'Grace Redefined\nEvery Single Day',
+      description: 'Elevate your personal style with pieces curated for pure sophistication.',
+      image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1400&auto=format&fit=crop',
+      btnText: 'VIEW LOOKBOOK',
+      link: '/shop',
+    },
   ];
 
-  // Auto Scroll Effect for Hero Section (Changes every 5 seconds)
+  const marqueeItems = [
+    'COMPLIMENTARY EXPRESS SHIPPING ABOVE ₹999',
+    '100% AUTHENTIC LUXURY GARMENTS',
+    '14-DAY EFFORTLESS RETURNS',
+    'DEDICATED ATELIER CONCIERGE',
+  ];
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -688,7 +1117,7 @@ export default function Home() {
     if (!imagePath && product?.images && product.images.length > 0) {
       imagePath = product.images[0]?.image || product.images[0];
     }
-    if (!imagePath) return "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800";
+    if (!imagePath) return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800';
 
     if (typeof imagePath === 'string' && (imagePath.startsWith('http://') || imagePath.startsWith('https://'))) {
       return imagePath;
@@ -700,24 +1129,24 @@ export default function Home() {
 
   useEffect(() => {
     API.get('products/')
-      .then(res => {
+      .then((res) => {
         const data = Array.isArray(res.data) ? res.data : res.data.results || [];
         setProducts(data);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
 
     const token = localStorage.getItem('access_token');
     if (token) {
       getWishlist()
-        .then(res => {
+        .then((res) => {
           const list = Array.isArray(res.data) ? res.data : res.data.results || [];
           const map = {};
-          list.forEach(item => {
+          list.forEach((item) => {
             map[item.product] = item.id;
           });
           setWishlistMap(map);
         })
-        .catch(err => console.error(err));
+        .catch((err) => console.error(err));
     }
   }, []);
 
@@ -734,14 +1163,14 @@ export default function Home() {
       if (wishlistMap[productId]) {
         const wishlistId = wishlistMap[productId];
         await removeFromWishlist(wishlistId);
-        setWishlistMap(prev => {
+        setWishlistMap((prev) => {
           const newMap = { ...prev };
           delete newMap[productId];
           return newMap;
         });
       } else {
         const res = await addToWishlist(productId);
-        setWishlistMap(prev => ({ ...prev, [productId]: res.data.id }));
+        setWishlistMap((prev) => ({ ...prev, [productId]: res.data.id }));
       }
     } catch (err) {
       console.error(err);
@@ -775,13 +1204,12 @@ export default function Home() {
               alt="Hero Slide"
               className="absolute inset-0 w-full h-full object-cover object-center scale-105"
             />
-            {/* Elegant Gradient Overlay */}
             <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
 
             <div className="relative z-10 px-8 sm:px-16 md:px-24 max-w-2xl text-white">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={14} className="text-amber-200" />
-                <span className="text-[10px] uppercase tracking-[0.4em] font-medium text-amber-100 block">
+                <Sparkles size={14} style={{ color: GOLD }} />
+                <span className="text-[10px] uppercase tracking-[0.4em] font-medium block" style={{ color: '#E7D3B8' }}>
                   {slide.subtitle}
                 </span>
               </div>
@@ -796,23 +1224,31 @@ export default function Home() {
 
               <button
                 onClick={() => navigate(slide.link)}
-                className="bg-white text-neutral-900 px-9 py-4 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-neutral-900 hover:text-white transition-all duration-300 shadow-xl"
+                className="relative bg-white text-neutral-900 px-9 py-4 text-[10px] uppercase tracking-[0.3em] font-semibold transition-all duration-300 shadow-xl group/btn overflow-hidden"
               >
-                {slide.btnText}
+                <span className="relative z-10 group-hover/btn:text-neutral-900 transition-colors duration-300">
+                  {slide.btnText}
+                </span>
+                <span
+                  className="absolute inset-0 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out"
+                  style={{ backgroundColor: GOLD }}
+                />
               </button>
             </div>
           </div>
         ))}
 
-        {/* Floating Slide Indicators */}
         <div className="absolute right-8 sm:right-12 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
           {heroSlides.map((_, idx) => (
             <React.Fragment key={idx}>
-              <span 
+              <span
                 onClick={() => setCurrentSlide(idx)}
-                className={`text-xs font-serif tracking-widest cursor-pointer transition-all ${
-                  idx === currentSlide ? 'font-bold border-b border-white pb-1 text-white scale-110' : 'font-normal text-white/40 hover:text-white'
-                }`}
+                className="text-xs font-serif tracking-widest cursor-pointer transition-all"
+                style={
+                  idx === currentSlide
+                    ? { fontWeight: 700, color: GOLD, borderBottom: `1px solid ${GOLD}`, paddingBottom: '4px', transform: 'scale(1.1)' }
+                    : { fontWeight: 400, color: 'rgba(255,255,255,0.4)' }
+                }
               >
                 0{idx + 1}
               </span>
@@ -822,94 +1258,115 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SIGNATURE ELEMENT: Scrolling Atelier Assurance Marquee */}
+      <div className="w-full bg-neutral-900 overflow-hidden py-3 relative z-30">
+        <div className="flex whitespace-nowrap animate-[marquee_28s_linear_infinite]">
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, idx) => (
+            <span key={idx} className="flex items-center text-white/90 mx-6">
+              <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{item}</span>
+              <span className="mx-6 text-sm" style={{ color: GOLD }}>✦</span>
+            </span>
+          ))}
+        </div>
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-33.333%); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .animate-\\[marquee_28s_linear_infinite\\] { animation: none; }
+          }
+        `}</style>
+      </div>
+
       {/* 2. EDITORIAL GENDER CARDS */}
-      <section className="w-full px-6 sm:px-10 md:px-16 -mt-14 relative z-20 max-w-[1500px] mx-auto">
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-10 relative z-20 max-w-[1500px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          
-          <div 
+
+          <div
             onClick={() => navigate('/shop?gender=men')}
-            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md hover:shadow-xl rounded-xl overflow-hidden"
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
               <h3 className="font-serif text-xl tracking-tight text-neutral-900">MEN</h3>
               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Tailored Excellence</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+              <span className="text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform" style={{ color: GOLD }}>
                 Discover <ArrowRight size={13} />
               </span>
             </div>
             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
-              <img 
-                src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" 
-                alt="Men" 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
+              <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" alt="Men" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
           </div>
 
-          <div 
+          <div
             onClick={() => navigate('/shop?gender=women')}
-            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md hover:shadow-xl rounded-xl overflow-hidden"
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
               <h3 className="font-serif text-xl tracking-tight text-neutral-900">WOMEN</h3>
               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Haute Couture</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+              <span className="text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform" style={{ color: GOLD }}>
                 Discover <ArrowRight size={13} />
               </span>
             </div>
             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
-              <img 
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" 
-                alt="Women" 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" alt="Women" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
           </div>
 
-          <div 
+          <div
             onClick={() => navigate('/shop?gender=kids')}
-            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md hover:shadow-xl rounded-xl overflow-hidden"
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
               <h3 className="font-serif text-xl tracking-tight text-neutral-900">KIDS</h3>
               <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Little Luxury</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform">
+              <span className="text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform" style={{ color: GOLD }}>
                 Discover <ArrowRight size={13} />
               </span>
             </div>
             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
-              <img 
-                src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=300" 
-                alt="Kids" 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
+              <img src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=300" alt="Kids" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* 3. CURATED CATEGORIES */}
+
+            {/* 3. CURATED CATEGORIES */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
             EXPLORE THE BOUTIQUE
           </span>
           <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
-          <div className="w-10 h-[1px] bg-neutral-400 mx-auto mt-3"></div>
+          <div className="w-10 h-[1px] mx-auto mt-3" style={{ backgroundColor: GOLD }}></div>
         </div>
 
         <div className="flex items-center justify-start sm:justify-center gap-6 sm:gap-12 overflow-x-auto pb-3 scrollbar-none">
           {categoriesList.map((cat, idx) => (
-            <div 
+            <div
               key={idx}
               onClick={() => navigate(`/shop?category=${cat.slug}`)}
               className="flex flex-col items-center gap-2.5 cursor-pointer group shrink-0"
             >
-              <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-200 border border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
+              <div
+                className="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-200 border p-1 transition-all shadow-sm"
+                style={{ borderColor: '#E5DDD0' }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#E5DDD0')}
+              >
                 <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700" />
               </div>
               <span className="text-[11px] font-medium tracking-widest uppercase text-neutral-800 group-hover:text-black">
@@ -929,9 +1386,11 @@ export default function Home() {
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Trending Pieces</h2>
           </div>
-          <button 
+          <button
             onClick={() => navigate('/shop')}
-            className="mt-2 sm:mt-0 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-900 underline underline-offset-8 hover:text-neutral-600 transition"
+            className="mt-2 sm:mt-0 text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-900 underline underline-offset-8 transition"
+            onMouseEnter={(e) => (e.currentTarget.style.color = GOLD)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '')}
           >
             View Entire Collection →
           </button>
@@ -939,32 +1398,34 @@ export default function Home() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
           {products.slice(0, 5).map((product) => (
-            <div 
+            <div
               key={product.id}
               onClick={() => navigate(`/product/${product.id}`)}
-              className="group cursor-pointer flex flex-col bg-white p-3 border border-neutral-200/80 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden"
+              className="group cursor-pointer flex flex-col bg-white p-3 border border-neutral-200/80 shadow-sm hover:shadow-lg transition-all rounded-xl overflow-hidden"
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
             >
               <div className="relative aspect-[3/4] bg-neutral-100 rounded-lg overflow-hidden mb-3">
-                <img 
-                  src={getImageUrl(product)} 
-                  alt={product.name} 
+                <img
+                  src={getImageUrl(product)}
+                  alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800"; }}
+                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800'; }}
                 />
 
                 <button
                   onClick={(e) => handleWishlistToggle(e, product.id)}
                   className="absolute top-2.5 right-2.5 p-2 bg-white/90 backdrop-blur rounded-full text-neutral-700 hover:scale-110 transition-transform shadow-md"
                 >
-                  <Heart 
-                    size={14} 
-                    className={wishlistMap[product.id] ? "fill-red-500 text-red-500" : "text-neutral-600"} 
+                  <Heart
+                    size={14}
+                    className={wishlistMap[product.id] ? 'fill-red-500 text-red-500' : 'text-neutral-600'}
                   />
                 </button>
               </div>
 
               <h4 className="text-xs font-medium text-neutral-800 truncate px-0.5">{product.name}</h4>
-              <p className="text-xs font-serif font-bold text-neutral-900 mt-1 px-0.5">
+              <p className="text-xs font-serif font-bold mt-1 px-0.5" style={{ color: '#8A6D46' }}>
                 ₹{Number(product.price).toLocaleString('en-IN')}
               </p>
             </div>
@@ -976,9 +1437,9 @@ export default function Home() {
       <section className="w-full mt-16 bg-[#EBE5DC] border-y border-neutral-200">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full">
           <div className="h-[320px] sm:h-[420px] w-full overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200" 
-              alt="Wardrobe" 
+            <img
+              src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200"
+              alt="Wardrobe"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
             />
           </div>
@@ -993,11 +1454,16 @@ export default function Home() {
             <p className="text-xs sm:text-sm text-neutral-600 font-light mb-8 max-w-md leading-relaxed">
               Every garment we create is an ode to refined luxury, using sustainably sourced natural fabrics and uncompromising attention to detail.
             </p>
-            <button 
+            <button
               onClick={() => navigate('/about')}
-              className="bg-neutral-900 text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-black transition-all shadow-md"
+              className="relative text-white px-8 py-3.5 text-[10px] uppercase tracking-[0.3em] font-semibold transition-all shadow-md overflow-hidden group/story"
+              style={{ backgroundColor: '#1a1a1a' }}
             >
-              Discover Our Story
+              <span className="relative z-10">Discover Our Story</span>
+              <span
+                className="absolute inset-0 translate-y-full group-hover/story:translate-y-0 transition-transform duration-300 ease-out"
+                style={{ backgroundColor: GOLD }}
+              />
             </button>
           </div>
         </div>
@@ -1006,9 +1472,13 @@ export default function Home() {
       {/* 6. COMPACT LUXURY TRUST BADGES */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6 border-t border-b border-neutral-200">
-          
+
           <div className="flex items-center gap-3.5 p-3 group">
-            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+            <div
+              className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 transition-colors duration-300"
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; e.currentTarget.style.color = ''; }}
+            >
               <Award size={18} strokeWidth={1.5} />
             </div>
             <div>
@@ -1018,7 +1488,11 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3.5 p-3 group">
-            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+            <div
+              className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 transition-colors duration-300"
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; e.currentTarget.style.color = ''; }}
+            >
               <RefreshCw size={18} strokeWidth={1.5} />
             </div>
             <div>
@@ -1028,7 +1502,11 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3.5 p-3 group">
-            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
+            <div
+              className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 transition-colors duration-300"
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; e.currentTarget.style.color = ''; }}
+            >
               <ShieldCheck size={18} strokeWidth={1.5} />
             </div>
             <div>
@@ -1038,8 +1516,12 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-3.5 p-3 group">
-            <div className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
-              <Headphones size= {18} strokeWidth={1.5} />
+            <div
+              className="w-10 h-10 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 transition-colors duration-300"
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.color = '#fff'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ''; e.currentTarget.style.color = ''; }}
+            >
+              <Headphones size={18} strokeWidth={1.5} />
             </div>
             <div>
               <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Support</h4>
