@@ -67,7 +67,6 @@
 
 
 
-
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Category, Product, ProductImage, Order, OrderItem, Wishlist
@@ -88,7 +87,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     category_name = serializers.ReadOnlyField(source='category.name')
-    image = serializers.SerializerMethodField() # ✅ Added Field
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -97,22 +96,27 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         request = self.context.get('request')
         
-        # 1. Pehla check karo ke Product model ni main image chhe ke nahi
-        if obj.image:
-            img_url = obj.image.url
-            return request.build_absolute_uri(img_url) if request else img_url
+        # Safe check for main product image
+        try:
+            if obj.image and hasattr(obj.image, 'url'):
+                img_url = obj.image.url
+                return request.build_absolute_uri(img_url) if request else img_url
+        except Exception:
+            pass
             
-        # 2. Jo main image na hoy, to ProductImage (inline) mathi pehli image lai lo
-        first_image = obj.images.first()
-        if first_image and first_image.image:
-            img_url = first_image.image.url
-            return request.build_absolute_uri(img_url) if request else img_url
+        # Safe check for inline related images
+        try:
+            first_image = obj.images.first()
+            if first_image and first_image.image and hasattr(first_image.image, 'url'):
+                img_url = first_image.image.url
+                return request.build_absolute_uri(img_url) if request else img_url
+        except Exception:
+            pass
             
         return None
 
-# 4. Order Item Serializer (Includes Nested Product Info)
+# 4. Order Item Serializer
 class OrderItemSerializer(serializers.ModelSerializer):
-    # This embeds full product data (name, image, price) inside each ordered item
     product_details = ProductSerializer(source='product', read_only=True)
 
     class Meta:
