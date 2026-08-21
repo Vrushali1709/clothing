@@ -32,7 +32,7 @@ export default function Footer() {
 <div>
   <h4 className="font-semibold mb-4 text-gray-200">Customer Care</h4>
   <ul className="space-y-2.5 text-sm text-gray-400">
-    <li><span className="hover:text-white transition cursor-pointer block py-0.5">Shipping Policy</span></li>
+    {/* <li><span className="hover:text-white transition cursor-pointer block py-0.5">Shipping Policy</span></li> */}
     <li><span className="hover:text-white transition cursor-pointer block py-0.5">Returns & Exchanges</span></li>
     <li><Link to="/faq" className="hover:text-white transition tracking-wide block py-0.5">FAQs & Support</Link></li>
     <li><Link to="/shipping-policy" className="hover:text-white transition tracking-wide block py-0.5">Shipping Policy</Link></li>
