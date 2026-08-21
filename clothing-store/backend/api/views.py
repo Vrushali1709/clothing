@@ -6,12 +6,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
-from .models import Product, Category, Order, OrderItem, Wishlist
+from .models import Product, Category, Order, OrderItem, Wishlist, Review
 from .serializers import (
     ProductSerializer, 
     CategorySerializer, 
     OrderSerializer, 
-    WishlistSerializer
+    WishlistSerializer,
+    ReviewSerializer
 )
 
 # Razorpay Credentials
@@ -128,6 +129,26 @@ class WishlistViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        queryset = Review.objects.all().order_by('-created_at')
+        product_id = self.request.query_params.get('product')
+        if product_id:
+            queryset = queryset.filter(product_id=product_id)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

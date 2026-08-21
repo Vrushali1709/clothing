@@ -57,7 +57,7 @@
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Product, ProductImage, Order, OrderItem, Wishlist
+from .models import Category, Product, ProductImage, Order, OrderItem, Wishlist, Review
 
 # 1. Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
@@ -117,6 +117,18 @@ class WishlistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wishlist
         fields = ['id', 'user', 'product', 'product_detail', 'created_at']
+        extra_kwargs = {
+            'user': {'read_only': True}
+        }
+
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user_name = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Review
+        fields = ['id', 'product', 'user_name', 'rating', 'comment', 'created_at']
         extra_kwargs = {
             'user': {'read_only': True}
         }
