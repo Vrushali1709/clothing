@@ -766,406 +766,6 @@
 
 
 
-// import React, { useEffect, useState } from 'react';
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { 
-//   ShoppingBag, 
-//   ShieldCheck, 
-//   Truck, 
-//   RefreshCw, 
-//   Heart, 
-//   Share2, 
-//   Sparkles,
-//   Check
-// } from 'lucide-react';
-// import { useCart } from '../context/CartContext';
-// import API, { getWishlist, addToWishlist, removeFromWishlist } from '../services/api';
-
-// export default function ProductDetail() {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-//   const { addToCart } = useCart();
-
-//   const [product, setProduct] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [selectedSize, setSelectedSize] = useState('');
-//   const [selectedColor, setSelectedColor] = useState('');
-//   const [selectedImage, setSelectedImage] = useState('');
-//   const [addedNotice, setAddedNotice] = useState(false);
-//   const [wishlistId, setWishlistId] = useState(null);
-//   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false); // 👈 Size Guide Modal State
-
-//   // Helper function to dynamically construct absolute Image URLs
-//   const getImageUrl = (imagePath) => {
-//     if (!imagePath) return "https://placehold.co/800x1000?text=Luxury+Collection";
-//     if (typeof imagePath === 'string' && (imagePath.startsWith("http://") || imagePath.startsWith("https://"))) {
-//       return imagePath;
-//     }
-//     return `https://clothing-backend-gynt.onrender.com${imagePath}`;
-//   };
-
-//   useEffect(() => {
-//     setLoading(true);
-
-//     // Fetch Product Data
-//     API.get(`products/${id}/`)
-//       .then((res) => {
-//         setProduct(res.data);
-
-//         // Initial Main Image Setup
-//         if (res.data.image) {
-//           setSelectedImage(getImageUrl(res.data.image));
-//         } else if (res.data.images && res.data.images.length > 0) {
-//           setSelectedImage(getImageUrl(res.data.images[0].image));
-//         }
-
-//         // Set default size & color options
-//         const sizesArr = res.data.sizes ? res.data.sizes.split(',').map(s => s.trim()) : [];
-//         const colorsArr = res.data.colors ? res.data.colors.split(',').map(c => c.trim()) : [];
-//         if (sizesArr.length > 0) setSelectedSize(sizesArr[0]);
-//         if (colorsArr.length > 0) setSelectedColor(colorsArr[0]);
-
-//         setLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error("Error fetching product:", err);
-//         setLoading(false);
-//       });
-
-//     // Check if item exists in user's Wishlist
-//     const token = localStorage.getItem('access_token');
-//     if (token) {
-//       getWishlist()
-//         .then((res) => {
-//           const list = Array.isArray(res.data) ? res.data : res.data.results || [];
-//           const found = list.find((item) => {
-//             const pId = typeof item.product === 'object' ? item.product.id : item.product;
-//             return String(pId) === String(id);
-//           });
-//           if (found) {
-//             setWishlistId(found.id);
-//           }
-//         })
-//         .catch((err) => console.error("Wishlist fetch error:", err));
-//     }
-//   }, [id]);
-
-//   // Wishlist Handler
-//   const handleWishlistToggle = async () => {
-//     const token = localStorage.getItem('access_token');
-//     if (!token) {
-//       navigate('/login');
-//       return;
-//     }
-
-//     try {
-//       if (wishlistId) {
-//         await removeFromWishlist(wishlistId);
-//         setWishlistId(null);
-//       } else {
-//         const res = await addToWishlist(id);
-//         setWishlistId(res.data.id);
-//       }
-//     } catch (err) {
-//       console.error("Wishlist operation failed:", err);
-//     }
-//   };
-
-//   const handleAddToCart = () => {
-//     addToCart(product, selectedSize, selectedColor);
-//     setAddedNotice(true);
-//     setTimeout(() => setAddedNotice(false), 3500);
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
-//         <div className="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-//         <p className="font-serif uppercase tracking-[0.3em] text-xs text-neutral-600">Curating Luxury Piece...</p>
-//       </div>
-//     );
-//   }
-
-//   if (!product) {
-//     return (
-//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
-//         <p className="font-serif text-xl text-neutral-800 mb-4">Masterpiece Not Found.</p>
-//         <button 
-//           onClick={() => navigate('/shop')}
-//           className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition"
-//         >
-//           Return to Atelier
-//         </button>
-//       </div>
-//     );
-//   }
-
-//   const sizes = product.sizes ? product.sizes.split(',').map((s) => s.trim()) : [];
-//   const colors = product.colors ? product.colors.split(',').map((c) => c.trim()) : [];
-
-//   // Helper for color circles styling
-//   const getColorHex = (colorName) => {
-//     const name = colorName.toLowerCase();
-//     if (name.includes('black')) return '#1a1a1a';
-//     if (name.includes('white')) return '#f4f4f4';
-//     if (name.includes('beige') || name.includes('cream') || name.includes('nude')) return '#d8c2a3';
-//     if (name.includes('green')) return '#7a8b79';
-//     if (name.includes('blue')) return '#6b829c';
-//     if (name.includes('red')) return '#a84c4c';
-//     if (name.includes('brown')) return '#8c6752';
-//     return '#c5b5a4';
-//   };
-
-//   return (
-//     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
-//       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
-        
-//         {/* Breadcrumb */}
-//         <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
-//           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
-//           <span>/</span>
-//           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/shop')}>Dresses</span>
-//           <span>/</span>
-//           <span className="text-neutral-800 font-medium">{product.category_name || 'Daily Wear'}</span>
-//         </nav>
-
-//         {/* 3-Column Layout: Left Gallery | Center Info | Right Image Showcase */}
-//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
-//           {/* 1. LEFT COLUMN: Gallery Cards Stack */}
-//           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
-//             {product.image && (
-//               <div 
-//                 onClick={() => setSelectedImage(getImageUrl(product.image))}
-//                 className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
-//                   selectedImage === getImageUrl(product.image) ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
-//                 }`}
-//               >
-//                 <img src={getImageUrl(product.image)} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
-//                 <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
-//               </div>
-//             )}
-
-//             {product.images && product.images.map((imgObj) => {
-//               const galleryUrl = getImageUrl(imgObj.image);
-//               return (
-//                 <div
-//                   key={imgObj.id}
-//                   onClick={() => setSelectedImage(galleryUrl)}
-//                   className={`bg-white p-3 rounded-2xl cursor-pointer border transition-all shadow-sm ${
-//                     selectedImage === galleryUrl ? 'border-neutral-900 ring-2 ring-neutral-900/10 shadow-md' : 'border-[#E8DFD1] opacity-75 hover:opacity-100'
-//                   }`}
-//                 >
-//                   <img src={galleryUrl} alt="Thumb" className="w-20 h-24 sm:w-24 sm:h-28 object-cover rounded-xl mx-auto mb-2" />
-//                   <span className="text-[11px] font-serif font-semibold block text-center text-neutral-800">₹{Number(product.price).toLocaleString('en-IN')}</span>
-//                 </div>
-//               );
-//             })}
-//           </div>
-
-//           {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
-//           <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
-            
-//             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
-//               {product.name}
-//             </h1>
-
-//             <div className="text-2xl sm:text-3xl font-serif text-[#2C241D] mb-4">
-//               ₹{Number(product.price).toLocaleString('en-IN')}
-//             </div>
-
-//             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8 max-w-md">
-//               {product.description || "Lightweight and elegant piece crafted with precision, perfect for sunny days and graceful occasions."}
-//             </p>
-
-//             {/* Color Selector */}
-//             {colors.length > 0 && (
-//               <div className="mb-6">
-//                 <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Color</label>
-//                 <div className="flex items-center gap-3">
-//                   {colors.map((c) => (
-//                     <button
-//                       key={c}
-//                       onClick={() => setSelectedColor(c)}
-//                       style={{ backgroundColor: getColorHex(c) }}
-//                       className={`w-8 h-8 rounded-full border-2 transition-all shadow-sm ${
-//                         selectedColor === c ? 'border-neutral-900 scale-110 ring-2 ring-neutral-900/20' : 'border-white hover:scale-105'
-//                       }`}
-//                       title={c}
-//                     />
-//                   ))}
-//                 </div>
-//               </div>
-//             )}
-
-//             {/* Size Selector with Size Guide Trigger */}
-//             {sizes.length > 0 && (
-//               <div className="mb-8">
-//                 <div className="flex justify-between items-center mb-2.5">
-//                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">Size</label>
-//                   <button 
-//                     onClick={() => setIsSizeGuideOpen(true)}
-//                     className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition"
-//                   >
-//                     Size Guide
-//                   </button>
-//                 </div>
-//                 <div className="flex items-center gap-3">
-//                   {sizes.map((s) => (
-//                     <button
-//                       key={s}
-//                       onClick={() => setSelectedSize(s)}
-//                       className={`w-11 h-11 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
-//                         selectedSize === s 
-//                           ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' 
-//                           : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
-//                       }`}
-//                     >
-//                       {s}
-//                     </button>
-//                   ))}
-//                 </div>
-//               </div>
-//             )}
-
-//             {/* Notification alert */}
-//             {addedNotice && (
-//               <div className="mb-4 p-3 bg-neutral-900 text-white text-xs tracking-widest uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
-//                 <Check size={14} className="text-emerald-400" /> Added to your Bag
-//               </div>
-//             )}
-
-//             {/* Action Buttons */}
-//             <div className="flex items-center gap-4">
-//               <button
-//                 onClick={handleAddToCart}
-//                 className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
-//               >
-//                 <ShoppingBag size={16} /> Add to Cart
-//               </button>
-
-//               <button
-//                 onClick={handleWishlistToggle}
-//                 className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all"
-//                 title="Wishlist"
-//               >
-//                 <Heart size={20} className={wishlistId ? "fill-red-600 text-red-600" : "text-neutral-700"} />
-//               </button>
-//             </div>
-
-//           </div>
-
-//           {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
-//           <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
-//             <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
-            
-//             <img
-//               src={selectedImage || getImageUrl(product.image)}
-//               alt={product.name}
-//               className="relative z-10 w-full max-h-[500px] object-cover object-top rounded-[2rem] shadow-2xl hover:scale-105 transition-transform duration-700"
-//               onError={(e) => { e.target.src = "https://placehold.co/800x1000?text=Haute+Couture"; }}
-//             />
-//           </div>
-
-//         </div>
-
-//         {/* Bottom Trust Badges */}
-//         <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
-//             <Sparkles size={18} className="text-[#C8A882] shrink-0" />
-//             <div className="text-left">
-//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Light & Breathable</h4>
-//               <p className="text-[10px] text-neutral-500">Comfort all day</p>
-//             </div>
-//           </div>
-//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
-//             <ShieldCheck size={18} className="text-[#C8A882] shrink-0" />
-//             <div className="text-left">
-//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Quality You Trust</h4>
-//               <p className="text-[10px] text-neutral-500">Premium materials</p>
-//             </div>
-//           </div>
-//           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
-//             <Truck size={18} className="text-[#C8A882] shrink-0" />
-//             <div className="text-left">
-//               <h4 className="text-[11px] font-bold uppercase tracking-wider text-neutral-900">Free Shipping</h4>
-//               <p className="text-[10px] text-neutral-500">On orders over ₹999</p>
-//             </div>
-//           </div>
-//         </div>
-
-//       </div>
-
-//       {/* Size Guide Modal Popup */}
-//       {isSizeGuideOpen && (
-//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-//           <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-md w-full p-6 sm:p-8 relative shadow-2xl rounded-3xl">
-//             <button 
-//               onClick={() => setIsSizeGuideOpen(false)}
-//               className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold"
-//             >
-//               ✕ Close
-//             </button>
-            
-//             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Atelier Measurements</span>
-//             <h3 className="font-serif text-2xl text-neutral-900 mb-6">Size Guide (Inches)</h3>
-
-//             <div className="overflow-x-auto">
-//               <table className="w-full text-left text-xs mb-6 border-collapse">
-//                 <thead>
-//                   <tr className="border-b border-neutral-300 text-neutral-500 uppercase tracking-widest text-[9px]">
-//                     <th className="py-2.5">Size</th>
-//                     <th className="py-2.5">Chest</th>
-//                     <th className="py-2.5">Waist</th>
-//                     <th className="py-2.5">Length</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody className="divide-y divide-neutral-200 text-neutral-800">
-//                   <tr>
-//                     <td className="py-2.5 font-bold">S</td>
-//                     <td className="py-2.5">36-38"</td>
-//                     <td className="py-2.5">30-32"</td>
-//                     <td className="py-2.5">40"</td>
-//                   </tr>
-//                   <tr>
-//                     <td className="py-2.5 font-bold">M</td>
-//                     <td className="py-2.5">38-40"</td>
-//                     <td className="py-2.5">32-34"</td>
-//                     <td className="py-2.5">41"</td>
-//                   </tr>
-//                   <tr>
-//                     <td className="py-2.5 font-bold">L</td>
-//                     <td className="py-2.5">40-42"</td>
-//                     <td className="py-2.5">34-36"</td>
-//                     <td className="py-2.5">42"</td>
-//                   </tr>
-//                   <tr>
-//                     <td className="py-2.5 font-bold">XL</td>
-//                     <td className="py-2.5">42-44"</td>
-//                     <td className="py-2.5">36-38"</td>
-//                     <td className="py-2.5">43"</td>
-//                   </tr>
-//                 </tbody>
-//               </table>
-//             </div>
-
-//             <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
-//               * Measurements are given in inches. For custom tailoring inquiries, please contact our concierge support.
-//             </p>
-//           </div>
-//         </div>
-//       )}
-
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
@@ -1176,15 +776,10 @@ import {
   Heart, 
   Share2, 
   Sparkles,
-  Check,
-  Star,
-  User,
-  MessageSquare
+  Check
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import API, { getWishlist, addToWishlist, removeFromWishlist } from '../services/api';
-
-const GOLD = '#C8A882';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -1198,15 +793,9 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState('');
   const [addedNotice, setAddedNotice] = useState(false);
   const [wishlistId, setWishlistId] = useState(null);
-  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false); // 👈 Size Guide Modal State
 
-  const [reviews, setReviews] = useState([]);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewSubmitting, setReviewSubmitting] = useState(false);
-  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
-  const [hoverRating, setHoverRating] = useState(0);
-
+  // Helper function to dynamically construct absolute Image URLs
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "https://placehold.co/800x1000?text=Luxury+Collection";
     if (typeof imagePath === 'string' && (imagePath.startsWith("http://") || imagePath.startsWith("https://"))) {
@@ -1218,18 +807,24 @@ export default function ProductDetail() {
   useEffect(() => {
     setLoading(true);
 
+    // Fetch Product Data
     API.get(`products/${id}/`)
       .then((res) => {
         setProduct(res.data);
+
+        // Initial Main Image Setup
         if (res.data.image) {
           setSelectedImage(getImageUrl(res.data.image));
         } else if (res.data.images && res.data.images.length > 0) {
           setSelectedImage(getImageUrl(res.data.images[0].image));
         }
+
+        // Set default size & color options
         const sizesArr = res.data.sizes ? res.data.sizes.split(',').map(s => s.trim()) : [];
         const colorsArr = res.data.colors ? res.data.colors.split(',').map(c => c.trim()) : [];
         if (sizesArr.length > 0) setSelectedSize(sizesArr[0]);
         if (colorsArr.length > 0) setSelectedColor(colorsArr[0]);
+
         setLoading(false);
       })
       .catch((err) => {
@@ -1237,6 +832,7 @@ export default function ProductDetail() {
         setLoading(false);
       });
 
+    // Check if item exists in user's Wishlist
     const token = localStorage.getItem('access_token');
     if (token) {
       getWishlist()
@@ -1246,33 +842,22 @@ export default function ProductDetail() {
             const pId = typeof item.product === 'object' ? item.product.id : item.product;
             return String(pId) === String(id);
           });
-          if (found) setWishlistId(found.id);
+          if (found) {
+            setWishlistId(found.id);
+          }
         })
         .catch((err) => console.error("Wishlist fetch error:", err));
     }
   }, [id]);
 
-  useEffect(() => {
-    setReviewsLoading(true);
-    API.get(`products/${id}/reviews/`)
-      .then((res) => {
-        const list = Array.isArray(res.data) ? res.data : res.data.results || [];
-        setReviews(list);
-        setReviewsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Reviews fetch error:", err);
-        setReviews([]);
-        setReviewsLoading(false);
-      });
-  }, [id]);
-
+  // Wishlist Handler
   const handleWishlistToggle = async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
       navigate('/login');
       return;
     }
+
     try {
       if (wishlistId) {
         await removeFromWishlist(wishlistId);
@@ -1292,43 +877,6 @@ export default function ProductDetail() {
     setTimeout(() => setAddedNotice(false), 3500);
   };
 
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      alert('Please login to write a review.');
-      navigate('/login');
-      return;
-    }
-    if (!reviewForm.comment.trim()) {
-      alert('Please write a few words about your experience.');
-      return;
-    }
-    setReviewSubmitting(true);
-    try {
-      const res = await API.post(
-        `products/${id}/reviews/`,
-        { rating: reviewForm.rating, comment: reviewForm.comment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const newReview = {
-        id: res?.data?.id || Date.now(),
-        user_name: res?.data?.user_name || 'You',
-        rating: reviewForm.rating,
-        comment: reviewForm.comment,
-        created_at: res?.data?.created_at || new Date().toISOString(),
-      };
-      setReviews((prev) => [newReview, ...prev]);
-      setReviewForm({ rating: 5, comment: '' });
-      setShowReviewForm(false);
-    } catch (err) {
-      console.error("Review submit error:", err);
-      alert('Could not submit your review right now. Please try again later.');
-    } finally {
-      setReviewSubmitting(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
@@ -1342,7 +890,10 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
         <p className="font-serif text-xl text-neutral-800 mb-4">Masterpiece Not Found.</p>
-        <button onClick={() => navigate('/shop')} className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition">
+        <button 
+          onClick={() => navigate('/shop')}
+          className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition"
+        >
           Return to Atelier
         </button>
       </div>
@@ -1352,6 +903,7 @@ export default function ProductDetail() {
   const sizes = product.sizes ? product.sizes.split(',').map((s) => s.trim()) : [];
   const colors = product.colors ? product.colors.split(',').map((c) => c.trim()) : [];
 
+  // Helper for color circles styling
   const getColorHex = (colorName) => {
     const name = colorName.toLowerCase();
     if (name.includes('black')) return '#1a1a1a';
@@ -1364,35 +916,11 @@ export default function ProductDetail() {
     return '#c5b5a4';
   };
 
-  const totalReviews = reviews.length;
-  const avgRating = totalReviews > 0
-    ? reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / totalReviews
-    : 0;
-  const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
-    star,
-    count: reviews.filter((r) => Math.round(Number(r.rating || 0)) === star).length,
-  }));
-
-  const StarRow = ({ value, size = 14, interactive = false, onSelect, onHover, onLeave }) => (
-    <div className="flex items-center gap-0.5" onMouseLeave={onLeave}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <Star
-          key={n}
-          size={size}
-          className={interactive ? 'cursor-pointer transition-transform hover:scale-110' : ''}
-          style={{ fill: n <= value ? GOLD : 'none', color: n <= value ? GOLD : '#D8CFC0' }}
-          onClick={interactive ? () => onSelect(n) : undefined}
-          onMouseEnter={interactive ? () => onHover(n) : undefined}
-        />
-      ))}
-    </div>
-  );
-
-
-    return (
+  return (
     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
         
+        {/* Breadcrumb */}
         <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
           <span>/</span>
@@ -1401,8 +929,10 @@ export default function ProductDetail() {
           <span className="text-neutral-800 font-medium">{product.category_name || 'Daily Wear'}</span>
         </nav>
 
+        {/* 3-Column Layout: Left Gallery | Center Info | Right Image Showcase */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
+          {/* 1. LEFT COLUMN: Gallery Cards Stack */}
           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
             {product.image && (
               <div 
@@ -1433,24 +963,12 @@ export default function ProductDetail() {
             })}
           </div>
 
+          {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
           <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
               {product.name}
             </h1>
-
-            {totalReviews > 0 && (
-              <button
-                onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="flex items-center gap-2 mb-4 group w-fit"
-              >
-                <StarRow value={Math.round(avgRating)} size={14} />
-                <span className="text-xs font-semibold text-neutral-800">{avgRating.toFixed(1)}</span>
-                <span className="text-[11px] text-neutral-500 underline group-hover:text-neutral-900 transition">
-                  ({totalReviews} {totalReviews === 1 ? 'review' : 'reviews'})
-                </span>
-              </button>
-            )}
 
             <div className="text-2xl sm:text-3xl font-serif text-[#2C241D] mb-4">
               ₹{Number(product.price).toLocaleString('en-IN')}
@@ -1460,6 +978,7 @@ export default function ProductDetail() {
               {product.description || "Lightweight and elegant piece crafted with precision, perfect for sunny days and graceful occasions."}
             </p>
 
+            {/* Color Selector */}
             {colors.length > 0 && (
               <div className="mb-6">
                 <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Color</label>
@@ -1479,11 +998,15 @@ export default function ProductDetail() {
               </div>
             )}
 
+            {/* Size Selector with Size Guide Trigger */}
             {sizes.length > 0 && (
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-2.5">
                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">Size</label>
-                  <button onClick={() => setIsSizeGuideOpen(true)} className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition">
+                  <button 
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition"
+                  >
                     Size Guide
                   </button>
                 </div>
@@ -1493,7 +1016,9 @@ export default function ProductDetail() {
                       key={s}
                       onClick={() => setSelectedSize(s)}
                       className={`w-11 h-11 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
-                        selectedSize === s ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
+                        selectedSize === s 
+                          ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' 
+                          : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
                       }`}
                     >
                       {s}
@@ -1503,25 +1028,37 @@ export default function ProductDetail() {
               </div>
             )}
 
+            {/* Notification alert */}
             {addedNotice && (
               <div className="mb-4 p-3 bg-neutral-900 text-white text-xs tracking-widest uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
                 <Check size={14} className="text-emerald-400" /> Added to your Bag
               </div>
             )}
 
+            {/* Action Buttons */}
             <div className="flex items-center gap-4">
-              <button onClick={handleAddToCart} className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+              >
                 <ShoppingBag size={16} /> Add to Cart
               </button>
-              <button onClick={handleWishlistToggle} className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all" title="Wishlist">
+
+              <button
+                onClick={handleWishlistToggle}
+                className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all"
+                title="Wishlist"
+              >
                 <Heart size={20} className={wishlistId ? "fill-red-600 text-red-600" : "text-neutral-700"} />
               </button>
             </div>
 
           </div>
 
+          {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
           <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
             <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
+            
             <img
               src={selectedImage || getImageUrl(product.image)}
               alt={product.name}
@@ -1532,6 +1069,7 @@ export default function ProductDetail() {
 
         </div>
 
+        {/* Bottom Trust Badges */}
         <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
             <Sparkles size={18} className="text-[#C8A882] shrink-0" />
@@ -1556,110 +1094,22 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <div id="reviews-section" className="mt-16 pt-10 border-t border-[#EBE3D5]">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-10">
-            <div>
-              <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">CLIENT VOICES</span>
-              <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Ratings & Reviews</h2>
-            </div>
-            <button onClick={() => setShowReviewForm((v) => !v)} className="bg-neutral-900 text-white px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-black transition shadow-md flex items-center gap-2 shrink-0">
-              <MessageSquare size={14} /> {showReviewForm ? 'Close Form' : 'Write a Review'}
-            </button>
-          </div>
-
-          {!reviewsLoading && totalReviews > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-8 mb-10 bg-white/60 border border-[#EFE8DC] rounded-2xl p-6 sm:p-8">
-              <div className="sm:col-span-4 flex flex-col items-center justify-center text-center border-b sm:border-b-0 sm:border-r border-[#EBE3D5] pb-6 sm:pb-0">
-                <span className="text-4xl sm:text-5xl font-serif font-bold text-neutral-900">{avgRating.toFixed(1)}</span>
-                <StarRow value={Math.round(avgRating)} size={16} />
-                <span className="text-[10px] uppercase tracking-widest text-neutral-500 mt-2">
-                  Based on {totalReviews} {totalReviews === 1 ? 'Review' : 'Reviews'}
-                </span>
-              </div>
-              <div className="sm:col-span-8 flex flex-col justify-center gap-2">
-                {ratingCounts.map(({ star, count }) => {
-                  const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
-                  return (
-                    <div key={star} className="flex items-center gap-3 text-xs">
-                      <span className="w-10 text-neutral-600 font-medium shrink-0">{star} star</span>
-                      <div className="flex-1 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: GOLD }} />
-                      </div>
-                      <span className="w-8 text-right text-neutral-400 text-[10px] shrink-0">{count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {showReviewForm && (
-            <form onSubmit={handleReviewSubmit} className="bg-white border border-[#EBE3D5] rounded-2xl p-6 sm:p-8 mb-10 shadow-sm">
-              <h3 className="font-serif text-lg text-neutral-900 mb-5">Share Your Experience</h3>
-              <div className="mb-5">
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">Your Rating</label>
-                <StarRow value={hoverRating || reviewForm.rating} size={24} interactive onSelect={(n) => setReviewForm((f) => ({ ...f, rating: n }))} onHover={(n) => setHoverRating(n)} onLeave={() => setHoverRating(0)} />
-              </div>
-              <div className="mb-5">
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">Your Review</label>
-                <textarea
-                  rows="3"
-                  required
-                  value={reviewForm.comment}
-                  onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))}
-                  placeholder="Tell us about the fit, fabric, and finish..."
-                  className="w-full bg-neutral-50 border border-neutral-200 p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition resize-none rounded-xl"
-                />
-              </div>
-              <button type="submit" disabled={reviewSubmitting} className="text-white px-7 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition shadow-md disabled:opacity-50 rounded-xl" style={{ backgroundColor: GOLD }}>
-                {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
-              </button>
-            </form>
-          )}
-
-          {reviewsLoading ? (
-            <div className="text-center py-10 font-serif text-neutral-500 uppercase tracking-widest text-xs">Loading Reviews...</div>
-          ) : totalReviews === 0 ? (
-            <div className="text-center py-14 bg-white/50 border border-dashed border-[#DDD2BE] rounded-2xl">
-              <Star size={26} className="mx-auto mb-3" style={{ color: GOLD }} strokeWidth={1.5} />
-              <p className="font-serif text-lg text-neutral-800 mb-1">No Reviews Yet</p>
-              <p className="text-xs text-neutral-500 font-light">Be the first to share your experience with this piece.</p>
-            </div>
-          ) : (
-            <div className="space-y-5">
-              {reviews.map((review) => (
-                <div key={review.id} className="bg-white/70 border border-[#EFE8DC] rounded-2xl p-5 sm:p-6">
-                  <div className="flex items-start justify-between gap-4 mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0">
-                        <User size={16} />
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-neutral-900">{review.user_name || review.username || 'Verified Client'}</p>
-                        <p className="text-[10px] text-neutral-400">
-                          {review.created_at ? new Date(review.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
-                        </p>
-                      </div>
-                    </div>
-                    <StarRow value={Number(review.rating) || 0} size={13} />
-                  </div>
-                  <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mt-3">{review.comment}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
       </div>
 
+      {/* Size Guide Modal Popup */}
       {isSizeGuideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-md w-full p-6 sm:p-8 relative shadow-2xl rounded-3xl">
-            <button onClick={() => setIsSizeGuideOpen(false)} className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold">
+            <button 
+              onClick={() => setIsSizeGuideOpen(false)}
+              className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold"
+            >
               ✕ Close
             </button>
+            
             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Atelier Measurements</span>
             <h3 className="font-serif text-2xl text-neutral-900 mb-6">Size Guide (Inches)</h3>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs mb-6 border-collapse">
                 <thead>
@@ -1671,13 +1121,34 @@ export default function ProductDetail() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-200 text-neutral-800">
-                  <tr><td className="py-2.5 font-bold">S</td><td className="py-2.5">36-38"</td><td className="py-2.5">30-32"</td><td className="py-2.5">40"</td></tr>
-                  <tr><td className="py-2.5 font-bold">M</td><td className="py-2.5">38-40"</td><td className="py-2.5">32-34"</td><td className="py-2.5">41"</td></tr>
-                  <tr><td className="py-2.5 font-bold">L</td><td className="py-2.5">40-42"</td><td className="py-2.5">34-36"</td><td className="py-2.5">42"</td></tr>
-                  <tr><td className="py-2.5 font-bold">XL</td><td className="py-2.5">42-44"</td><td className="py-2.5">36-38"</td><td className="py-2.5">43"</td></tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">S</td>
+                    <td className="py-2.5">36-38"</td>
+                    <td className="py-2.5">30-32"</td>
+                    <td className="py-2.5">40"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">M</td>
+                    <td className="py-2.5">38-40"</td>
+                    <td className="py-2.5">32-34"</td>
+                    <td className="py-2.5">41"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">L</td>
+                    <td className="py-2.5">40-42"</td>
+                    <td className="py-2.5">34-36"</td>
+                    <td className="py-2.5">42"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">XL</td>
+                    <td className="py-2.5">42-44"</td>
+                    <td className="py-2.5">36-38"</td>
+                    <td className="py-2.5">43"</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
+
             <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
               * Measurements are given in inches. For custom tailoring inquiries, please contact our concierge support.
             </p>
