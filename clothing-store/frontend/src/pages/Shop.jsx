@@ -204,6 +204,9 @@
 
 
 
+
+
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, Search } from 'lucide-react';
@@ -214,7 +217,8 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [wishlistMap, setWishlistMap] = useState({});
   const [searchQuery, setSearchQuery] = useState(''); 
-  const [selectedSize, setSelectedSize] = useState(''); // 👈 Size filter state
+  const [selectedSize, setSelectedSize] = useState('');
+  const [sortBy, setSortBy] = useState('default'); // 👈 Price Sorting State
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -252,7 +256,7 @@ export default function Shop() {
       params.append('search', searchQuery);
     }
     if (selectedSize) {
-      params.append('size', selectedSize); // 👈 Backend size filter query
+      params.append('size', selectedSize);
     }
 
     const queryString = params.toString();
@@ -285,6 +289,14 @@ export default function Shop() {
         .catch(err => console.error(err));
     }
   }, [currentGender, currentCategory, searchQuery, selectedSize]);
+
+  // Sorting Logic Function
+  const sortedProducts = [...products].sort((a, b) => {
+    if (sortBy === 'low-high') return Number(a.price) - Number(b.price);
+    if (sortBy === 'high-low') return Number(b.price) - Number(a.price);
+    if (sortBy === 'newest') return b.id - a.id;
+    return 0; // default
+  });
 
   const handleWishlistToggle = async (e, productId) => {
     e.stopPropagation();
@@ -347,22 +359,40 @@ export default function Shop() {
           />
         </div>
 
-        {/* Size Filter Pills */}
-        <div className="flex justify-center items-center gap-2 mb-8 flex-wrap">
-          <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mr-2">Filter Size:</span>
-          {['', 'S', 'M', 'L', 'XL'].map((sz) => (
-            <button
-              key={sz}
-              onClick={() => setSelectedSize(sz)}
-              className={`px-3.5 py-1.5 text-[10px] uppercase tracking-widest transition-all border ${
-                selectedSize === sz 
-                  ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm' 
-                  : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-900'
-              }`}
+        {/* Size Filter Pills & Sorting Dropdown Row */}
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+          {/* Size Filter Pills */}
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mr-2">Filter Size:</span>
+            {['', 'S', 'M', 'L', 'XL'].map((sz) => (
+              <button
+                key={sz}
+                onClick={() => setSelectedSize(sz)}
+                className={`px-3.5 py-1.5 text-[10px] uppercase tracking-widest transition-all border ${
+                  selectedSize === sz 
+                    ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm' 
+                    : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-900'
+                }`}
+              >
+                {sz === '' ? 'All Sizes' : sz}
+              </button>
+            ))}
+          </div>
+
+          {/* Sorting Dropdown */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">Sort By:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-white border border-neutral-300 px-3 py-1.5 text-[10px] uppercase tracking-widest text-neutral-800 focus:outline-none focus:border-neutral-900 transition shadow-sm cursor-pointer"
             >
-              {sz === '' ? 'All Sizes' : sz}
-            </button>
-          ))}
+              <option value="default">Featured / Default</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
+              <option value="newest">Newest Arrivals</option>
+            </select>
+          </div>
         </div>
 
         {/* Top Gender Filter Tabs */}
@@ -388,13 +418,13 @@ export default function Shop() {
           <div className="text-center py-16 sm:py-20 font-serif text-neutral-500 uppercase tracking-widest text-xs">
             Refining Garments...
           </div>
-        ) : products.length === 0 ? (
+        ) : sortedProducts.length === 0 ? (
           <div className="text-center py-16 sm:py-20 font-serif text-neutral-500 text-sm sm:text-base">
             No clothing pieces found in this section.
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
-            {products.map(product => (
+            {sortedProducts.map(product => (
               <div 
                 key={product.id} 
                 onClick={() => navigate(`/product/${product.id}`)}
