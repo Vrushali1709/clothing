@@ -239,7 +239,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award } from 'lucide-react';
@@ -262,7 +261,7 @@ export default function Home() {
     }
 
     const cleanPath = typeof imagePath === 'string' && imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-    return `http://127.0.0.1:8000${cleanPath}`;
+    return `https://clothing-backend-gynt.onrender.com${cleanPath}`;
   };
 
   useEffect(() => {
@@ -326,23 +325,20 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-[#FAF8F5] text-[#1A1A1A] font-sans antialiased selection:bg-neutral-900 selection:text-white">
+    <div className="bg-[#FAF8F5] text-[#1A1A1A] font-sans antialiased selection:bg-neutral-900 selection:text-white pb-12">
 
-      {/* 1. EXACT MATCH HERO SECTION */}
-      <section className="p-4 sm:p-6 md:p-8 max-w-[1400px] mx-auto">
+      {/* 1. HERO SECTION */}
+      <section className="pt-6 px-4 sm:px-6 md:px-8 max-w-[1400px] mx-auto">
         <div className="relative rounded-[2rem] overflow-hidden min-h-[520px] md:min-h-[600px] bg-[#E8DFD5] flex items-center">
           
-          {/* Background Image with Proper Lighting */}
           <img
-            src="https://plus.unsplash.com/premium_photo-1740354613210-c474b08f022c?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://plus.unsplash.com/premium_photo-1740354613210-c474b08f022c?q=80&w=1170&auto=format&fit=crop"
             alt="Fashion Model"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />
 
-          {/* Left Shadow Overlay for Typography Contrast */}
           <div className="absolute inset-y-0 left-0 w-full md:w-1/2 bg-gradient-to-r from-black/50 via-black/20 to-transparent pointer-events-none" />
 
-          {/* Left Text Content */}
           <div className="relative z-10 pl-8 sm:pl-12 md:pl-16 max-w-lg text-white">
             <span className="text-[11px] uppercase tracking-[0.3em] font-medium opacity-90 block mb-6">
               NEW COLLECTION
@@ -367,7 +363,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Right Floating Indicator Numbers (01 - 02 - 03) */}
           <div className="absolute right-8 sm:right-12 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-6 text-white z-10">
             <span className="text-xs font-serif font-bold tracking-widest text-white border-b border-white/60 pb-1 cursor-pointer">01</span>
             <div className="w-[1px] h-8 bg-white/30" />
@@ -380,7 +375,7 @@ export default function Home() {
       </section>
 
       {/* 2. GENDER CARDS */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-4">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           
           <div 
@@ -441,7 +436,7 @@ export default function Home() {
       </section>
 
       {/* 3. CATEGORIES */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-10">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-12">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-bold block mb-1">
             TOP CATEGORIES
@@ -468,11 +463,12 @@ export default function Home() {
       </section>
 
       {/* 4. BEST SELLERS */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-8">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-12">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-bold block mb-1">
             BEST SELLERS
           </span>
+          <h2 className="text-2xl font-serif text-neutral-900">Trending Now</h2>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
@@ -520,7 +516,7 @@ export default function Home() {
       </section>
 
       {/* 5. PROMOTIONAL BANNER */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-8">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-14">
         <div className="bg-[#EBE5DC] rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 items-center">
           <div className="h-[260px] sm:h-[340px] w-full">
             <img 
@@ -551,7 +547,7 @@ export default function Home() {
       </section>
 
       {/* 6. TRUST BADGES */}
-      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 py-10">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 mt-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center border-t border-b border-neutral-200 py-8">
           <div className="flex flex-col items-center">
             <Award size={22} className="text-neutral-700 mb-2 stroke-1" />
