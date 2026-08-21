@@ -40,7 +40,6 @@
 
 
 
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -54,8 +53,9 @@ import OrderSuccess from './pages/OrderSuccess';
 import MyOrders from './pages/MyOrders';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { CartProvider } from './context/CartContext';
 import Wishlist from './pages/Wishlist';
+import NewArrivals from './pages/NewArrivals'; // 👈 NewArrivals import karyu
+import { CartProvider } from './context/CartContext';
 import ScrollToTop from './ScrollToTop';
 
 export default function App() {
@@ -67,7 +67,6 @@ export default function App() {
           <Navbar />
           <main className="flex-grow">
             <Routes>
-              
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:id" element={<ProductDetail />} />
@@ -78,6 +77,7 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/new-arrivals" element={<NewArrivals />} /> {/* 👈 NewArrivals route set karyo */}
             </Routes>
           </main>
           <Footer />
