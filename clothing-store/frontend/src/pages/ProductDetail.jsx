@@ -1200,7 +1200,6 @@ export default function ProductDetail() {
   const [wishlistId, setWishlistId] = useState(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
-  // ---- Reviews & Ratings State ----
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -1222,18 +1221,15 @@ export default function ProductDetail() {
     API.get(`products/${id}/`)
       .then((res) => {
         setProduct(res.data);
-
         if (res.data.image) {
           setSelectedImage(getImageUrl(res.data.image));
         } else if (res.data.images && res.data.images.length > 0) {
           setSelectedImage(getImageUrl(res.data.images[0].image));
         }
-
         const sizesArr = res.data.sizes ? res.data.sizes.split(',').map(s => s.trim()) : [];
         const colorsArr = res.data.colors ? res.data.colors.split(',').map(c => c.trim()) : [];
         if (sizesArr.length > 0) setSelectedSize(sizesArr[0]);
         if (colorsArr.length > 0) setSelectedColor(colorsArr[0]);
-
         setLoading(false);
       })
       .catch((err) => {
@@ -1250,15 +1246,12 @@ export default function ProductDetail() {
             const pId = typeof item.product === 'object' ? item.product.id : item.product;
             return String(pId) === String(id);
           });
-          if (found) {
-            setWishlistId(found.id);
-          }
+          if (found) setWishlistId(found.id);
         })
         .catch((err) => console.error("Wishlist fetch error:", err));
     }
   }, [id]);
 
-  // ---- Fetch Reviews ----
   useEffect(() => {
     setReviewsLoading(true);
     API.get(`products/${id}/reviews/`)
@@ -1299,7 +1292,6 @@ export default function ProductDetail() {
     setTimeout(() => setAddedNotice(false), 3500);
   };
 
-  // ---- Review Submit Handler ----
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('access_token');
@@ -1312,7 +1304,6 @@ export default function ProductDetail() {
       alert('Please write a few words about your experience.');
       return;
     }
-
     setReviewSubmitting(true);
     try {
       const res = await API.post(
@@ -1351,10 +1342,7 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
         <p className="font-serif text-xl text-neutral-800 mb-4">Masterpiece Not Found.</p>
-        <button 
-          onClick={() => navigate('/shop')}
-          className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition"
-        >
+        <button onClick={() => navigate('/shop')} className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition">
           Return to Atelier
         </button>
       </div>
@@ -1392,10 +1380,7 @@ export default function ProductDetail() {
           key={n}
           size={size}
           className={interactive ? 'cursor-pointer transition-transform hover:scale-110' : ''}
-          style={{
-            fill: n <= value ? GOLD : 'none',
-            color: n <= value ? GOLD : '#D8CFC0',
-          }}
+          style={{ fill: n <= value ? GOLD : 'none', color: n <= value ? GOLD : '#D8CFC0' }}
           onClick={interactive ? () => onSelect(n) : undefined}
           onMouseEnter={interactive ? () => onHover(n) : undefined}
         />
@@ -1404,76 +1389,10 @@ export default function ProductDetail() {
   );
 
 
-    if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
-        <div className="w-8 h-8 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="font-serif uppercase tracking-[0.3em] text-xs text-neutral-600">Curating Luxury Piece...</p>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
-        <p className="font-serif text-xl text-neutral-800 mb-4">Masterpiece Not Found.</p>
-        <button 
-          onClick={() => navigate('/shop')}
-          className="text-xs uppercase tracking-[0.2em] border-b border-black pb-1 hover:text-neutral-600 transition"
-        >
-          Return to Atelier
-        </button>
-      </div>
-    );
-  }
-
-  const sizes = product.sizes ? product.sizes.split(',').map((s) => s.trim()) : [];
-  const colors = product.colors ? product.colors.split(',').map((c) => c.trim()) : [];
-
-  const getColorHex = (colorName) => {
-    const name = colorName.toLowerCase();
-    if (name.includes('black')) return '#1a1a1a';
-    if (name.includes('white')) return '#f4f4f4';
-    if (name.includes('beige') || name.includes('cream') || name.includes('nude')) return '#d8c2a3';
-    if (name.includes('green')) return '#7a8b79';
-    if (name.includes('blue')) return '#6b829c';
-    if (name.includes('red')) return '#a84c4c';
-    if (name.includes('brown')) return '#8c6752';
-    return '#c5b5a4';
-  };
-
-  const totalReviews = reviews.length;
-  const avgRating = totalReviews > 0
-    ? reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / totalReviews
-    : 0;
-  const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
-    star,
-    count: reviews.filter((r) => Math.round(Number(r.rating || 0)) === star).length,
-  }));
-
-  const StarRow = ({ value, size = 14, interactive = false, onSelect, onHover, onLeave }) => (
-    <div className="flex items-center gap-0.5" onMouseLeave={onLeave}>
-      {[1, 2, 3, 4, 5].map((n) => (
-        <Star
-          key={n}
-          size={size}
-          className={interactive ? 'cursor-pointer transition-transform hover:scale-110' : ''}
-          style={{
-            fill: n <= value ? GOLD : 'none',
-            color: n <= value ? GOLD : '#D8CFC0',
-          }}
-          onClick={interactive ? () => onSelect(n) : undefined}
-          onMouseEnter={interactive ? () => onHover(n) : undefined}
-        />
-      ))}
-    </div>
-  );
-
-  return (
     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
         
-        {/* Breadcrumb */}
         <nav className="text-[11px] uppercase tracking-[0.25em] text-neutral-400 mb-10 flex items-center gap-2">
           <span className="cursor-pointer hover:text-neutral-900" onClick={() => navigate('/')}>Home</span>
           <span>/</span>
@@ -1484,7 +1403,6 @@ export default function ProductDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* 1. LEFT COLUMN: Gallery Cards Stack */}
           <div className="lg:col-span-3 flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
             {product.image && (
               <div 
@@ -1515,14 +1433,12 @@ export default function ProductDetail() {
             })}
           </div>
 
-          {/* 2. CENTER COLUMN: Details, Color, Size, and CTA */}
           <div className="lg:col-span-5 flex flex-col justify-center lg:px-4">
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-[#2C241D] leading-[1.15] mb-3">
               {product.name}
             </h1>
 
-            {/* Rating summary under title */}
             {totalReviews > 0 && (
               <button
                 onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}
@@ -1567,10 +1483,7 @@ export default function ProductDetail() {
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-2.5">
                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">Size</label>
-                  <button 
-                    onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition"
-                  >
+                  <button onClick={() => setIsSizeGuideOpen(true)} className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition">
                     Size Guide
                   </button>
                 </div>
@@ -1580,9 +1493,7 @@ export default function ProductDetail() {
                       key={s}
                       onClick={() => setSelectedSize(s)}
                       className={`w-11 h-11 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
-                        selectedSize === s 
-                          ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' 
-                          : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
+                        selectedSize === s ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md' : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
                       }`}
                     >
                       {s}
@@ -1599,29 +1510,18 @@ export default function ProductDetail() {
             )}
 
             <div className="flex items-center gap-4">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
-              >
+              <button onClick={handleAddToCart} className="flex-1 bg-[#C8A882] hover:bg-[#B89872] text-white py-4 px-8 text-xs font-semibold uppercase tracking-[0.25em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
                 <ShoppingBag size={16} /> Add to Cart
               </button>
-
-              <button
-                onClick={handleWishlistToggle}
-                className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all"
-                title="Wishlist"
-              >
+              <button onClick={handleWishlistToggle} className="w-14 h-14 bg-white border border-[#E5DDD0] hover:border-neutral-900 rounded-2xl flex items-center justify-center text-neutral-800 shadow-sm transition-all" title="Wishlist">
                 <Heart size={20} className={wishlistId ? "fill-red-600 text-red-600" : "text-neutral-700"} />
               </button>
             </div>
 
           </div>
 
-
-                    {/* 3. RIGHT COLUMN: Main Product Showcase with Soft Backdrop */}
           <div className="lg:col-span-4 relative flex items-center justify-center min-h-[450px]">
             <div className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70 z-0" />
-            
             <img
               src={selectedImage || getImageUrl(product.image)}
               alt={product.name}
@@ -1632,7 +1532,6 @@ export default function ProductDetail() {
 
         </div>
 
-        {/* Bottom Trust Badges */}
         <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex items-center justify-center gap-3 bg-white/60 p-4 rounded-2xl border border-[#EFE8DC]">
             <Sparkles size={18} className="text-[#C8A882] shrink-0" />
@@ -1657,21 +1556,13 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* ============================= */}
-        {/* RATINGS & REVIEWS SECTION     */}
-        {/* ============================= */}
         <div id="reviews-section" className="mt-16 pt-10 border-t border-[#EBE3D5]">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-10">
             <div>
-              <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
-                CLIENT VOICES
-              </span>
+              <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">CLIENT VOICES</span>
               <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900 tracking-tight">Ratings & Reviews</h2>
             </div>
-            <button
-              onClick={() => setShowReviewForm((v) => !v)}
-              className="bg-neutral-900 text-white px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-black transition shadow-md flex items-center gap-2 shrink-0"
-            >
+            <button onClick={() => setShowReviewForm((v) => !v)} className="bg-neutral-900 text-white px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-black transition shadow-md flex items-center gap-2 shrink-0">
               <MessageSquare size={14} /> {showReviewForm ? 'Close Form' : 'Write a Review'}
             </button>
           </div>
@@ -1685,7 +1576,6 @@ export default function ProductDetail() {
                   Based on {totalReviews} {totalReviews === 1 ? 'Review' : 'Reviews'}
                 </span>
               </div>
-
               <div className="sm:col-span-8 flex flex-col justify-center gap-2">
                 {ratingCounts.map(({ star, count }) => {
                   const pct = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
@@ -1693,10 +1583,7 @@ export default function ProductDetail() {
                     <div key={star} className="flex items-center gap-3 text-xs">
                       <span className="w-10 text-neutral-600 font-medium shrink-0">{star} star</span>
                       <div className="flex-1 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{ width: `${pct}%`, backgroundColor: GOLD }}
-                        />
+                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: GOLD }} />
                       </div>
                       <span className="w-8 text-right text-neutral-400 text-[10px] shrink-0">{count}</span>
                     </div>
@@ -1707,30 +1594,14 @@ export default function ProductDetail() {
           )}
 
           {showReviewForm && (
-            <form
-              onSubmit={handleReviewSubmit}
-              className="bg-white border border-[#EBE3D5] rounded-2xl p-6 sm:p-8 mb-10 shadow-sm"
-            >
+            <form onSubmit={handleReviewSubmit} className="bg-white border border-[#EBE3D5] rounded-2xl p-6 sm:p-8 mb-10 shadow-sm">
               <h3 className="font-serif text-lg text-neutral-900 mb-5">Share Your Experience</h3>
-
               <div className="mb-5">
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">
-                  Your Rating
-                </label>
-                <StarRow
-                  value={hoverRating || reviewForm.rating}
-                  size={24}
-                  interactive
-                  onSelect={(n) => setReviewForm((f) => ({ ...f, rating: n }))}
-                  onHover={(n) => setHoverRating(n)}
-                  onLeave={() => setHoverRating(0)}
-                />
+                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">Your Rating</label>
+                <StarRow value={hoverRating || reviewForm.rating} size={24} interactive onSelect={(n) => setReviewForm((f) => ({ ...f, rating: n }))} onHover={(n) => setHoverRating(n)} onLeave={() => setHoverRating(0)} />
               </div>
-
               <div className="mb-5">
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">
-                  Your Review
-                </label>
+                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2 font-semibold">Your Review</label>
                 <textarea
                   rows="3"
                   required
@@ -1740,22 +1611,14 @@ export default function ProductDetail() {
                   className="w-full bg-neutral-50 border border-neutral-200 p-3.5 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 transition resize-none rounded-xl"
                 />
               </div>
-
-              <button
-                type="submit"
-                disabled={reviewSubmitting}
-                className="text-white px-7 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition shadow-md disabled:opacity-50 rounded-xl"
-                style={{ backgroundColor: GOLD }}
-              >
+              <button type="submit" disabled={reviewSubmitting} className="text-white px-7 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] transition shadow-md disabled:opacity-50 rounded-xl" style={{ backgroundColor: GOLD }}>
                 {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
               </button>
             </form>
           )}
 
           {reviewsLoading ? (
-            <div className="text-center py-10 font-serif text-neutral-500 uppercase tracking-widest text-xs">
-              Loading Reviews...
-            </div>
+            <div className="text-center py-10 font-serif text-neutral-500 uppercase tracking-widest text-xs">Loading Reviews...</div>
           ) : totalReviews === 0 ? (
             <div className="text-center py-14 bg-white/50 border border-dashed border-[#DDD2BE] rounded-2xl">
               <Star size={26} className="mx-auto mb-3" style={{ color: GOLD }} strokeWidth={1.5} />
@@ -1780,9 +1643,7 @@ export default function ProductDetail() {
                     </div>
                     <StarRow value={Number(review.rating) || 0} size={13} />
                   </div>
-                  <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mt-3">
-                    {review.comment}
-                  </p>
+                  <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mt-3">{review.comment}</p>
                 </div>
               ))}
             </div>
@@ -1791,20 +1652,14 @@ export default function ProductDetail() {
 
       </div>
 
-      {/* Size Guide Modal Popup */}
       {isSizeGuideOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-md w-full p-6 sm:p-8 relative shadow-2xl rounded-3xl">
-            <button 
-              onClick={() => setIsSizeGuideOpen(false)}
-              className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold"
-            >
+            <button onClick={() => setIsSizeGuideOpen(false)} className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold">
               ✕ Close
             </button>
-            
             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Atelier Measurements</span>
             <h3 className="font-serif text-2xl text-neutral-900 mb-6">Size Guide (Inches)</h3>
-
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs mb-6 border-collapse">
                 <thead>
@@ -1816,34 +1671,13 @@ export default function ProductDetail() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-neutral-200 text-neutral-800">
-                  <tr>
-                    <td className="py-2.5 font-bold">S</td>
-                    <td className="py-2.5">36-38"</td>
-                    <td className="py-2.5">30-32"</td>
-                    <td className="py-2.5">40"</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 font-bold">M</td>
-                    <td className="py-2.5">38-40"</td>
-                    <td className="py-2.5">32-34"</td>
-                    <td className="py-2.5">41"</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 font-bold">L</td>
-                    <td className="py-2.5">40-42"</td>
-                    <td className="py-2.5">34-36"</td>
-                    <td className="py-2.5">42"</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 font-bold">XL</td>
-                    <td className="py-2.5">42-44"</td>
-                    <td className="py-2.5">36-38"</td>
-                    <td className="py-2.5">43"</td>
-                  </tr>
+                  <tr><td className="py-2.5 font-bold">S</td><td className="py-2.5">36-38"</td><td className="py-2.5">30-32"</td><td className="py-2.5">40"</td></tr>
+                  <tr><td className="py-2.5 font-bold">M</td><td className="py-2.5">38-40"</td><td className="py-2.5">32-34"</td><td className="py-2.5">41"</td></tr>
+                  <tr><td className="py-2.5 font-bold">L</td><td className="py-2.5">40-42"</td><td className="py-2.5">34-36"</td><td className="py-2.5">42"</td></tr>
+                  <tr><td className="py-2.5 font-bold">XL</td><td className="py-2.5">42-44"</td><td className="py-2.5">36-38"</td><td className="py-2.5">43"</td></tr>
                 </tbody>
               </table>
             </div>
-
             <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
               * Measurements are given in inches. For custom tailoring inquiries, please contact our concierge support.
             </p>
