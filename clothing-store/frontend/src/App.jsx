@@ -56,15 +56,18 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { CartProvider } from './context/CartContext';
 import Wishlist from './pages/Wishlist';
+import ScrollToTop from './ScrollToTop';
 
 export default function App() {
   return (
     <CartProvider>
       <Router>
+        <ScrollToTop />
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">
             <Routes>
+              
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:id" element={<ProductDetail />} />
