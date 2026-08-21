@@ -204,7 +204,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, Search } from 'lucide-react';
@@ -214,7 +213,8 @@ export default function Shop() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlistMap, setWishlistMap] = useState({});
-  const [searchQuery, setSearchQuery] = useState(''); // 👈 Search query state
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [selectedSize, setSelectedSize] = useState(''); // 👈 Size filter state
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -249,13 +249,16 @@ export default function Shop() {
       params.append('category', currentCategory);
     }
     if (searchQuery) {
-      params.append('search', searchQuery); // 👈 Backend search param
+      params.append('search', searchQuery);
+    }
+    if (selectedSize) {
+      params.append('size', selectedSize); // 👈 Backend size filter query
     }
 
     const queryString = params.toString();
     const url = queryString ? `products/?${queryString}` : 'products/';
 
-    // 1. Fetch Products based on Gender, Subcategory & Search
+    // 1. Fetch Products based on Gender, Subcategory, Search & Size
     API.get(url)
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.results || [];
@@ -281,7 +284,7 @@ export default function Shop() {
         })
         .catch(err => console.error(err));
     }
-  }, [currentGender, currentCategory, searchQuery]);
+  }, [currentGender, currentCategory, searchQuery, selectedSize]);
 
   const handleWishlistToggle = async (e, productId) => {
     e.stopPropagation();
@@ -331,7 +334,7 @@ export default function Shop() {
         </div>
 
         {/* Search Bar Input */}
-        <div className="max-w-md mx-auto mb-8 relative">
+        <div className="max-w-md mx-auto mb-6 relative">
           <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
             <Search size={16} />
           </span>
@@ -344,6 +347,24 @@ export default function Shop() {
           />
         </div>
 
+        {/* Size Filter Pills */}
+        <div className="flex justify-center items-center gap-2 mb-8 flex-wrap">
+          <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mr-2">Filter Size:</span>
+          {['', 'S', 'M', 'L', 'XL'].map((sz) => (
+            <button
+              key={sz}
+              onClick={() => setSelectedSize(sz)}
+              className={`px-3.5 py-1.5 text-[10px] uppercase tracking-widest transition-all border ${
+                selectedSize === sz 
+                  ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm' 
+                  : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-900'
+              }`}
+            >
+              {sz === '' ? 'All Sizes' : sz}
+            </button>
+          ))}
+        </div>
+
         {/* Top Gender Filter Tabs */}
         <div className="flex justify-start sm:justify-center items-center gap-4 sm:gap-8 mb-8 sm:mb-12 border-b border-neutral-200 pb-3 sm:pb-4 overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
           {['all', 'women', 'men', 'kids', 'ethnic'].map((g) => (
@@ -351,7 +372,7 @@ export default function Shop() {
               key={g}
               onClick={() => {
                 setSearchParams(g === 'all' ? {} : { gender: g });
-                setSearchQuery(''); // Clear search on tab switch if needed
+                setSearchQuery(''); 
               }}
               className={`text-[11px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.2em] font-semibold transition-all pb-1 whitespace-nowrap shrink-0 ${
                 currentGender === g && !currentCategory ? 'text-black border-b-2 border-black' : 'text-neutral-400 hover:text-black'
