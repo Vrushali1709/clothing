@@ -62,6 +62,7 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 import ShippingPolicy from './pages/ShippingPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 export default function App() {
   return (
@@ -88,6 +89,7 @@ export default function App() {
               <Route path="/about" element={<About />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
             </Routes>
           </main>
           <Footer />

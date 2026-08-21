@@ -61,8 +61,13 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright */}
-      <div className="container mx-auto px-4 mt-12 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
-        &copy; 2026 CLOTHING STORE. All rights reserved.
+     {/* Bottom Copyright & Legal Links */}
+      <div className="container mx-auto px-4 mt-12 pt-6 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+        <p>&copy; 2026 CLOTHING STORE. All rights reserved.</p>
+        <div className="flex space-x-6 text-[10px] uppercase tracking-widest">
+          <Link to="/terms" className="hover:text-white transition">Terms of Service</Link>
+          <span className="hover:text-white transition cursor-pointer">Privacy Policy</span>
+        </div>
       </div>
     </footer>
   );
