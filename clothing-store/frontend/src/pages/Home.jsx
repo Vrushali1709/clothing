@@ -236,7 +236,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award } from 'lucide-react';
@@ -360,10 +359,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-[#FAF8F5] text-[#1A1A1A] font-sans antialiased selection:bg-neutral-900 selection:text-white pb-16">
+    <div className="bg-[#FAF8F5] text-[#1A1A1A] font-sans antialiased selection:bg-neutral-900 selection:text-white pb-20">
 
       {/* 1. FULL WIDTH LUXURY HERO SLIDER */}
-      <section className="relative w-full overflow-hieght h-[85vh] min-h-[550px] max-h-[750px] bg-[#E8DFD5] flex items-center">
+      <section className="relative w-full h-[85vh] min-h-[550px] max-h-[750px] bg-[#E8DFD5] flex items-center">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -376,7 +375,7 @@ export default function Home() {
               alt="Hero Slide"
               className="absolute inset-0 w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 w-full md:w-2/3 bg-gradient-to-r from-black/70 via-black/30 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 w-full md:w-2/3 bg-gradient-to-r from-black/75 via-black/35 to-transparent pointer-events-none" />
 
             <div className="relative z-10 px-8 sm:px-16 md:px-24 max-w-2xl text-white">
               <span className="text-[11px] uppercase tracking-[0.35em] font-medium opacity-90 block mb-4">
@@ -419,17 +418,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. GENDER CARDS (Luxury Spacing & Padding) */}
-      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 mt-16">
+      {/* 2. GENDER CARDS (Edge-to-edge fluid grid layout) */}
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           
           <div 
             onClick={() => navigate('/shop?gender=men')}
-            className="bg-[#F0ECE4] rounded-xl p-8 flex items-center justify-between cursor-pointer group hover:bg-[#EAE4DC] transition-all border border-neutral-200/60 shadow-sm"
+            className="bg-[#F0ECE4] p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-[#EAE4DC] transition-all border border-neutral-200/80 shadow-sm"
           >
             <div>
               <span className="text-[10px] tracking-widest text-neutral-500 uppercase font-semibold">COLLECTION</span>
-              <h3 className="font-serif text-xl tracking-wide text-neutral-900 mt-1">MEN</h3>
+              <h3 className="font-serif text-2xl tracking-wide text-neutral-900 mt-1">MEN</h3>
               <p className="text-[11px] text-neutral-600 font-medium my-1">UP TO 40% OFF</p>
               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-5 group-hover:translate-x-1.5 transition-transform">
                 EXPLORE <ArrowRight size={13} />
@@ -438,17 +437,17 @@ export default function Home() {
             <img 
               src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" 
               alt="Men" 
-              className="w-28 h-36 object-cover rounded-lg group-hover:scale-105 transition-transform duration-500 shadow-md"
+              className="w-28 h-36 object-cover group-hover:scale-105 transition-transform duration-500 shadow-md"
             />
           </div>
 
           <div 
             onClick={() => navigate('/shop?gender=women')}
-            className="bg-[#F5EFEA] rounded-xl p-8 flex items-center justify-between cursor-pointer group hover:bg-[#EFE8E1] transition-all border border-neutral-200/60 shadow-sm"
+            className="bg-[#F5EFEA] p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-[#EFE8E1] transition-all border border-neutral-200/80 shadow-sm"
           >
             <div>
               <span className="text-[10px] tracking-widest text-neutral-500 uppercase font-semibold">COLLECTION</span>
-              <h3 className="font-serif text-xl tracking-wide text-neutral-900 mt-1">WOMEN</h3>
+              <h3 className="font-serif text-2xl tracking-wide text-neutral-900 mt-1">WOMEN</h3>
               <p className="text-[11px] text-neutral-600 font-medium my-1">UP TO 40% OFF</p>
               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-5 group-hover:translate-x-1.5 transition-transform">
                 EXPLORE <ArrowRight size={13} />
@@ -457,17 +456,17 @@ export default function Home() {
             <img 
               src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" 
               alt="Women" 
-              className="w-28 h-36 object-cover rounded-lg group-hover:scale-105 transition-transform duration-500 shadow-md"
+              className="w-28 h-36 object-cover group-hover:scale-105 transition-transform duration-500 shadow-md"
             />
           </div>
 
           <div 
             onClick={() => navigate('/shop?gender=kids')}
-            className="bg-[#EFEBE6] rounded-xl p-8 flex items-center justify-between cursor-pointer group hover:bg-[#E8E3DD] transition-all border border-neutral-200/60 shadow-sm"
+            className="bg-[#EFEBE6] p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-[#E8E3DD] transition-all border border-neutral-200/80 shadow-sm"
           >
             <div>
               <span className="text-[10px] tracking-widest text-neutral-500 uppercase font-semibold">COLLECTION</span>
-              <h3 className="font-serif text-xl tracking-wide text-neutral-900 mt-1">KIDS</h3>
+              <h3 className="font-serif text-2xl tracking-wide text-neutral-900 mt-1">KIDS</h3>
               <p className="text-[11px] text-neutral-600 font-medium my-1">UP TO 40% OFF</p>
               <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-900 flex items-center gap-2 mt-5 group-hover:translate-x-1.5 transition-transform">
                 EXPLORE <ArrowRight size={13} />
@@ -476,7 +475,7 @@ export default function Home() {
             <img 
               src="https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=300" 
               alt="Kids" 
-              className="w-28 h-36 object-cover rounded-lg group-hover:scale-105 transition-transform duration-500 shadow-md"
+              className="w-28 h-36 object-cover group-hover:scale-105 transition-transform duration-500 shadow-md"
             />
           </div>
 
@@ -484,22 +483,22 @@ export default function Home() {
       </section>
 
       {/* 3. CATEGORIES */}
-      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 mt-20">
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-24 max-w-[1600px] mx-auto">
         <div className="text-center mb-10">
           <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold block mb-2">
             CURATED SELECTION
           </span>
-          <h2 className="text-3xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
+          <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 tracking-tight">Shop By Category</h2>
         </div>
 
-        <div className="flex items-center justify-start sm:justify-center gap-8 sm:gap-10 overflow-x-auto pb-4 scrollbar-none">
+        <div className="flex items-center justify-start sm:justify-center gap-8 sm:gap-12 overflow-x-auto pb-4 scrollbar-none">
           {categoriesList.map((cat, idx) => (
             <div 
               key={idx}
               onClick={() => navigate(`/shop?category=${cat.slug}`)}
               className="flex flex-col items-center gap-3 cursor-pointer group shrink-0"
             >
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-neutral-200 border-2 border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-neutral-200 border-2 border-neutral-300 p-1 group-hover:border-neutral-900 transition-all shadow-sm">
                 <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500" />
               </div>
               <span className="text-xs font-medium tracking-wide text-neutral-800 group-hover:text-black">
@@ -511,12 +510,12 @@ export default function Home() {
       </section>
 
       {/* 4. BEST SELLERS */}
-      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 mt-20">
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-24 max-w-[1600px] mx-auto">
         <div className="text-center mb-10">
           <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold block mb-2">
             MOST POPULAR
           </span>
-          <h2 className="text-3xl font-serif text-neutral-900 tracking-tight">Trending Now</h2>
+          <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 tracking-tight">Trending Now</h2>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -524,9 +523,9 @@ export default function Home() {
             <div 
               key={product.id}
               onClick={() => navigate(`/product/${product.id}`)}
-              className="group cursor-pointer flex flex-col bg-white p-3 rounded-xl border border-neutral-200/70 shadow-sm hover:shadow-md transition-all"
+              className="group cursor-pointer flex flex-col bg-white p-3.5 border border-neutral-200/80 shadow-sm hover:shadow-lg transition-all"
             >
-              <div className="relative aspect-[3/4] bg-[#EAE6DF] rounded-lg overflow-hidden mb-4">
+              <div className="relative aspect-[3/4] bg-[#EAE6DF] overflow-hidden mb-4">
                 <img 
                   src={getImageUrl(product)} 
                   alt={product.name} 
@@ -553,20 +552,20 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-14">
           <button 
             onClick={() => navigate('/shop')}
-            className="border-2 border-neutral-900 text-neutral-900 px-10 py-3.5 text-[11px] uppercase tracking-[0.25em] font-semibold hover:bg-neutral-900 hover:text-white transition-all rounded-none"
+            className="border-2 border-neutral-900 text-neutral-900 px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-semibold hover:bg-neutral-900 hover:text-white transition-all rounded-none"
           >
             VIEW ALL PRODUCTS
           </button>
         </div>
       </section>
 
-      {/* 5. PROMOTIONAL BANNER */}
-      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 mt-20">
-        <div className="bg-[#EBE5DC] rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 items-center border border-neutral-200 shadow-sm">
-          <div className="h-[300px] sm:h-[380px] w-full">
+      {/* 5. FULL WIDTH PROMOTIONAL BANNER */}
+      <section className="w-full mt-28 bg-[#EBE5DC] border-y border-neutral-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full">
+          <div className="h-[350px] sm:h-[450px] w-full">
             <img 
               src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1000" 
               alt="Wardrobe" 
@@ -574,19 +573,19 @@ export default function Home() {
             />
           </div>
 
-          <div className="p-10 sm:p-14">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-bold block mb-3">
+          <div className="p-12 sm:p-20 lg:p-28">
+            <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-500 font-bold block mb-3">
               NEW SEASON, NEW YOU
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif text-neutral-900 mb-4 leading-tight">
+            <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 mb-5 leading-tight">
               Refresh Your <br /> Wardrobe
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-600 font-light mb-8 max-w-sm leading-relaxed">
-              Explore the latest styles curated for the season with absolute elegance.
+            <p className="text-xs sm:text-sm text-neutral-600 font-light mb-10 max-w-md leading-relaxed">
+              Explore the latest styles curated for the season with absolute elegance and high-end craftsmanship.
             </p>
             <button 
               onClick={() => navigate('/shop')}
-              className="bg-[#1C1C1C] text-white px-8 py-4 text-[11px] uppercase tracking-[0.25em] font-medium rounded-none hover:bg-black transition-all"
+              className="bg-[#1C1C1C] text-white px-9 py-4 text-[11px] uppercase tracking-[0.25em] font-medium rounded-none hover:bg-black transition-all"
             >
               EXPLORE COLLECTION
             </button>
@@ -595,25 +594,25 @@ export default function Home() {
       </section>
 
       {/* 6. TRUST BADGES */}
-      <section className="max-w-[1440px] mx-auto px-6 sm:px-8 md:px-12 mt-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center border-t border-b border-neutral-200/80 py-10">
+      <section className="w-full px-6 sm:px-10 md:px-16 mt-24 max-w-[1600px] mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center border-t border-b border-neutral-200/80 py-12">
           <div className="flex flex-col items-center">
-            <Award size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <Award size={26} className="text-neutral-800 mb-3 stroke-1" />
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">PREMIUM QUALITY</h4>
             <p className="text-[11px] text-neutral-500 mt-1">Finest fabrics, crafted for comfort</p>
           </div>
           <div className="flex flex-col items-center">
-            <RefreshCw size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <RefreshCw size={26} className="text-neutral-800 mb-3 stroke-1" />
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">EASY RETURNS</h4>
             <p className="text-[11px] text-neutral-500 mt-1">Simple returns within 7 days</p>
           </div>
           <div className="flex flex-col items-center">
-            <ShieldCheck size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <ShieldCheck size={26} className="text-neutral-800 mb-3 stroke-1" />
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">SECURE PAYMENTS</h4>
             <p className="text-[11px] text-neutral-500 mt-1">100% secure payment gateway</p>
           </div>
           <div className="flex flex-col items-center">
-            <Headphones size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <Headphones size={26} className="text-neutral-800 mb-3 stroke-1" />
             <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">CUSTOMER SUPPORT</h4>
             <p className="text-[11px] text-neutral-500 mt-1">We're here to help you anytime</p>
           </div>
