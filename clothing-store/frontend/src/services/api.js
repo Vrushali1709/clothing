@@ -41,6 +41,62 @@
 
 
 
+
+
+// import axios from 'axios';
+
+// const API = axios.create({
+//     baseURL: 'https://clothing-backend-gynt.onrender.com/api/',
+// });
+
+// // Request Interceptor
+// API.interceptors.request.use(
+//     (config) => {
+//         const token = localStorage.getItem('access_token');
+
+//         if (token && token !== 'null' && token !== 'undefined') {
+//             config.headers.Authorization = `Bearer ${token}`;
+//         } else {
+//             delete config.headers.Authorization;
+//         }
+
+//         return config;
+//     },
+//     (error) => {
+//         return Promise.reject(error);
+//     }
+// );
+
+// // Response Interceptor
+// API.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//         if (error.response && error.response.status === 401) {
+//             localStorage.removeItem('access_token');
+//         }
+
+//         return Promise.reject(error);
+//     }
+// );
+
+// export const fetchProducts = () => API.get('products/');
+// export const fetchCategories = () => API.get('categories/');
+// export const fetchProductDetails = (id) =>
+//     API.get(`products/${id}/`);
+
+// // Wishlist APIs
+// export const getWishlist = () => API.get('wishlist/');
+// export const addToWishlist = (productId) =>
+//     API.post('wishlist/', { product: productId });
+
+// export const removeFromWishlist = (wishlistId) =>
+//     API.delete(`wishlist/${wishlistId}/`);
+
+// export default API;
+
+
+
+
 import axios from 'axios';
 
 const API = axios.create({
@@ -89,5 +145,9 @@ export const addToWishlist = (productId) =>
 
 export const removeFromWishlist = (wishlistId) =>
     API.delete(`wishlist/${wishlistId}/`);
+
+// Review APIs
+export const fetchReviews = (productId) => API.get(`reviews/?product=${productId}`);
+export const addReview = (reviewData) => API.post('reviews/', reviewData);
 
 export default API;
