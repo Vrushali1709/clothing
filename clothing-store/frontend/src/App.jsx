@@ -58,6 +58,8 @@ import NewArrivals from './pages/NewArrivals'; // 👈 NewArrivals import karyu
 import { CartProvider } from './context/CartContext';
 import ScrollToTop from './ScrollToTop';
 import UserProfile from './pages/UserProfile';
+import Contact from './pages/Contact';
+import About from './pages/About';
 
 export default function App() {
   return (
@@ -80,6 +82,8 @@ export default function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/new-arrivals" element={<NewArrivals />} /> {/* 👈 NewArrivals route set karyo */}
               <Route path="/profile" element={<UserProfile />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
             </Routes>
           </main>
           <Footer />
