@@ -765,6 +765,7 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
@@ -792,6 +793,7 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState('');
   const [addedNotice, setAddedNotice] = useState(false);
   const [wishlistId, setWishlistId] = useState(null);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false); // 👈 Size Guide Modal State
 
   // Helper function to dynamically construct absolute Image URLs
   const getImageUrl = (imagePath) => {
@@ -915,7 +917,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans">
+    <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-12 px-4 sm:px-8 lg:px-16 font-sans relative">
       <div className="max-w-[1350px] mx-auto bg-[#FAF7F2] rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-8 sm:p-12 lg:p-16 relative">
         
         {/* Breadcrumb */}
@@ -996,10 +998,18 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Size Selector */}
+            {/* Size Selector with Size Guide Trigger */}
             {sizes.length > 0 && (
               <div className="mb-8">
-                <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600 block mb-2.5">Size</label>
+                <div className="flex justify-between items-center mb-2.5">
+                  <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">Size</label>
+                  <button 
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline hover:text-neutral-900 transition"
+                  >
+                    Size Guide
+                  </button>
+                </div>
                 <div className="flex items-center gap-3">
                   {sizes.map((s) => (
                     <button
@@ -1085,6 +1095,67 @@ export default function ProductDetail() {
         </div>
 
       </div>
+
+      {/* Size Guide Modal Popup */}
+      {isSizeGuideOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-md w-full p-6 sm:p-8 relative shadow-2xl rounded-3xl">
+            <button 
+              onClick={() => setIsSizeGuideOpen(false)}
+              className="absolute top-5 right-6 text-neutral-500 hover:text-black text-xs uppercase tracking-widest font-bold"
+            >
+              ✕ Close
+            </button>
+            
+            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">Atelier Measurements</span>
+            <h3 className="font-serif text-2xl text-neutral-900 mb-6">Size Guide (Inches)</h3>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs mb-6 border-collapse">
+                <thead>
+                  <tr className="border-b border-neutral-300 text-neutral-500 uppercase tracking-widest text-[9px]">
+                    <th className="py-2.5">Size</th>
+                    <th className="py-2.5">Chest</th>
+                    <th className="py-2.5">Waist</th>
+                    <th className="py-2.5">Length</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-200 text-neutral-800">
+                  <tr>
+                    <td className="py-2.5 font-bold">S</td>
+                    <td className="py-2.5">36-38"</td>
+                    <td className="py-2.5">30-32"</td>
+                    <td className="py-2.5">40"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">M</td>
+                    <td className="py-2.5">38-40"</td>
+                    <td className="py-2.5">32-34"</td>
+                    <td className="py-2.5">41"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">L</td>
+                    <td className="py-2.5">40-42"</td>
+                    <td className="py-2.5">34-36"</td>
+                    <td className="py-2.5">42"</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 font-bold">XL</td>
+                    <td className="py-2.5">42-44"</td>
+                    <td className="py-2.5">36-38"</td>
+                    <td className="py-2.5">43"</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
+              * Measurements are given in inches. For custom tailoring inquiries, please contact our concierge support.
+            </p>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
