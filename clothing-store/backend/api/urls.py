@@ -16,7 +16,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CategoryViewSet, ProductViewSet, OrderViewSet, WishlistViewSet, ReviewViewSet, create_razorpay_order
+from .views import CategoryViewSet, ProductViewSet, OrderViewSet, WishlistViewSet, ReviewViewSet, 
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet, basename='category')
@@ -27,5 +27,5 @@ router.register(r'reviews', ReviewViewSet, basename='review')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('create-razorpay-order/', create_razorpay_order, name='create-razorpay-order'),
+   
 ]
