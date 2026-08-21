@@ -636,6 +636,7 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, ArrowRight, ShieldCheck, RefreshCw, Headphones, Award, Sparkles } from 'lucide-react';
@@ -773,7 +774,7 @@ export default function Home() {
             <img
               src={slide.image}
               alt="Hero Slide"
-              className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+              className="absolute inset-0 w-full h-full object-cover object-center scale-105 animate-subtle-zoom"
             />
             {/* Elegant Gradient Overlay */}
             <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
@@ -822,13 +823,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. EDITORIAL GENDER CARDS */}
+      {/* 2. EDITORIAL GENDER CARDS (High-End Grid) */}
       <section className="w-full px-6 sm:px-10 md:px-16 -mt-16 relative z-20 max-w-[1500px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           
           <div 
             onClick={() => navigate('/shop?gender=men')}
-            className="bg-white/95 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
@@ -849,7 +850,7 @@ export default function Home() {
 
           <div 
             onClick={() => navigate('/shop?gender=women')}
-            className="bg-white/95 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
@@ -870,7 +871,7 @@ export default function Home() {
 
           <div 
             onClick={() => navigate('/shop?gender=kids')}
-            className="bg-white/95 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md rounded-xl overflow-hidden"
+            className="bg-white/90 backdrop-blur-md p-8 sm:p-10 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-lg rounded-xl overflow-hidden"
           >
             <div>
               <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
@@ -920,7 +921,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. TRENDING PIECES */}
+      {/* 4. TRENDING NOW / BEST SELLERS */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-28 max-w-[1500px] mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 border-b border-neutral-200 pb-6">
           <div>
@@ -1003,50 +1004,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. REDESIGNED LUXURY TRUST BADGES (Seamless & Sophisticated) */}
+      {/* 6. LUXURY TRUST BADGES */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-28 max-w-[1500px] mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-10 border-t border-b border-neutral-200">
-          
-          <div className="flex items-center gap-4 p-4 group">
-            <div className="w-12 h-12 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
-              <Award size={20} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Exquisite Quality</h4>
-              <p className="text-[11px] text-neutral-500 font-light mt-0.5">Finest global textiles</p>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center bg-white border border-neutral-200/80 p-12 rounded-2xl shadow-sm">
+          <div className="flex flex-col items-center">
+            <Award size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Exquisite Quality</h4>
+            <p className="text-[11px] text-neutral-500 font-light mt-1">Finest global textiles</p>
           </div>
-
-          <div className="flex items-center gap-4 p-4 group">
-            <div className="w-12 h-12 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
-              <RefreshCw size={20} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Easy Returns</h4>
-              <p className="text-[11px] text-neutral-500 font-light mt-0.5">14-day hassle-free exchange</p>
-            </div>
+          <div className="flex flex-col items-center">
+            <RefreshCw size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Complimentary Returns</h4>
+            <p className="text-[11px] text-neutral-500 font-light mt-1">Hassle-free 14-day policy</p>
           </div>
-
-          <div className="flex items-center gap-4 p-4 group">
-            <div className="w-12 h-12 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
-              <ShieldCheck size={20} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Secure Checkout</h4>
-              <p className="text-[11px] text-neutral-500 font-light mt-0.5">100% encrypted gateway</p>
-            </div>
+          <div className="flex flex-col items-center">
+            <ShieldCheck size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Secure Checkout</h4>
+            <p className="text-[11px] text-neutral-500 font-light mt-1">Encrypted transactions</p>
           </div>
-
-          <div className="flex items-center gap-4 p-4 group">
-            <div className="w-12 h-12 rounded-full bg-neutral-200/60 flex items-center justify-center shrink-0 text-neutral-900 group-hover:bg-neutral-900 group-hover:text-white transition-colors duration-300">
-              <Headphones size={20} strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Support</h4>
-              <p className="text-[11px] text-neutral-500 font-light mt-0.5">Dedicated concierge desk</p>
-            </div>
+          <div className="flex flex-col items-center">
+            <Headphones size={24} className="text-neutral-800 mb-3 stroke-1" />
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-neutral-900">Atelier Concierge</h4>
+            <p className="text-[11px] text-neutral-500 font-light mt-1">Dedicated client support</p>
           </div>
-
         </div>
       </section>
 
