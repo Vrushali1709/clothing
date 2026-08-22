@@ -217,13 +217,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # =========================
 
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-local-development-key'
-)
+# SECRET_KEY = os.environ.get(
+#     'SECRET_KEY',
+#     'django-insecure-local-development-key'
+# )
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+if not SECRET_KEY:
+    raise RuntimeError(
+        'SECRET_KEY environment variable is required.'
+    )
+
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # =========================
 # ALLOWED HOSTS
