@@ -336,7 +336,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="text-xl md:text-2xl font-serif tracking-[0.25em] text-neutral-900 font-bold uppercase">
-          CLOTHING WEB
+          CLOTHING 
         </Link>
         
         {/* Center Categories (Desktop) */}
