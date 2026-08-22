@@ -117,7 +117,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -127,397 +126,232 @@ import {
   Package,
   LogOut,
   Heart,
-  ShoppingBag,
   ArrowRight,
-  Loader2,
-  CheckCircle2
+  RefreshCw,
 } from 'lucide-react';
 import API from '../services/api';
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [loggingOut, setLoggingOut] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let mounted = true;
-
+  const fetchProfile = async () => {
     const token = localStorage.getItem('access_token');
 
     if (!token) {
-      navigate('/login', { replace: true });
+      navigate('/login', {
+        replace: true,
+        state: { from: '/profile' },
+      });
       return;
     }
 
-    const fetchProfile = async () => {
-      try {
-        const response = await API.get('auth/users/me/', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await API.get('auth/users/me/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUser(response.data);
+    } catch (err) {
+      console.error('Profile fetch error:', err);
+
+      if (err?.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+
+        window.dispatchEvent(new Event('auth-change'));
+
+        navigate('/login', {
+          replace: true,
+          state: { from: '/profile' },
         });
 
-        if (mounted) {
-          setUser(response.data);
-        }
-      } catch (err) {
-        console.error('Profile fetch error:', err);
-
-        /*
-         * Some Django/JWT setups may not have this exact endpoint.
-         * We do not create fake profile data here.
-         */
-        if (err?.response?.status === 401) {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-
-          if (mounted) {
-            navigate('/login', { replace: true });
-          }
-
-          return;
-        }
-
-        if (mounted) {
-          setUser(null);
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        return;
       }
-    };
 
+      setError(
+        err?.response?.data?.detail ||
+        'Unable to load your profile.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
-
-    return () => {
-      mounted = false;
-    };
-  }, [navigate]);
+  }, []);
 
   const handleLogout = () => {
-    if (loggingOut) return;
-
-    setLoggingOut(true);
-
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
 
-    // Small delay gives button feedback
-    setTimeout(() => {
-      navigate('/login', { replace: true });
-    }, 300);
+    window.dispatchEvent(new Event('auth-change'));
+
+    navigate('/login', { replace: true });
   };
 
   if (loading) {
     return (
-      <div className="bg-[#FAF8F5] min-h-screen flex flex-col justify-center items-center text-neutral-500">
-        <Loader2
-          size={25}
-          className="animate-spin mb-4 text-neutral-700"
-        />
+      <div className="bg-[#FAF8F5] min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin mx-auto mb-4" />
 
-        <span className="text-[10px] font-serif uppercase tracking-[0.25em]">
-          Accessing Client Profile...
-        </span>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
+            Accessing Client Profile...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-[#FAF8F5] min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white border border-neutral-200 p-8 max-w-md w-full text-center shadow-sm">
+          <div className="w-14 h-14 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-5">
+            <User size={24} />
+          </div>
+
+          <h2 className="font-serif text-2xl mb-3">
+            Unable to Load Profile
+          </h2>
+
+          <p className="text-xs text-neutral-500 mb-6">
+            {error}
+          </p>
+
+          <button
+            onClick={fetchProfile}
+            className="bg-neutral-900 text-white px-6 py-3 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 mx-auto"
+          >
+            <RefreshCw size={14} />
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-screen text-neutral-900 py-8 sm:py-12 md:py-16 px-4 sm:px-6">
+    <div className="bg-[#FAF8F5] min-h-screen text-neutral-900 py-10 sm:py-14 px-4">
+      <div className="max-w-3xl mx-auto">
 
-      <div className="max-w-4xl mx-auto">
+        {/* Profile Card */}
+        <div className="bg-white border border-neutral-200 shadow-sm">
 
-        {/* Header */}
-        <div className="mb-7 sm:mb-10 pb-5 sm:pb-6 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          {/* Header */}
+          <div className="text-center p-6 sm:p-10 border-b border-neutral-200">
+            <div className="w-16 h-16 bg-neutral-900 text-white rounded-full flex items-center justify-center mx-auto mb-5">
+              <User size={28} strokeWidth={1.5} />
+            </div>
 
-          <div>
-            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1">
-              Private Client Area
+            <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-2">
+              Client Dashboard
             </span>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-serif tracking-tight">
               Account Profile
             </h1>
+
+            <p className="text-xs text-neutral-500 mt-3">
+              Manage your account and purchase history.
+            </p>
           </div>
 
-          <span className="text-[10px] sm:text-xs uppercase tracking-widest text-emerald-700 font-semibold flex items-center gap-1.5">
-            <CheckCircle2 size={13} />
-            Active Account
-          </span>
-        </div>
+          {/* Information */}
+          <div className="p-5 sm:p-8 space-y-4">
 
-        {/* Main Profile Card */}
-        <div className="bg-white border border-neutral-200/80 shadow-sm">
+            <div className="flex items-center gap-4 p-4 bg-neutral-50 border border-neutral-100">
+              <User
+                size={20}
+                className="text-neutral-500 shrink-0"
+              />
 
-          {/* Profile Hero */}
-          <div className="p-6 sm:p-8 md:p-10 border-b border-neutral-200">
-
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
-
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-700 shrink-0">
-                <User
-                  size={38}
-                  strokeWidth={1.2}
-                />
-              </div>
-
-              <div className="text-center sm:text-left">
-                <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold">
-                  Welcome
+              <div className="min-w-0">
+                <span className="block text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mb-1">
+                  Username
                 </span>
 
-                <h2 className="text-2xl sm:text-3xl font-serif mt-1">
-                  {user?.username || 'Private Client'}
-                </h2>
-
-                <p className="text-xs text-neutral-500 mt-2">
-                  {user?.email || 'Email address unavailable'}
-                </p>
+                <span className="text-sm font-medium break-all">
+                  {user?.username || 'Not available'}
+                </span>
               </div>
-
             </div>
 
-          </div>
+            <div className="flex items-center gap-4 p-4 bg-neutral-50 border border-neutral-100">
+              <Mail
+                size={20}
+                className="text-neutral-500 shrink-0"
+              />
 
-          {/* User Details */}
-          <div className="p-5 sm:p-8 md:p-10">
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-
-              {/* Username */}
-              <div className="p-4 sm:p-5 bg-neutral-50 border border-neutral-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white border border-neutral-200 flex items-center justify-center">
-                    <User
-                      size={17}
-                      strokeWidth={1.5}
-                      className="text-neutral-600"
-                    />
-                  </div>
-
-                  <div className="min-w-0">
-                    <span className="block text-[9px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      Username
-                    </span>
-
-                    <span className="block text-sm font-medium text-neutral-900 truncate mt-0.5">
-                      {user?.username || 'Not available'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="p-4 sm:p-5 bg-neutral-50 border border-neutral-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white border border-neutral-200 flex items-center justify-center">
-                    <Mail
-                      size={17}
-                      strokeWidth={1.5}
-                      className="text-neutral-600"
-                    />
-                  </div>
-
-                  <div className="min-w-0">
-                    <span className="block text-[9px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      Email Address
-                    </span>
-
-                    <span className="block text-sm font-medium text-neutral-900 truncate mt-0.5">
-                      {user?.email || 'Not available'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Account Status */}
-              <div className="p-4 sm:p-5 bg-neutral-50 border border-neutral-100 md:col-span-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white border border-neutral-200 flex items-center justify-center">
-                    <ShieldCheck
-                      size={17}
-                      strokeWidth={1.5}
-                      className="text-emerald-700"
-                    />
-                  </div>
-
-                  <div>
-                    <span className="block text-[9px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      Account Status
-                    </span>
-
-                    <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider text-emerald-700 font-bold mt-0.5">
-                      Verified Client Account
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Quick Actions */}
-            <div className="mt-8 sm:mt-10">
-
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-bold">
-                  Account Services
+              <div className="min-w-0">
+                <span className="block text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mb-1">
+                  Email Address
                 </span>
 
-                <div className="h-px bg-neutral-200 flex-1" />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-
-                {/* Orders */}
-                <button
-                  onClick={() => navigate('/my-orders')}
-                  className="group border border-neutral-200 bg-white p-4 text-left hover:border-neutral-900 transition"
-                >
-                  <Package
-                    size={19}
-                    strokeWidth={1.5}
-                    className="text-neutral-700 mb-5"
-                  />
-
-                  <span className="block text-[10px] uppercase tracking-widest font-bold">
-                    My Orders
-                  </span>
-
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
-                    View purchase history
-                  </span>
-
-                  <ArrowRight
-                    size={14}
-                    className="mt-4 group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-
-                {/* Wishlist */}
-                <button
-                  onClick={() => navigate('/wishlist')}
-                  className="group border border-neutral-200 bg-white p-4 text-left hover:border-neutral-900 transition"
-                >
-                  <Heart
-                    size={19}
-                    strokeWidth={1.5}
-                    className="text-neutral-700 mb-5"
-                  />
-
-                  <span className="block text-[10px] uppercase tracking-widest font-bold">
-                    Wishlist
-                  </span>
-
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
-                    View saved garments
-                  </span>
-
-                  <ArrowRight
-                    size={14}
-                    className="mt-4 group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-
-                {/* Shop */}
-                <button
-                  onClick={() => navigate('/shop')}
-                  className="group border border-neutral-200 bg-white p-4 text-left hover:border-neutral-900 transition"
-                >
-                  <ShoppingBag
-                    size={19}
-                    strokeWidth={1.5}
-                    className="text-neutral-700 mb-5"
-                  />
-
-                  <span className="block text-[10px] uppercase tracking-widest font-bold">
-                    Collection
-                  </span>
-
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
-                    Explore latest pieces
-                  </span>
-
-                  <ArrowRight
-                    size={14}
-                    className="mt-4 group-hover:translate-x-1 transition-transform"
-                  />
-                </button>
-
+                <span className="text-sm font-medium break-all">
+                  {user?.email || 'Not available'}
+                </span>
               </div>
             </div>
 
-            {/* Logout */}
-            <div className="mt-8 pt-6 border-t border-neutral-200">
+            <div className="flex items-center gap-4 p-4 bg-emerald-50 border border-emerald-100">
+              <ShieldCheck
+                size={20}
+                className="text-emerald-600 shrink-0"
+              />
 
-              {!showLogoutConfirm ? (
-                <button
-                  onClick={() => setShowLogoutConfirm(true)}
-                  className="w-full sm:w-auto border border-red-200 text-red-600 px-6 py-3.5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-red-50 transition flex items-center justify-center gap-2"
-                >
-                  <LogOut size={15} />
-                  Sign Out
-                </button>
-              ) : (
-                <div className="bg-red-50 border border-red-200 p-4 sm:p-5">
+              <div>
+                <span className="block text-[10px] uppercase tracking-widest text-neutral-400 font-semibold mb-1">
+                  Account Status
+                </span>
 
-                  <p className="text-xs text-red-800 mb-4">
-                    Are you sure you want to sign out of your account?
-                  </p>
-
-                  <div className="flex flex-col sm:flex-row gap-2">
-
-                    <button
-                      onClick={handleLogout}
-                      disabled={loggingOut}
-                      className="bg-red-600 text-white px-5 py-3 text-[10px] font-semibold uppercase tracking-widest hover:bg-red-700 transition flex items-center justify-center gap-2 disabled:opacity-60"
-                    >
-                      {loggingOut ? (
-                        <>
-                          <Loader2
-                            size={14}
-                            className="animate-spin"
-                          />
-                          Signing Out...
-                        </>
-                      ) : (
-                        <>
-                          <LogOut size={14} />
-                          Yes, Sign Out
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      onClick={() => setShowLogoutConfirm(false)}
-                      disabled={loggingOut}
-                      className="bg-white border border-neutral-200 text-neutral-700 px-5 py-3 text-[10px] font-semibold uppercase tracking-widest hover:border-neutral-900 transition"
-                    >
-                      Cancel
-                    </button>
-
-                  </div>
-                </div>
-              )}
-
+                <span className="text-xs uppercase tracking-wider text-emerald-700 font-bold">
+                  Active Member
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Actions */}
+          <div className="p-5 sm:p-8 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <button
+              onClick={() => navigate('/my-orders')}
+              className="bg-neutral-900 text-white py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-black transition flex items-center justify-center gap-2"
+            >
+              <Package size={16} />
+              My Orders
+              <ArrowRight size={14} />
+            </button>
+
+            <button
+              onClick={() => navigate('/wishlist')}
+              className="bg-white border border-neutral-300 text-neutral-900 py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:border-neutral-900 transition flex items-center justify-center gap-2"
+            >
+              <Heart size={16} />
+              Wishlist
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="sm:col-span-2 bg-white border border-red-200 text-red-600 py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] hover:bg-red-50 transition flex items-center justify-center gap-2"
+            >
+              <LogOut size={16} />
+              Sign Out
+            </button>
 
           </div>
         </div>
-
-        {/* Bottom Security */}
-        <div className="flex items-center justify-center gap-2 mt-5 text-[10px] text-neutral-400">
-          <ShieldCheck
-            size={14}
-            strokeWidth={1.5}
-          />
-          Your account is protected by secure authentication
-        </div>
-
       </div>
     </div>
   );
