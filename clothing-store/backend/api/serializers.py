@@ -14,11 +14,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
         model = ProductImage
         fields = ['id', 'image', 'alt_text']
 
-# 3. Product Serializer
+# 3. Product Serializer (Fixed to supply direct 'image' string URL for frontend)
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     category_name = serializers.ReadOnlyField(source='category.name')
-    image = serializers.SerializerMethodField() # <-- Aa line zaroori chhe (MethodField register karva mate)
+    image = serializers.SerializerMethodField() # Frontend mate direct string URL moklva mate
 
     class Meta:
         model = Product
@@ -26,7 +26,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         request = self.context.get('request')
-        
         # ProductImage related model mathi pehli image fetch karse
         first_img = obj.images.first()
         if first_img and first_img.image:
@@ -34,10 +33,9 @@ class ProductSerializer(serializers.ModelSerializer):
             if request:
                 return request.build_absolute_uri(img_url)
             return img_url
-            
         return None
 
-# 4. Order Item Serializer (Includes Nested Product Info)
+# 4. Order Item Serializer
 class OrderItemSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
 
@@ -64,6 +62,7 @@ class WishlistSerializer(serializers.ModelSerializer):
             'user': {'read_only': True}
         }
 
+# 7. Review Serializer
 class ReviewSerializer(serializers.ModelSerializer):
     user_name = serializers.ReadOnlyField(source='user.username')
 
