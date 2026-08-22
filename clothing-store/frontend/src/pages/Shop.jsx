@@ -483,7 +483,6 @@
 
 
 
-
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, Search, X, ArrowRight } from 'lucide-react';
