@@ -153,11 +153,7 @@ export default function UserProfile() {
     setError('');
 
     try {
-      const response = await API.get('auth/users/me/', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await API.get('profile/');
 
       setUser(response.data);
     } catch (err) {

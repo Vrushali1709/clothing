@@ -924,23 +924,43 @@ export default function Navbar() {
      AUTH STATE SYNC
   ========================================================= */
 
+  // useEffect(() => {
+  //   const syncAuth = () => {
+  //     const currentToken = localStorage.getItem('access_token');
+  //     setToken(currentToken);
+  //   };
+
+  //   // Other browser tabs
+  //   window.addEventListener('storage', syncAuth);
+
+  //   // Same-tab custom event
+  //   window.addEventListener('authChanged', syncAuth);
+
+  //   return () => {
+  //     window.removeEventListener('storage', syncAuth);
+  //     window.removeEventListener('authChanged', syncAuth);
+  //   };
+  // }, []);
+
+
+
+
   useEffect(() => {
-    const syncAuth = () => {
-      const currentToken = localStorage.getItem('access_token');
-      setToken(currentToken);
-    };
+  const syncAuth = () => {
+    setToken(localStorage.getItem('access_token'));
+  };
 
-    // Other browser tabs
-    window.addEventListener('storage', syncAuth);
+  // Same tab login/logout
+  window.addEventListener('auth-change', syncAuth);
 
-    // Same-tab custom event
-    window.addEventListener('authChanged', syncAuth);
+  // Other tab login/logout
+  window.addEventListener('storage', syncAuth);
 
-    return () => {
-      window.removeEventListener('storage', syncAuth);
-      window.removeEventListener('authChanged', syncAuth);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener('auth-change', syncAuth);
+    window.removeEventListener('storage', syncAuth);
+  };
+}, []);
 
   /* =========================================================
      ROUTE CHANGE
@@ -972,20 +992,38 @@ export default function Navbar() {
      LOGOUT
   ========================================================= */
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+  // const handleLogout = () => {
+  //   localStorage.removeItem('access_token');
+  //   localStorage.removeItem('refresh_token');
 
-    setToken(null);
+  //   setToken(null);
 
-    setIsMobileMenuOpen(false);
-    setOpenCategory(null);
+  //   setIsMobileMenuOpen(false);
+  //   setOpenCategory(null);
 
-    // Notify other components in same tab
-    window.dispatchEvent(new Event('authChanged'));
+  //   // Notify other components in same tab
+  //   window.dispatchEvent(new Event('authChanged'));
 
-    navigate('/login');
-  };
+  //   navigate('/login');
+  // };
+
+
+
+
+const handleLogout = () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+
+  setToken(null);
+
+  // Login state change notify
+  window.dispatchEvent(new Event('auth-change'));
+
+  setIsMobileMenuOpen(false);
+  setOpenCategory(null);
+
+  navigate('/login');
+};
 
   /* =========================================================
      MOBILE MENU
