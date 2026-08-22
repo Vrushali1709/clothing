@@ -8,17 +8,28 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
-# 2. Product Image Serializer
+# 2. Product Image Serializer (Fixed to return full absolute URL)
 class ProductImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductImage
         fields = ['id', 'image', 'alt_text']
 
-# 3. Product Serializer
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            img_url = obj.image.url
+            if request:
+                return request.build_absolute_uri(img_url)
+            return img_url
+        return None
+
+# 3. Product Serializer (Fixed to supply direct 'image' string URL for frontend cards)
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     category_name = serializers.ReadOnlyField(source='category.name')
-    image = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField() # Frontend main product card mate direct image
 
     class Meta:
         model = Product
@@ -61,7 +72,7 @@ class WishlistSerializer(serializers.ModelSerializer):
             'user': {'read_only': True}
         }
 
-# 7. Review Serializer (Safe with MethodField to prevent 500 error)
+# 7. Review Serializer (Safe with MethodField)
 class ReviewSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
 
