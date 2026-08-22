@@ -14,11 +14,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
         model = ProductImage
         fields = ['id', 'image', 'alt_text']
 
-# 3. Product Serializer (Fixed to supply direct 'image' string URL for frontend)
+# 3. Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     category_name = serializers.ReadOnlyField(source='category.name')
-    image = serializers.SerializerMethodField() # Frontend mate direct string URL moklva mate
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -26,7 +26,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         request = self.context.get('request')
-        # ProductImage related model mathi pehli image fetch karse
         first_img = obj.images.first()
         if first_img and first_img.image:
             img_url = first_img.image.url
@@ -62,13 +61,15 @@ class WishlistSerializer(serializers.ModelSerializer):
             'user': {'read_only': True}
         }
 
-# 7. Review Serializer
+# 7. Review Serializer (Safe with MethodField to prevent 500 error)
 class ReviewSerializer(serializers.ModelSerializer):
-    user_name = serializers.ReadOnlyField(source='user.username')
+    user_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
         fields = ['id', 'product', 'user_name', 'rating', 'comment', 'created_at']
-        extra_kwargs = {
-            'user': {'read_only': True}
-        }
+
+    def get_user_name(self, obj):
+        if obj and obj.user:
+            return obj.user.username
+        return "Anonymous"
