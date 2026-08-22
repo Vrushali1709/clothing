@@ -810,6 +810,1631 @@
 
 
 
+// import React, { useEffect, useMemo, useState } from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import {
+//   ShoppingBag,
+//   ShieldCheck,
+//   Truck,
+//   Heart,
+//   Sparkles,
+//   Check,
+//   Star,
+//   Share2,
+//   Minus,
+//   Plus,
+//   X,
+//   RefreshCw,
+//   ChevronDown,
+// } from 'lucide-react';
+// import { useCart } from '../context/CartContext';
+// import API, {
+//   getWishlist,
+//   addToWishlist,
+//   removeFromWishlist,
+// } from '../services/api';
+
+// export default function ProductDetail() {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const { addToCart } = useCart();
+
+//   const [product, setProduct] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [productError, setProductError] = useState('');
+
+//   const [selectedSize, setSelectedSize] = useState('');
+//   const [selectedColor, setSelectedColor] = useState('');
+//   const [selectedImage, setSelectedImage] = useState('');
+
+//   const [quantity, setQuantity] = useState(1);
+
+//   const [addedNotice, setAddedNotice] = useState('');
+//   const [wishlistId, setWishlistId] = useState(null);
+//   const [wishlistLoading, setWishlistLoading] = useState(false);
+
+//   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+
+//   const [reviews, setReviews] = useState([]);
+//   const [reviewsLoading, setReviewsLoading] = useState(true);
+//   const [newReview, setNewReview] = useState({
+//     rating: 5,
+//     comment: '',
+//   });
+//   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+//   const [reviewError, setReviewError] = useState('');
+//   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+//   const [shareMessage, setShareMessage] = useState('');
+
+//   // --------------------------------------------------
+//   // IMAGE URL
+//   // --------------------------------------------------
+
+//   const getImageUrl = (imagePath) => {
+//     if (!imagePath) {
+//       return 'https://placehold.co/800x1000?text=Luxury+Collection';
+//     }
+
+//     if (
+//       typeof imagePath === 'string' &&
+//       (imagePath.startsWith('http://') ||
+//         imagePath.startsWith('https://'))
+//     ) {
+//       return imagePath;
+//     }
+
+//     return `https://clothing-backend-gynt.onrender.com${imagePath}`;
+//   };
+
+//   // --------------------------------------------------
+//   // FETCH PRODUCT
+//   // --------------------------------------------------
+
+//   const fetchProduct = async () => {
+//     setLoading(true);
+//     setProductError('');
+
+//     try {
+//       const res = await API.get(`products/${id}/`);
+//       const data = res.data;
+
+//       setProduct(data);
+
+//       // Main image
+//       if (data.image) {
+//         setSelectedImage(getImageUrl(data.image));
+//       } else if (data.images && data.images.length > 0) {
+//         setSelectedImage(getImageUrl(data.images[0].image));
+//       } else {
+//         setSelectedImage(getImageUrl(null));
+//       }
+
+//       // Sizes
+//       const sizesArr = data.sizes
+//         ? data.sizes
+//             .split(',')
+//             .map((s) => s.trim())
+//             .filter(Boolean)
+//         : [];
+
+//       // Colors
+//       const colorsArr = data.colors
+//         ? data.colors
+//             .split(',')
+//             .map((c) => c.trim())
+//             .filter(Boolean)
+//         : [];
+
+//       if (sizesArr.length > 0) {
+//         setSelectedSize(sizesArr[0]);
+//       } else {
+//         setSelectedSize('');
+//       }
+
+//       if (colorsArr.length > 0) {
+//         setSelectedColor(colorsArr[0]);
+//       } else {
+//         setSelectedColor('');
+//       }
+
+//       setQuantity(1);
+//     } catch (err) {
+//       console.error('Error fetching product:', err);
+
+//       setProductError(
+//         err?.response?.data?.detail ||
+//           'Unable to load this product. Please try again.'
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // FETCH REVIEWS
+//   // --------------------------------------------------
+
+//   const fetchReviews = async () => {
+//     setReviewsLoading(true);
+
+//     try {
+//       const res = await API.get(`reviews/?product=${id}`);
+
+//       const list = Array.isArray(res.data)
+//         ? res.data
+//         : res.data?.results || [];
+
+//       setReviews(list);
+//     } catch (err) {
+//       console.error('Error fetching reviews:', err);
+//       setReviews([]);
+//     } finally {
+//       setReviewsLoading(false);
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // FETCH WISHLIST
+//   // --------------------------------------------------
+
+//   const fetchWishlistStatus = async () => {
+//     const token = localStorage.getItem('access_token');
+
+//     if (!token) return;
+
+//     try {
+//       const res = await getWishlist();
+
+//       const list = Array.isArray(res.data)
+//         ? res.data
+//         : res.data?.results || [];
+
+//       const found = list.find((item) => {
+//         const productId =
+//           typeof item.product === 'object'
+//             ? item.product?.id
+//             : item.product;
+
+//         return String(productId) === String(id);
+//       });
+
+//       if (found) {
+//         setWishlistId(found.id);
+//       } else {
+//         setWishlistId(null);
+//       }
+//     } catch (err) {
+//       console.error('Wishlist fetch error:', err);
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // INITIAL LOAD
+//   // --------------------------------------------------
+
+//   useEffect(() => {
+//     fetchProduct();
+//     fetchReviews();
+//     fetchWishlistStatus();
+//   }, [id]);
+
+//   // --------------------------------------------------
+//   // ESCAPE SIZE GUIDE
+//   // --------------------------------------------------
+
+//   useEffect(() => {
+//     const handleKeyDown = (event) => {
+//       if (event.key === 'Escape') {
+//         setIsSizeGuideOpen(false);
+//       }
+//     };
+
+//     window.addEventListener('keydown', handleKeyDown);
+
+//     return () => {
+//       window.removeEventListener('keydown', handleKeyDown);
+//     };
+//   }, []);
+
+//   // --------------------------------------------------
+//   // PRODUCT DATA
+//   // --------------------------------------------------
+
+//   const sizes = product?.sizes
+//     ? product.sizes
+//         .split(',')
+//         .map((s) => s.trim())
+//         .filter(Boolean)
+//     : [];
+
+//   const colors = product?.colors
+//     ? product.colors
+//         .split(',')
+//         .map((c) => c.trim())
+//         .filter(Boolean)
+//     : [];
+
+//   const galleryImages = useMemo(() => {
+//     if (!product) return [];
+
+//     const images = [];
+
+//     if (product.image) {
+//       images.push({
+//         id: 'primary',
+//         url: getImageUrl(product.image),
+//       });
+//     }
+
+//     if (Array.isArray(product.images)) {
+//       product.images.forEach((img) => {
+//         if (img?.image) {
+//           images.push({
+//             id: img.id || img.image,
+//             url: getImageUrl(img.image),
+//           });
+//         }
+//       });
+//     }
+
+//     return images;
+//   }, [product]);
+
+//   // --------------------------------------------------
+//   // STOCK
+//   // --------------------------------------------------
+
+//   const stock = Number(
+//     product?.stock ??
+//       product?.inventory ??
+//       product?.quantity_available ??
+//       999
+//   );
+
+//   const hasStockField =
+//     product &&
+//     (
+//       product.stock !== undefined ||
+//       product.inventory !== undefined ||
+//       product.quantity_available !== undefined
+//     );
+
+//   const isOutOfStock = hasStockField && stock <= 0;
+//   const isLowStock = hasStockField && stock > 0 && stock <= 5;
+
+//   // --------------------------------------------------
+//   // COLOR HEX
+//   // --------------------------------------------------
+
+//   const getColorHex = (colorName) => {
+//     const name = colorName.toLowerCase();
+
+//     if (name.includes('black')) return '#1a1a1a';
+//     if (name.includes('white')) return '#f4f4f4';
+//     if (
+//       name.includes('beige') ||
+//       name.includes('cream') ||
+//       name.includes('nude')
+//     ) {
+//       return '#d8c2a3';
+//     }
+//     if (name.includes('green')) return '#7a8b79';
+//     if (name.includes('blue')) return '#6b829c';
+//     if (name.includes('red')) return '#a84c4c';
+//     if (name.includes('pink')) return '#d69ca8';
+//     if (name.includes('yellow')) return '#d8bc70';
+//     if (name.includes('purple')) return '#89729c';
+//     if (name.includes('orange')) return '#c77d45';
+//     if (name.includes('brown')) return '#8c6752';
+//     if (name.includes('grey') || name.includes('gray')) return '#8a8a8a';
+
+//     return '#c5b5a4';
+//   };
+
+//   // --------------------------------------------------
+//   // RATING
+//   // --------------------------------------------------
+
+//   const averageRating =
+//     reviews.length > 0
+//       ? reviews.reduce(
+//           (total, review) => total + Number(review.rating || 0),
+//           0
+//         ) / reviews.length
+//       : 0;
+
+//   const avgRating = averageRating.toFixed(1);
+
+//   const ratingBreakdown = [5, 4, 3, 2, 1].map((rating) => {
+//     const count = reviews.filter(
+//       (review) => Number(review.rating) === rating
+//     ).length;
+
+//     const percentage =
+//       reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+
+//     return {
+//       rating,
+//       count,
+//       percentage,
+//     };
+//   });
+
+//   // --------------------------------------------------
+//   // VALIDATE PRODUCT OPTIONS
+//   // --------------------------------------------------
+
+//   const validateSelection = () => {
+//     if (isOutOfStock) {
+//       showNotice('This product is currently sold out.');
+//       return false;
+//     }
+
+//     if (sizes.length > 0 && !selectedSize) {
+//       showNotice('Please select a size.');
+//       return false;
+//     }
+
+//     if (colors.length > 0 && !selectedColor) {
+//       showNotice('Please select a color.');
+//       return false;
+//     }
+
+//     return true;
+//   };
+
+//   // --------------------------------------------------
+//   // NOTICE
+//   // --------------------------------------------------
+
+//   const showNotice = (message) => {
+//     setAddedNotice(message);
+
+//     setTimeout(() => {
+//       setAddedNotice('');
+//     }, 3500);
+//   };
+
+//   // --------------------------------------------------
+//   // ADD TO CART
+//   // --------------------------------------------------
+
+//   const handleAddToCart = () => {
+//     if (!validateSelection()) return;
+
+//     try {
+//       addToCart(
+//         product,
+//         selectedSize,
+//         selectedColor,
+//         quantity
+//       );
+
+//       showNotice(
+//         `${quantity} item${quantity > 1 ? 's' : ''} added to your bag.`
+//       );
+//     } catch (err) {
+//       console.error('Add to cart failed:', err);
+//       showNotice('Unable to add this item to cart.');
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // BUY NOW
+//   // --------------------------------------------------
+
+//   const handleBuyNow = () => {
+//     if (!validateSelection()) return;
+
+//     try {
+//       addToCart(
+//         product,
+//         selectedSize,
+//         selectedColor,
+//         quantity
+//       );
+
+//       navigate('/checkout');
+//     } catch (err) {
+//       console.error('Buy now failed:', err);
+//       showNotice('Unable to proceed to checkout.');
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // WISHLIST
+//   // --------------------------------------------------
+
+//   const handleWishlistToggle = async () => {
+//     const token = localStorage.getItem('access_token');
+
+//     if (!token) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     if (wishlistLoading) return;
+
+//     setWishlistLoading(true);
+
+//     try {
+//       if (wishlistId) {
+//         await removeFromWishlist(wishlistId);
+//         setWishlistId(null);
+
+//         showNotice('Removed from your wishlist.');
+//       } else {
+//         const res = await addToWishlist(id);
+
+//         setWishlistId(res?.data?.id || null);
+
+//         showNotice('Added to your wishlist.');
+//       }
+//     } catch (err) {
+//       console.error('Wishlist operation failed:', err);
+
+//       const message =
+//         err?.response?.data?.detail ||
+//         'Unable to update wishlist. Please try again.';
+
+//       showNotice(message);
+//     } finally {
+//       setWishlistLoading(false);
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // SHARE PRODUCT
+//   // --------------------------------------------------
+
+//   const handleShare = async () => {
+//     if (!product) return;
+
+//     const shareData = {
+//       title: product.name,
+//       text: `Check out ${product.name}`,
+//       url: window.location.href,
+//     };
+
+//     try {
+//       if (navigator.share) {
+//         await navigator.share(shareData);
+//       } else {
+//         await navigator.clipboard.writeText(window.location.href);
+
+//         setShareMessage('Product link copied!');
+
+//         setTimeout(() => {
+//           setShareMessage('');
+//         }, 2500);
+//       }
+//     } catch (err) {
+//       // User cancelled native share
+//       console.log('Share cancelled.');
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // REVIEW SUBMIT
+//   // --------------------------------------------------
+
+//   const handleReviewSubmit = async (e) => {
+//     e.preventDefault();
+
+//     const token = localStorage.getItem('access_token');
+
+//     if (!token) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     if (!newReview.comment.trim()) {
+//       setReviewError('Please write your review.');
+//       return;
+//     }
+
+//     if (newReview.comment.trim().length < 5) {
+//       setReviewError(
+//         'Please write at least 5 characters in your review.'
+//       );
+//       return;
+//     }
+
+//     setReviewSubmitting(true);
+//     setReviewError('');
+//     setReviewSubmitted(false);
+
+//     try {
+//       const res = await API.post('reviews/', {
+//         product: id,
+//         rating: Number(newReview.rating),
+//         comment: newReview.comment.trim(),
+//       });
+
+//       setReviews((previous) => [res.data, ...previous]);
+
+//       setNewReview({
+//         rating: 5,
+//         comment: '',
+//       });
+
+//       setReviewSubmitted(true);
+
+//       setTimeout(() => {
+//         setReviewSubmitted(false);
+//       }, 4000);
+//     } catch (err) {
+//       console.error('Failed to post review:', err);
+
+//       setReviewError(
+//         err?.response?.data?.detail ||
+//           err?.response?.data?.message ||
+//           'Failed to submit review. Please try again.'
+//       );
+//     } finally {
+//       setReviewSubmitting(false);
+//     }
+//   };
+
+//   // --------------------------------------------------
+//   // LOADING
+//   // --------------------------------------------------
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
+//         <div className="w-10 h-10 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin mb-5" />
+
+//         <p className="font-serif uppercase tracking-[0.3em] text-xs text-neutral-600">
+//           Curating Luxury Piece...
+//         </p>
+//       </div>
+//     );
+//   }
+
+//   // --------------------------------------------------
+//   // ERROR
+//   // --------------------------------------------------
+
+//   if (productError || !product) {
+//     return (
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-6 text-center">
+//         <div className="max-w-md bg-[#FAF7F2] border border-[#EBE3D5] rounded-3xl p-10 shadow-xl">
+//           <p className="font-serif text-2xl text-neutral-900 mb-3">
+//             Product Unavailable
+//           </p>
+
+//           <p className="text-xs text-neutral-500 leading-relaxed mb-7">
+//             {productError ||
+//               'We could not find this masterpiece.'}
+//           </p>
+
+//           <div className="flex flex-col sm:flex-row gap-3 justify-center">
+//             <button
+//               onClick={fetchProduct}
+//               className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white text-[10px] uppercase tracking-[0.2em] rounded-xl hover:bg-black transition"
+//             >
+//               <RefreshCw size={14} />
+//               Try Again
+//             </button>
+
+//             <button
+//               onClick={() => navigate('/shop')}
+//               className="px-6 py-3 border border-neutral-300 text-neutral-800 text-[10px] uppercase tracking-[0.2em] rounded-xl hover:border-neutral-900 transition"
+//             >
+//               Return to Shop
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-6 sm:py-10 px-3 sm:px-6 lg:px-12 font-sans relative">
+//       <div className="max-w-[1400px] mx-auto bg-[#FAF7F2] rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-5 sm:p-8 lg:p-14 relative overflow-hidden">
+
+//         {/* ============================================
+//             BREADCRUMB
+//         ============================================ */}
+
+//         <nav className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-neutral-400 mb-8 sm:mb-10 flex items-center gap-2 flex-wrap">
+//           <button
+//             onClick={() => navigate('/')}
+//             className="hover:text-neutral-900 transition"
+//           >
+//             Home
+//           </button>
+
+//           <span>/</span>
+
+//           <button
+//             onClick={() => navigate('/shop')}
+//             className="hover:text-neutral-900 transition"
+//           >
+//             Shop
+//           </button>
+
+//           <span>/</span>
+
+//           <span className="text-neutral-800 font-medium">
+//             {product.category_name || 'Collection'}
+//           </span>
+//         </nav>
+
+//         {/* ============================================
+//             PRODUCT MAIN SECTION
+//         ============================================ */}
+
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+
+//           {/* ==========================================
+//               GALLERY
+//           ========================================== */}
+
+//           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-[90px_1fr] gap-4 lg:gap-6">
+
+//             {/* Thumbnails */}
+
+//             <div className="order-2 sm:order-1 flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0">
+//               {galleryImages.length > 0 ? (
+//                 galleryImages.map((image) => (
+//                   <button
+//                     key={image.id}
+//                     type="button"
+//                     onClick={() =>
+//                       setSelectedImage(image.url)
+//                     }
+//                     className={`shrink-0 bg-white p-2 rounded-xl border transition-all ${
+//                       selectedImage === image.url
+//                         ? 'border-neutral-900 ring-2 ring-neutral-900/10'
+//                         : 'border-[#E8DFD1] opacity-70 hover:opacity-100'
+//                     }`}
+//                   >
+//                     <img
+//                       src={image.url}
+//                       alt={product.name}
+//                       className="w-16 h-20 object-cover rounded-lg"
+//                       onError={(e) => {
+//                         e.currentTarget.src =
+//                           'https://placehold.co/200x250?text=Image';
+//                       }}
+//                     />
+//                   </button>
+//                 ))
+//               ) : (
+//                 <div className="bg-white p-2 rounded-xl border border-[#E8DFD1]">
+//                   <img
+//                     src={getImageUrl(null)}
+//                     alt="Product"
+//                     className="w-16 h-20 object-cover rounded-lg"
+//                   />
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Main Image */}
+
+//             <div className="order-1 sm:order-2 relative flex items-center justify-center min-h-[420px] sm:min-h-[550px]">
+//               <div className="absolute w-[260px] h-[260px] sm:w-[450px] sm:h-[450px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70" />
+
+//               <div className="relative z-10 w-full">
+//                 <img
+//                   src={
+//                     selectedImage ||
+//                     getImageUrl(product.image)
+//                   }
+//                   alt={product.name}
+//                   className="w-full max-h-[650px] object-cover object-top rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
+//                   onError={(e) => {
+//                     e.currentTarget.src =
+//                       'https://placehold.co/800x1000?text=Haute+Couture';
+//                   }}
+//                 />
+
+//                 {/* Wishlist */}
+
+//                 <button
+//                   onClick={handleWishlistToggle}
+//                   disabled={wishlistLoading}
+//                   className="absolute top-4 right-4 w-12 h-12 bg-white/95 backdrop-blur border border-[#E5DDD0] rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition disabled:opacity-50"
+//                   title="Wishlist"
+//                 >
+//                   <Heart
+//                     size={20}
+//                     className={
+//                       wishlistId
+//                         ? 'fill-red-600 text-red-600'
+//                         : 'text-neutral-700'
+//                     }
+//                   />
+//                 </button>
+
+//                 {/* Share */}
+
+//                 <button
+//                   onClick={handleShare}
+//                   className="absolute top-[4.5rem] right-4 w-12 h-12 bg-white/95 backdrop-blur border border-[#E5DDD0] rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition"
+//                   title="Share Product"
+//                 >
+//                   <Share2 size={18} />
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* ==========================================
+//               PRODUCT INFO
+//           ========================================== */}
+
+//           <div className="lg:col-span-5 flex flex-col justify-center">
+
+//             {/* Category */}
+
+//             <span className="text-[10px] uppercase tracking-[0.3em] text-[#B09270] font-bold mb-3">
+//               {product.category_name || 'Premium Collection'}
+//             </span>
+
+//             {/* Title */}
+
+//             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-[#2C241D] leading-[1.1] mb-4">
+//               {product.name}
+//             </h1>
+
+//             {/* Rating */}
+
+//             <div className="flex items-center gap-2 mb-4">
+//               <div className="flex text-amber-500">
+//                 {[1, 2, 3, 4, 5].map((star) => (
+//                   <Star
+//                     key={star}
+//                     size={15}
+//                     className={
+//                       star <= Math.round(averageRating)
+//                         ? 'fill-amber-500 text-amber-500'
+//                         : 'text-neutral-300'
+//                     }
+//                   />
+//                 ))}
+//               </div>
+
+//               <span className="text-xs font-semibold text-neutral-700">
+//                 {avgRating}
+//               </span>
+
+//               <span className="text-xs text-neutral-400">
+//                 ({reviews.length} Reviews)
+//               </span>
+//             </div>
+
+//             {/* Price */}
+
+//             <div className="flex items-end gap-3 mb-5">
+//               <span className="text-3xl sm:text-4xl font-serif text-[#2C241D]">
+//                 ₹{Number(product.price || 0).toLocaleString('en-IN')}
+//               </span>
+
+//               {product.compare_at_price &&
+//                 Number(product.compare_at_price) >
+//                   Number(product.price) && (
+//                   <span className="text-sm text-neutral-400 line-through mb-1">
+//                     ₹
+//                     {Number(
+//                       product.compare_at_price
+//                     ).toLocaleString('en-IN')}
+//                   </span>
+//                 )}
+//             </div>
+
+//             {/* Stock */}
+
+//             <div className="flex items-center gap-3 mb-5">
+//               {isOutOfStock ? (
+//                 <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-red-700 bg-red-50 px-3 py-2 rounded-full">
+//                   Sold Out
+//                 </span>
+//               ) : (
+//                 <>
+//                   <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-full">
+//                     <Check size={12} />
+//                     In Stock
+//                   </span>
+
+//                   {isLowStock && (
+//                     <span className="text-[10px] uppercase tracking-widest text-red-600 font-semibold">
+//                       Only {stock} left
+//                     </span>
+//                   )}
+//                 </>
+//               )}
+//             </div>
+
+//             {/* Description */}
+
+//             <p className="text-xs sm:text-sm text-neutral-600 font-light leading-7 mb-7 max-w-xl">
+//               {product.description ||
+//                 'Lightweight and elegant piece crafted with precision, perfect for graceful occasions and everyday luxury.'}
+//             </p>
+
+//             {/* Color */}
+
+//             {colors.length > 0 && (
+//               <div className="mb-6">
+//                 <div className="flex items-center justify-between mb-3">
+//                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">
+//                     Color
+//                   </label>
+
+//                   <span className="text-[10px] text-neutral-500">
+//                     {selectedColor}
+//                   </span>
+//                 </div>
+
+//                 <div className="flex items-center gap-3 flex-wrap">
+//                   {colors.map((color) => (
+//                     <button
+//                       key={color}
+//                       type="button"
+//                       onClick={() =>
+//                         setSelectedColor(color)
+//                       }
+//                       style={{
+//                         backgroundColor: getColorHex(color),
+//                       }}
+//                       className={`w-9 h-9 rounded-full border-2 transition-all shadow-sm ${
+//                         selectedColor === color
+//                           ? 'border-neutral-900 scale-110 ring-2 ring-neutral-900/20'
+//                           : 'border-white hover:scale-105'
+//                       }`}
+//                       title={color}
+//                       aria-label={`Select ${color}`}
+//                     />
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* Size */}
+
+//             {sizes.length > 0 && (
+//               <div className="mb-7">
+//                 <div className="flex justify-between items-center mb-3">
+//                   <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">
+//                     Size
+//                   </label>
+
+//                   <button
+//                     type="button"
+//                     onClick={() =>
+//                       setIsSizeGuideOpen(true)
+//                     }
+//                     className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline underline-offset-4 hover:text-neutral-900 transition"
+//                   >
+//                     Size Guide
+//                   </button>
+//                 </div>
+
+//                 <div className="flex items-center gap-3 flex-wrap">
+//                   {sizes.map((size) => (
+//                     <button
+//                       key={size}
+//                       type="button"
+//                       onClick={() => setSelectedSize(size)}
+//                       className={`min-w-[46px] h-11 px-3 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
+//                         selectedSize === size
+//                           ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md'
+//                           : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
+//                       }`}
+//                     >
+//                       {size}
+//                     </button>
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+
+//             {/* Notice */}
+
+//             {addedNotice && (
+//               <div className="mb-4 p-3 bg-neutral-900 text-white text-[10px] tracking-[0.15em] uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
+//                 <Check
+//                   size={14}
+//                   className="text-emerald-400"
+//                 />
+//                 {addedNotice}
+//               </div>
+//             )}
+
+//             {shareMessage && (
+//               <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] uppercase tracking-wider text-center rounded-xl">
+//                 {shareMessage}
+//               </div>
+//             )}
+
+//             {/* Quantity + Buttons */}
+
+//             <div className="space-y-3">
+
+//               <div className="flex items-center gap-3">
+//                 <div className="flex items-center border border-[#E5DDD0] rounded-2xl bg-white h-14">
+//                   <button
+//                     type="button"
+//                     onClick={() =>
+//                       setQuantity(
+//                         Math.max(1, quantity - 1)
+//                       )
+//                     }
+//                     disabled={quantity <= 1}
+//                     className="w-12 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30 transition"
+//                   >
+//                     <Minus size={15} />
+//                   </button>
+
+//                   <span className="w-10 text-center text-sm font-semibold">
+//                     {quantity}
+//                   </span>
+
+//                   <button
+//                     type="button"
+//                     onClick={() =>
+//                       setQuantity(
+//                         hasStockField
+//                           ? Math.min(quantity + 1, stock)
+//                           : quantity + 1
+//                       )
+//                     }
+//                     disabled={
+//                       hasStockField &&
+//                       quantity >= stock
+//                     }
+//                     className="w-12 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30 transition"
+//                   >
+//                     <Plus size={15} />
+//                   </button>
+//                 </div>
+
+//                 <span className="text-[10px] uppercase tracking-widest text-neutral-400">
+//                   Quantity
+//                 </span>
+//               </div>
+
+//               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+//                 <button
+//                   onClick={handleAddToCart}
+//                   disabled={isOutOfStock}
+//                   className="bg-[#C8A882] hover:bg-[#B89872] disabled:bg-neutral-300 disabled:cursor-not-allowed text-white py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+//                 >
+//                   <ShoppingBag size={16} />
+//                   Add to Cart
+//                 </button>
+
+//                 <button
+//                   onClick={handleBuyNow}
+//                   disabled={isOutOfStock}
+//                   className="bg-neutral-900 hover:bg-black disabled:bg-neutral-300 disabled:cursor-not-allowed text-white py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] rounded-2xl shadow-lg transition-all"
+//                 >
+//                   Buy Now
+//                 </button>
+
+//               </div>
+
+//             </div>
+
+//             {/* Mini Benefits */}
+
+//             <div className="mt-7 pt-6 border-t border-[#EBE3D5] grid grid-cols-2 gap-4">
+//               <div className="flex items-center gap-3">
+//                 <Truck
+//                   size={18}
+//                   className="text-[#C8A882]"
+//                 />
+//                 <div>
+//                   <p className="text-[10px] font-bold uppercase tracking-wider">
+//                     Fast Delivery
+//                   </p>
+//                   <p className="text-[9px] text-neutral-500">
+//                     Across India
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="flex items-center gap-3">
+//                 <ShieldCheck
+//                   size={18}
+//                   className="text-[#C8A882]"
+//                 />
+//                 <div>
+//                   <p className="text-[10px] font-bold uppercase tracking-wider">
+//                     Secure Payment
+//                   </p>
+//                   <p className="text-[9px] text-neutral-500">
+//                     100% Protected
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//           </div>
+//         </div>
+
+//         {/* ============================================
+//             PRODUCT DETAILS
+//         ============================================ */}
+
+//         <div className="mt-16 pt-10 border-t border-[#EBE3D5]">
+
+//           <div className="mb-7">
+//             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
+//               The Details
+//             </span>
+
+//             <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900">
+//               Product Information
+//             </h3>
+//           </div>
+
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+//             <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
+//               <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+//                 Product Details
+
+//                 <ChevronDown
+//                   size={16}
+//                   className="group-open:rotate-180 transition-transform"
+//                 />
+//               </summary>
+
+//               <div className="mt-5 text-xs text-neutral-600 leading-7 space-y-1">
+//                 <p>
+//                   <strong>Category:</strong>{' '}
+//                   {product.category_name ||
+//                     'Premium Collection'}
+//                 </p>
+
+//                 <p>
+//                   <strong>Material:</strong>{' '}
+//                   {product.material ||
+//                     'Premium Fabric'}
+//                 </p>
+
+//                 <p>
+//                   <strong>Fit:</strong>{' '}
+//                   {product.fit || 'Regular Fit'}
+//                 </p>
+
+//                 {product.brand && (
+//                   <p>
+//                     <strong>Brand:</strong>{' '}
+//                     {product.brand}
+//                   </p>
+//                 )}
+//               </div>
+//             </details>
+
+//             <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
+//               <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+//                 Shipping & Returns
+
+//                 <ChevronDown
+//                   size={16}
+//                   className="group-open:rotate-180 transition-transform"
+//                 />
+//               </summary>
+
+//               <div className="mt-5 text-xs text-neutral-600 leading-7">
+//                 <p>
+//                   Free shipping on orders over ₹999.
+//                 </p>
+
+//                 <p>
+//                   Delivery available across India.
+//                 </p>
+
+//                 <p>
+//                   Easy returns according to our return policy.
+//                 </p>
+//               </div>
+//             </details>
+
+//             <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
+//               <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+//                 Care Instructions
+
+//                 <ChevronDown
+//                   size={16}
+//                   className="group-open:rotate-180 transition-transform"
+//                 />
+//               </summary>
+
+//               <div className="mt-5 text-xs text-neutral-600 leading-7">
+//                 <p>
+//                   {product.care_instructions ||
+//                     'Gentle wash and dry in shade. Follow the garment care label for best results.'}
+//                 </p>
+//               </div>
+//             </details>
+
+//           </div>
+//         </div>
+
+//         {/* ============================================
+//             REVIEWS
+//         ============================================ */}
+
+//         <div className="mt-16 pt-12 border-t border-[#EBE3D5]">
+
+//           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+
+//             {/* REVIEW SUMMARY */}
+
+//             <div className="lg:col-span-4">
+
+//               <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
+//                 Client Feedback
+//               </span>
+
+//               <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900 mb-6">
+//                 Ratings & Reviews
+//               </h3>
+
+//               <div className="bg-white border border-[#EFE8DC] rounded-3xl p-6 shadow-sm">
+
+//                 <div className="text-center mb-6">
+//                   <div className="text-4xl font-serif text-neutral-900">
+//                     {avgRating}
+//                   </div>
+
+//                   <div className="flex justify-center text-amber-500 my-2">
+//                     {[1, 2, 3, 4, 5].map((star) => (
+//                       <Star
+//                         key={star}
+//                         size={16}
+//                         className={
+//                           star <= Math.round(averageRating)
+//                             ? 'fill-amber-500'
+//                             : 'text-neutral-300'
+//                         }
+//                       />
+//                     ))}
+//                   </div>
+
+//                   <p className="text-[10px] uppercase tracking-widest text-neutral-400">
+//                     {reviews.length} Client Reviews
+//                   </p>
+//                 </div>
+
+//                 <div className="space-y-3">
+//                   {ratingBreakdown.map((item) => (
+//                     <div
+//                       key={item.rating}
+//                       className="flex items-center gap-3"
+//                     >
+//                       <span className="text-[10px] w-5 text-neutral-600">
+//                         {item.rating}
+//                       </span>
+
+//                       <Star
+//                         size={11}
+//                         className="fill-amber-500 text-amber-500"
+//                       />
+
+//                       <div className="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+//                         <div
+//                           className="h-full bg-[#C8A882] rounded-full transition-all"
+//                           style={{
+//                             width: `${item.percentage}%`,
+//                           }}
+//                         />
+//                       </div>
+
+//                       <span className="text-[9px] text-neutral-400 w-5 text-right">
+//                         {item.count}
+//                       </span>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//               </div>
+//             </div>
+
+//             {/* REVIEW LIST */}
+
+//             <div className="lg:col-span-8">
+
+//               {reviewsLoading ? (
+//                 <div className="flex items-center justify-center py-16">
+//                   <div className="w-7 h-7 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
+//                 </div>
+//               ) : reviews.length === 0 ? (
+//                 <div className="bg-white border border-[#EFE8DC] rounded-3xl p-8 text-center">
+//                   <Star
+//                     size={25}
+//                     className="mx-auto text-[#C8A882] mb-3"
+//                   />
+
+//                   <p className="font-serif text-lg text-neutral-800 mb-2">
+//                     No reviews yet
+//                   </p>
+
+//                   <p className="text-xs text-neutral-500">
+//                     Be the first client to share your experience.
+//                   </p>
+//                 </div>
+//               ) : (
+//                 <div className="space-y-4">
+//                   {reviews.map((review) => (
+//                     <div
+//                       key={review.id}
+//                       className="bg-white/80 border border-[#EFE8DC] p-5 sm:p-6 rounded-2xl shadow-sm"
+//                     >
+//                       <div className="flex justify-between items-start gap-4 mb-3">
+
+//                         <div>
+//                           <h4 className="font-serif text-sm font-semibold text-neutral-900">
+//                             {review.user_name ||
+//                               review.username ||
+//                               'Verified Client'}
+//                           </h4>
+
+//                           <div className="flex text-amber-500 mt-1">
+//                             {[1, 2, 3, 4, 5].map(
+//                               (star) => (
+//                                 <Star
+//                                   key={star}
+//                                   size={12}
+//                                   className={
+//                                     star <=
+//                                     Number(review.rating)
+//                                       ? 'fill-amber-500'
+//                                       : 'text-neutral-300'
+//                                   }
+//                                 />
+//                               )
+//                             )}
+//                           </div>
+//                         </div>
+
+//                         {review.created_at && (
+//                           <span className="text-[9px] text-neutral-400 tracking-wider whitespace-nowrap">
+//                             {new Date(
+//                               review.created_at
+//                             ).toLocaleDateString('en-IN')}
+//                           </span>
+//                         )}
+//                       </div>
+
+//                       <p className="text-xs text-neutral-600 font-light leading-6">
+//                         {review.comment}
+//                       </p>
+//                     </div>
+//                   ))}
+//                 </div>
+//               )}
+
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* ============================================
+//             WRITE REVIEW
+//         ============================================ */}
+
+//         <div className="mt-12">
+
+//           <div className="max-w-2xl mx-auto bg-white border border-[#EFE8DC] p-6 sm:p-8 rounded-3xl shadow-sm">
+
+//             <div className="text-center mb-6">
+//               <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
+//                 Share Your Experience
+//               </span>
+
+//               <h3 className="font-serif text-2xl text-neutral-900">
+//                 Write a Review
+//               </h3>
+//             </div>
+
+//             {reviewSubmitted && (
+//               <div className="mb-5 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs tracking-wider text-center rounded-xl">
+//                 Thank you! Your review has been saved.
+//               </div>
+//             )}
+
+//             {reviewError && (
+//               <div className="mb-5 p-3 bg-red-50 text-red-800 border border-red-200 text-xs tracking-wider text-center rounded-xl">
+//                 {reviewError}
+//               </div>
+//             )}
+
+//             <form
+//               onSubmit={handleReviewSubmit}
+//               className="space-y-5"
+//             >
+
+//               {/* Rating */}
+
+//               <div>
+//                 <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-2">
+//                   Rating
+//                 </label>
+
+//                 <select
+//                   value={newReview.rating}
+//                   onChange={(e) =>
+//                     setNewReview({
+//                       ...newReview,
+//                       rating: Number(e.target.value),
+//                     })
+//                   }
+//                   className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
+//                 >
+//                   <option value={5}>
+//                     ★★★★★ — Exceptional
+//                   </option>
+
+//                   <option value={4}>
+//                     ★★★★☆ — Excellent
+//                   </option>
+
+//                   <option value={3}>
+//                     ★★★☆☆ — Good
+//                   </option>
+
+//                   <option value={2}>
+//                     ★★☆☆☆ — Fair
+//                   </option>
+
+//                   <option value={1}>
+//                     ★☆☆☆☆ — Poor
+//                   </option>
+//                 </select>
+//               </div>
+
+//               {/* Comment */}
+
+//               <div>
+//                 <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-2">
+//                   Your Review
+//                 </label>
+
+//                 <textarea
+//                   rows="5"
+//                   required
+//                   maxLength={1000}
+//                   value={newReview.comment}
+//                   onChange={(e) =>
+//                     setNewReview({
+//                       ...newReview,
+//                       comment: e.target.value,
+//                     })
+//                   }
+//                   placeholder="Describe the fabric quality, fitting, comfort and your overall experience..."
+//                   className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 resize-none"
+//                 />
+
+//                 <div className="text-right text-[9px] text-neutral-400 mt-1">
+//                   {newReview.comment.length}/1000
+//                 </div>
+//               </div>
+
+//               <button
+//                 type="submit"
+//                 disabled={reviewSubmitting}
+//                 className="w-full bg-neutral-900 disabled:bg-neutral-400 disabled:cursor-not-allowed text-white py-4 text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-black transition rounded-xl shadow-md"
+//               >
+//                 {reviewSubmitting
+//                   ? 'Submitting Review...'
+//                   : 'Submit Review'}
+//               </button>
+//             </form>
+//           </div>
+//         </div>
+
+//         {/* ============================================
+//             TRUST BADGES
+//         ============================================ */}
+
+//         <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
+//             <Sparkles
+//               size={20}
+//               className="text-[#C8A882] shrink-0"
+//             />
+
+//             <div>
+//               <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
+//                 Light & Breathable
+//               </h4>
+
+//               <p className="text-[10px] text-neutral-500 mt-1">
+//                 Comfort all day
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
+//             <ShieldCheck
+//               size={20}
+//               className="text-[#C8A882] shrink-0"
+//             />
+
+//             <div>
+//               <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
+//                 Quality You Trust
+//               </h4>
+
+//               <p className="text-[10px] text-neutral-500 mt-1">
+//                 Premium materials
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
+//             <Truck
+//               size={20}
+//               className="text-[#C8A882] shrink-0"
+//             />
+
+//             <div>
+//               <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
+//                 Free Shipping
+//               </h4>
+
+//               <p className="text-[10px] text-neutral-500 mt-1">
+//                 On orders over ₹999
+//               </p>
+//             </div>
+//           </div>
+
+//         </div>
+
+//       </div>
+
+//       {/* ==============================================
+//           SIZE GUIDE MODAL
+//       ============================================== */}
+
+//       {isSizeGuideOpen && (
+//         <div
+//           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+//           onMouseDown={(e) => {
+//             if (e.target === e.currentTarget) {
+//               setIsSizeGuideOpen(false);
+//             }
+//           }}
+//         >
+//           <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl rounded-3xl">
+
+//             <button
+//               onClick={() => setIsSizeGuideOpen(false)}
+//               className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white border border-[#E5DDD0] flex items-center justify-center text-neutral-500 hover:text-black transition"
+//               aria-label="Close size guide"
+//             >
+//               <X size={16} />
+//             </button>
+
+//             <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
+//               Atelier Measurements
+//             </span>
+
+//             <h3 className="font-serif text-2xl text-neutral-900 mb-6 pr-10">
+//               Size Guide
+//             </h3>
+
+//             <div className="overflow-x-auto">
+//               <table className="w-full text-left text-xs mb-6 border-collapse">
+
+//                 <thead>
+//                   <tr className="border-b border-neutral-300 text-neutral-500 uppercase tracking-widest text-[9px]">
+//                     <th className="py-3">
+//                       Size
+//                     </th>
+
+//                     <th className="py-3">
+//                       Chest
+//                     </th>
+
+//                     <th className="py-3">
+//                       Waist
+//                     </th>
+
+//                     <th className="py-3">
+//                       Length
+//                     </th>
+//                   </tr>
+//                 </thead>
+
+//                 <tbody className="divide-y divide-neutral-200 text-neutral-800">
+
+//                   <tr>
+//                     <td className="py-3 font-bold">
+//                       S
+//                     </td>
+//                     <td className="py-3">
+//                       36-38"
+//                     </td>
+//                     <td className="py-3">
+//                       30-32"
+//                     </td>
+//                     <td className="py-3">
+//                       40"
+//                     </td>
+//                   </tr>
+
+//                   <tr>
+//                     <td className="py-3 font-bold">
+//                       M
+//                     </td>
+//                     <td className="py-3">
+//                       38-40"
+//                     </td>
+//                     <td className="py-3">
+//                       32-34"
+//                     </td>
+//                     <td className="py-3">
+//                       41"
+//                     </td>
+//                   </tr>
+
+//                   <tr>
+//                     <td className="py-3 font-bold">
+//                       L
+//                     </td>
+//                     <td className="py-3">
+//                       40-42"
+//                     </td>
+//                     <td className="py-3">
+//                       34-36"
+//                     </td>
+//                     <td className="py-3">
+//                       42"
+//                     </td>
+//                   </tr>
+
+//                   <tr>
+//                     <td className="py-3 font-bold">
+//                       XL
+//                     </td>
+//                     <td className="py-3">
+//                       42-44"
+//                     </td>
+//                     <td className="py-3">
+//                       36-38"
+//                     </td>
+//                     <td className="py-3">
+//                       43"
+//                     </td>
+//                   </tr>
+
+//                 </tbody>
+//               </table>
+//             </div>
+
+//             <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
+//               * Measurements are given in inches. For custom
+//               tailoring inquiries, please contact our concierge
+//               support.
+//             </p>
+
+//           </div>
+//         </div>
+//       )}
+
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -901,7 +2526,6 @@ export default function ProductDetail() {
 
       setProduct(data);
 
-      // Main image
       if (data.image) {
         setSelectedImage(getImageUrl(data.image));
       } else if (data.images && data.images.length > 0) {
@@ -910,7 +2534,6 @@ export default function ProductDetail() {
         setSelectedImage(getImageUrl(null));
       }
 
-      // Sizes
       const sizesArr = data.sizes
         ? data.sizes
             .split(',')
@@ -918,7 +2541,6 @@ export default function ProductDetail() {
             .filter(Boolean)
         : [];
 
-      // Colors
       const colorsArr = data.colors
         ? data.colors
             .split(',')
@@ -1094,11 +2716,9 @@ export default function ProductDetail() {
 
   const hasStockField =
     product &&
-    (
-      product.stock !== undefined ||
+    (product.stock !== undefined ||
       product.inventory !== undefined ||
-      product.quantity_available !== undefined
-    );
+      product.quantity_available !== undefined);
 
   const isOutOfStock = hasStockField && stock <= 0;
   const isLowStock = hasStockField && stock > 0 && stock <= 5;
@@ -1262,22 +2882,17 @@ export default function ProductDetail() {
       if (wishlistId) {
         await removeFromWishlist(wishlistId);
         setWishlistId(null);
-
         showNotice('Removed from your wishlist.');
       } else {
         const res = await addToWishlist(id);
-
         setWishlistId(res?.data?.id || null);
-
         showNotice('Added to your wishlist.');
       }
     } catch (err) {
       console.error('Wishlist operation failed:', err);
-
       const message =
         err?.response?.data?.detail ||
         'Unable to update wishlist. Please try again.';
-
       showNotice(message);
     } finally {
       setWishlistLoading(false);
@@ -1302,15 +2917,12 @@ export default function ProductDetail() {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(window.location.href);
-
         setShareMessage('Product link copied!');
-
         setTimeout(() => {
           setShareMessage('');
         }, 2500);
       }
     } catch (err) {
-      // User cancelled native share
       console.log('Share cancelled.');
     }
   };
@@ -1353,12 +2965,10 @@ export default function ProductDetail() {
       });
 
       setReviews((previous) => [res.data, ...previous]);
-
       setNewReview({
         rating: 5,
         comment: '',
       });
-
       setReviewSubmitted(true);
 
       setTimeout(() => {
@@ -1366,7 +2976,6 @@ export default function ProductDetail() {
       }, 4000);
     } catch (err) {
       console.error('Failed to post review:', err);
-
       setReviewError(
         err?.response?.data?.detail ||
           err?.response?.data?.message ||
@@ -1383,11 +2992,10 @@ export default function ProductDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-4 text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] p-4 text-center">
         <div className="w-10 h-10 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin mb-5" />
-
-        <p className="font-serif uppercase tracking-[0.3em] text-xs text-neutral-600">
-          Curating Luxury Piece...
+        <p className="font-serif tracking-widest text-xs text-neutral-600 uppercase">
+          Curating Piece...
         </p>
       </div>
     );
@@ -1399,29 +3007,25 @@ export default function ProductDetail() {
 
   if (productError || !product) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5EFEB] p-6 text-center">
-        <div className="max-w-md bg-[#FAF7F2] border border-[#EBE3D5] rounded-3xl p-10 shadow-xl">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] p-6 text-center">
+        <div className="max-w-md bg-white border border-neutral-200 rounded-2xl p-10 shadow-lg">
           <p className="font-serif text-2xl text-neutral-900 mb-3">
             Product Unavailable
           </p>
-
           <p className="text-xs text-neutral-500 leading-relaxed mb-7">
-            {productError ||
-              'We could not find this masterpiece.'}
+            {productError || 'We could not find this product.'}
           </p>
-
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={fetchProduct}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white text-[10px] uppercase tracking-[0.2em] rounded-xl hover:bg-black transition"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-900 text-white text-xs uppercase tracking-wider rounded-xl hover:bg-black transition"
             >
               <RefreshCw size={14} />
               Try Again
             </button>
-
             <button
               onClick={() => navigate('/shop')}
-              className="px-6 py-3 border border-neutral-300 text-neutral-800 text-[10px] uppercase tracking-[0.2em] rounded-xl hover:border-neutral-900 transition"
+              className="px-6 py-3 border border-neutral-300 text-neutral-800 text-xs uppercase tracking-wider rounded-xl hover:border-neutral-900 transition"
             >
               Return to Shop
             </button>
@@ -1432,70 +3036,46 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="bg-[#F5EFEB] min-h-screen text-[#2C241D] py-6 sm:py-10 px-3 sm:px-6 lg:px-12 font-sans relative">
-      <div className="max-w-[1400px] mx-auto bg-[#FAF7F2] rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-[#EBE3D5] p-5 sm:p-8 lg:p-14 relative overflow-hidden">
+    <div className="bg-[#FAF8F5] min-h-screen text-neutral-900 py-8 px-4 sm:px-6 lg:px-12 font-sans relative">
+      <div className="max-w-[1400px] mx-auto bg-white rounded-3xl shadow-sm border border-neutral-200/80 p-6 sm:p-10 lg:p-16 relative overflow-hidden">
 
-        {/* ============================================
-            BREADCRUMB
-        ============================================ */}
-
-        <nav className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-neutral-400 mb-8 sm:mb-10 flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => navigate('/')}
-            className="hover:text-neutral-900 transition"
-          >
+        {/* BREADCRUMB */}
+        <nav className="text-xs uppercase tracking-widest text-neutral-400 mb-8 flex items-center gap-2 flex-wrap">
+          <button onClick={() => navigate('/')} className="hover:text-neutral-900 transition">
             Home
           </button>
-
           <span>/</span>
-
-          <button
-            onClick={() => navigate('/shop')}
-            className="hover:text-neutral-900 transition"
-          >
+          <button onClick={() => navigate('/shop')} className="hover:text-neutral-900 transition">
             Shop
           </button>
-
           <span>/</span>
-
           <span className="text-neutral-800 font-medium">
             {product.category_name || 'Collection'}
           </span>
         </nav>
 
-        {/* ============================================
-            PRODUCT MAIN SECTION
-        ============================================ */}
+        {/* MAIN PRODUCT SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-
-          {/* ==========================================
-              GALLERY
-          ========================================== */}
-
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-[90px_1fr] gap-4 lg:gap-6">
-
-            {/* Thumbnails */}
-
+          {/* GALLERY */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-[90px_1fr] gap-4">
             <div className="order-2 sm:order-1 flex sm:flex-col gap-3 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0">
               {galleryImages.length > 0 ? (
                 galleryImages.map((image) => (
                   <button
                     key={image.id}
                     type="button"
-                    onClick={() =>
-                      setSelectedImage(image.url)
-                    }
-                    className={`shrink-0 bg-white p-2 rounded-xl border transition-all ${
+                    onClick={() => setSelectedImage(image.url)}
+                    className={`shrink-0 bg-neutral-50 p-1.5 rounded-lg border transition-all ${
                       selectedImage === image.url
-                        ? 'border-neutral-900 ring-2 ring-neutral-900/10'
-                        : 'border-[#E8DFD1] opacity-70 hover:opacity-100'
+                        ? 'border-neutral-900 ring-1 ring-neutral-900'
+                        : 'border-neutral-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <img
                       src={image.url}
                       alt={product.name}
-                      className="w-16 h-20 object-cover rounded-lg"
+                      className="w-16 h-20 object-cover rounded-md"
                       onError={(e) => {
                         e.currentTarget.src =
                           'https://placehold.co/200x250?text=Image';
@@ -1504,92 +3084,72 @@ export default function ProductDetail() {
                   </button>
                 ))
               ) : (
-                <div className="bg-white p-2 rounded-xl border border-[#E8DFD1]">
+                <div className="bg-neutral-50 p-1.5 rounded-lg border border-neutral-200">
                   <img
                     src={getImageUrl(null)}
                     alt="Product"
-                    className="w-16 h-20 object-cover rounded-lg"
+                    className="w-16 h-20 object-cover rounded-md"
                   />
                 </div>
               )}
             </div>
 
-            {/* Main Image */}
+            <div className="order-1 sm:order-2 relative flex items-center justify-center min-h-[450px] sm:min-h-[600px] bg-neutral-50 rounded-2xl overflow-hidden">
+              <img
+                src={selectedImage || getImageUrl(product.image)}
+                alt={product.name}
+                className="w-full h-full max-h-[650px] object-cover rounded-2xl transition-transform duration-700 hover:scale-105"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    'https://placehold.co/800x1000?text=Luxury+Collection';
+                }}
+              />
 
-            <div className="order-1 sm:order-2 relative flex items-center justify-center min-h-[420px] sm:min-h-[550px]">
-              <div className="absolute w-[260px] h-[260px] sm:w-[450px] sm:h-[450px] bg-[#EFE6D8] rounded-full blur-3xl opacity-70" />
-
-              <div className="relative z-10 w-full">
-                <img
-                  src={
-                    selectedImage ||
-                    getImageUrl(product.image)
+              {/* Wishlist */}
+              <button
+                onClick={handleWishlistToggle}
+                disabled={wishlistLoading}
+                className="absolute top-4 right-4 w-11 h-11 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-50"
+                title="Wishlist"
+              >
+                <Heart
+                  size={18}
+                  className={
+                    wishlistId
+                      ? 'fill-red-500 text-red-500'
+                      : 'text-neutral-700'
                   }
-                  alt={product.name}
-                  className="w-full max-h-[650px] object-cover object-top rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      'https://placehold.co/800x1000?text=Haute+Couture';
-                  }}
                 />
+              </button>
 
-                {/* Wishlist */}
-
-                <button
-                  onClick={handleWishlistToggle}
-                  disabled={wishlistLoading}
-                  className="absolute top-4 right-4 w-12 h-12 bg-white/95 backdrop-blur border border-[#E5DDD0] rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition disabled:opacity-50"
-                  title="Wishlist"
-                >
-                  <Heart
-                    size={20}
-                    className={
-                      wishlistId
-                        ? 'fill-red-600 text-red-600'
-                        : 'text-neutral-700'
-                    }
-                  />
-                </button>
-
-                {/* Share */}
-
-                <button
-                  onClick={handleShare}
-                  className="absolute top-[4.5rem] right-4 w-12 h-12 bg-white/95 backdrop-blur border border-[#E5DDD0] rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition"
-                  title="Share Product"
-                >
-                  <Share2 size={18} />
-                </button>
-              </div>
+              {/* Share */}
+              <button
+                onClick={handleShare}
+                className="absolute top-16 right-4 mt-2 w-11 h-11 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
+                title="Share Product"
+              >
+                <Share2 size={16} className="text-neutral-700" />
+              </button>
             </div>
           </div>
 
-          {/* ==========================================
-              PRODUCT INFO
-          ========================================== */}
-
+          {/* INFO SECTION */}
           <div className="lg:col-span-5 flex flex-col justify-center">
-
-            {/* Category */}
-
-            <span className="text-[10px] uppercase tracking-[0.3em] text-[#B09270] font-bold mb-3">
-              {product.category_name || 'Premium Collection'}
+            <span className="text-xs uppercase tracking-widest text-[#C8A882] font-semibold mb-2">
+              {product.category_name || 'Atelier Collection'}
             </span>
 
-            {/* Title */}
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-[#2C241D] leading-[1.1] mb-4">
+            <h1 className="text-3xl sm:text-4xl font-serif text-neutral-900 mb-4 leading-tight">
               {product.name}
             </h1>
 
             {/* Rating */}
-
             <div className="flex items-center gap-2 mb-4">
               <div className="flex text-amber-500">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    size={15}
+                    size={14}
                     className={
                       star <= Math.round(averageRating)
                         ? 'fill-amber-500 text-amber-500'
@@ -1598,133 +3158,93 @@ export default function ProductDetail() {
                   />
                 ))}
               </div>
-
-              <span className="text-xs font-semibold text-neutral-700">
-                {avgRating}
-              </span>
-
-              <span className="text-xs text-neutral-400">
-                ({reviews.length} Reviews)
-              </span>
+              <span className="text-xs font-bold text-neutral-700">{avgRating}</span>
+              <span className="text-xs text-neutral-400">({reviews.length} reviews)</span>
             </div>
 
             {/* Price */}
-
-            <div className="flex items-end gap-3 mb-5">
-              <span className="text-3xl sm:text-4xl font-serif text-[#2C241D]">
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-2xl sm:text-3xl font-serif font-bold text-neutral-900">
                 ₹{Number(product.price || 0).toLocaleString('en-IN')}
               </span>
-
               {product.compare_at_price &&
-                Number(product.compare_at_price) >
-                  Number(product.price) && (
-                  <span className="text-sm text-neutral-400 line-through mb-1">
-                    ₹
-                    {Number(
-                      product.compare_at_price
-                    ).toLocaleString('en-IN')}
+                Number(product.compare_at_price) > Number(product.price) && (
+                  <span className="text-sm text-neutral-400 line-through">
+                    ₹{Number(product.compare_at_price).toLocaleString('en-IN')}
                   </span>
                 )}
             </div>
 
-            {/* Stock */}
-
-            <div className="flex items-center gap-3 mb-5">
+            {/* Stock indicator */}
+            <div className="mb-6">
               {isOutOfStock ? (
-                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-red-700 bg-red-50 px-3 py-2 rounded-full">
+                <span className="text-xs uppercase tracking-wider font-bold text-red-600 bg-red-50 px-3 py-1.5 rounded-lg">
                   Sold Out
                 </span>
               ) : (
-                <>
-                  <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-full">
-                    <Check size={12} />
-                    In Stock
-                  </span>
-
-                  {isLowStock && (
-                    <span className="text-[10px] uppercase tracking-widest text-red-600 font-semibold">
-                      Only {stock} left
-                    </span>
-                  )}
-                </>
+                <span className="text-xs uppercase tracking-wider font-medium text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5">
+                  <Check size={13} /> In Stock {isLowStock && `• Only ${stock} left`}
+                </span>
               )}
             </div>
 
-            {/* Description */}
-
-            <p className="text-xs sm:text-sm text-neutral-600 font-light leading-7 mb-7 max-w-xl">
+            <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8">
               {product.description ||
-                'Lightweight and elegant piece crafted with precision, perfect for graceful occasions and everyday luxury.'}
+                'Meticulously crafted piece designed for absolute comfort and refined modern elegance.'}
             </p>
 
-            {/* Color */}
-
+            {/* Color selection */}
             {colors.length > 0 && (
               <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">
-                    Color
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs uppercase tracking-wider font-bold text-neutral-700">
+                    Color: <span className="font-normal text-neutral-500">{selectedColor}</span>
                   </label>
-
-                  <span className="text-[10px] text-neutral-500">
-                    {selectedColor}
-                  </span>
                 </div>
-
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
                   {colors.map((color) => (
                     <button
                       key={color}
                       type="button"
-                      onClick={() =>
-                        setSelectedColor(color)
-                      }
-                      style={{
-                        backgroundColor: getColorHex(color),
-                      }}
-                      className={`w-9 h-9 rounded-full border-2 transition-all shadow-sm ${
+                      onClick={() => setSelectedColor(color)}
+                      style={{ backgroundColor: getColorHex(color) }}
+                      className={`w-8 h-8 rounded-full border transition-all ${
                         selectedColor === color
                           ? 'border-neutral-900 scale-110 ring-2 ring-neutral-900/20'
-                          : 'border-white hover:scale-105'
+                          : 'border-neutral-300 hover:scale-105'
                       }`}
                       title={color}
-                      aria-label={`Select ${color}`}
                     />
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Size */}
-
+            {/* Size selection */}
             {sizes.length > 0 && (
-              <div className="mb-7">
-                <div className="flex justify-between items-center mb-3">
-                  <label className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-600">
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-xs uppercase tracking-wider font-bold text-neutral-700">
                     Size
                   </label>
-
                   <button
                     type="button"
-                    onClick={() =>
-                      setIsSizeGuideOpen(true)
-                    }
-                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-neutral-500 underline underline-offset-4 hover:text-neutral-900 transition"
+                    onClick={() => setIsSizeGuideOpen(true)}
+                    className="text-xs underline text-neutral-500 hover:text-neutral-900 transition"
                   >
                     Size Guide
                   </button>
                 </div>
-
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap">
                   {sizes.map((size) => (
                     <button
                       key={size}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`min-w-[46px] h-11 px-3 rounded-full text-xs font-medium transition-all flex items-center justify-center border ${
+                      className={`min-w-[42px] h-11 px-3 rounded-xl text-xs font-medium transition-all border ${
                         selectedSize === size
-                          ? 'bg-[#C8A882] border-[#C8A882] text-white shadow-md'
-                          : 'bg-white border-[#E5DDD0] text-neutral-800 hover:border-neutral-900'
+                          ? 'bg-neutral-900 border-neutral-900 text-white'
+                          : 'bg-white border-neutral-200 text-neutral-800 hover:border-neutral-400'
                       }`}
                     >
                       {size}
@@ -1734,695 +3254,352 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Notice */}
-
+            {/* Notices */}
             {addedNotice && (
-              <div className="mb-4 p-3 bg-neutral-900 text-white text-[10px] tracking-[0.15em] uppercase text-center font-medium rounded-xl flex items-center justify-center gap-2">
-                <Check
-                  size={14}
-                  className="text-emerald-400"
-                />
+              <div className="mb-4 p-3 bg-neutral-900 text-white text-xs uppercase tracking-wider text-center rounded-xl font-medium">
                 {addedNotice}
               </div>
             )}
 
             {shareMessage && (
-              <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] uppercase tracking-wider text-center rounded-xl">
+              <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs text-center rounded-xl">
                 {shareMessage}
               </div>
             )}
 
-            {/* Quantity + Buttons */}
-
-            <div className="space-y-3">
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border border-[#E5DDD0] rounded-2xl bg-white h-14">
+            {/* Quantity & CTAs */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center border border-neutral-200 rounded-xl bg-white h-12">
                   <button
                     type="button"
-                    onClick={() =>
-                      setQuantity(
-                        Math.max(1, quantity - 1)
-                      )
-                    }
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
-                    className="w-12 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30 transition"
+                    className="w-10 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30"
                   >
-                    <Minus size={15} />
+                    <Minus size={14} />
                   </button>
-
-                  <span className="w-10 text-center text-sm font-semibold">
-                    {quantity}
-                  </span>
-
+                  <span className="w-8 text-center text-xs font-semibold">{quantity}</span>
                   <button
                     type="button"
                     onClick={() =>
                       setQuantity(
-                        hasStockField
-                          ? Math.min(quantity + 1, stock)
-                          : quantity + 1
+                        hasStockField ? Math.min(quantity + 1, stock) : quantity + 1
                       )
                     }
-                    disabled={
-                      hasStockField &&
-                      quantity >= stock
-                    }
-                    className="w-12 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30 transition"
+                    disabled={hasStockField && quantity >= stock}
+                    className="w-10 h-full flex items-center justify-center hover:bg-neutral-50 disabled:opacity-30"
                   >
-                    <Plus size={15} />
+                    <Plus size={14} />
                   </button>
                 </div>
-
-                <span className="text-[10px] uppercase tracking-widest text-neutral-400">
-                  Quantity
-                </span>
+                <span className="text-xs text-neutral-400 uppercase tracking-wider">Quantity</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-
                 <button
                   onClick={handleAddToCart}
                   disabled={isOutOfStock}
-                  className="bg-[#C8A882] hover:bg-[#B89872] disabled:bg-neutral-300 disabled:cursor-not-allowed text-white py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                  className="bg-[#C8A882] hover:bg-[#B89872] disabled:bg-neutral-300 text-white py-4 px-6 text-xs font-bold uppercase tracking-widest rounded-xl transition flex items-center justify-center gap-2"
                 >
-                  <ShoppingBag size={16} />
-                  Add to Cart
+                  <ShoppingBag size={15} /> Add to Cart
                 </button>
-
                 <button
                   onClick={handleBuyNow}
                   disabled={isOutOfStock}
-                  className="bg-neutral-900 hover:bg-black disabled:bg-neutral-300 disabled:cursor-not-allowed text-white py-4 px-5 text-[10px] font-semibold uppercase tracking-[0.2em] rounded-2xl shadow-lg transition-all"
+                  className="bg-neutral-900 hover:bg-black disabled:bg-neutral-300 text-white py-4 px-6 text-xs font-bold uppercase tracking-widest rounded-xl transition"
                 >
                   Buy Now
                 </button>
-
-              </div>
-
-            </div>
-
-            {/* Mini Benefits */}
-
-            <div className="mt-7 pt-6 border-t border-[#EBE3D5] grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <Truck
-                  size={18}
-                  className="text-[#C8A882]"
-                />
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider">
-                    Fast Delivery
-                  </p>
-                  <p className="text-[9px] text-neutral-500">
-                    Across India
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <ShieldCheck
-                  size={18}
-                  className="text-[#C8A882]"
-                />
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider">
-                    Secure Payment
-                  </p>
-                  <p className="text-[9px] text-neutral-500">
-                    100% Protected
-                  </p>
-                </div>
               </div>
             </div>
 
+            {/* Perks */}
+            <div className="mt-8 pt-6 border-t border-neutral-200 grid grid-cols-2 gap-4 text-xs text-neutral-600">
+              <div className="flex items-center gap-2">
+                <Truck size={16} className="text-[#C8A882]" /> Fast Nationwide Delivery
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={16} className="text-[#C8A882]" /> Secure Checkout
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ============================================
-            PRODUCT DETAILS
-        ============================================ */}
+        {/* DETAILS ACCORDION SECTION */}
+        <div className="mt-20 pt-12 border-t border-neutral-200">
+          <h3 className="font-serif text-2xl text-neutral-900 mb-8 text-center">
+            Product Specifications
+          </h3>
 
-        <div className="mt-16 pt-10 border-t border-[#EBE3D5]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-3 text-neutral-900">
+                Composition & Fit
+              </h4>
+              <p className="text-xs text-neutral-600 leading-relaxed space-y-1">
+                <strong>Material:</strong> {product.material || 'Premium Fabric'}<br />
+                <strong>Fit Type:</strong> {product.fit || 'Regular Fit'}<br />
+                <strong>Category:</strong> {product.category_name || 'Apparel'}
+              </p>
+            </div>
 
-          <div className="mb-7">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
-              The Details
-            </span>
-
-            <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900">
-              Product Information
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
-              <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
-                Product Details
-
-                <ChevronDown
-                  size={16}
-                  className="group-open:rotate-180 transition-transform"
-                />
-              </summary>
-
-              <div className="mt-5 text-xs text-neutral-600 leading-7 space-y-1">
-                <p>
-                  <strong>Category:</strong>{' '}
-                  {product.category_name ||
-                    'Premium Collection'}
-                </p>
-
-                <p>
-                  <strong>Material:</strong>{' '}
-                  {product.material ||
-                    'Premium Fabric'}
-                </p>
-
-                <p>
-                  <strong>Fit:</strong>{' '}
-                  {product.fit || 'Regular Fit'}
-                </p>
-
-                {product.brand && (
-                  <p>
-                    <strong>Brand:</strong>{' '}
-                    {product.brand}
-                  </p>
-                )}
-              </div>
-            </details>
-
-            <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
-              <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-3 text-neutral-900">
                 Shipping & Returns
+              </h4>
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                Enjoy complimentary express delivery on all orders above ₹999. 14-day hassle-free return window provided your items are unwashed and tagged.
+              </p>
+            </div>
 
-                <ChevronDown
-                  size={16}
-                  className="group-open:rotate-180 transition-transform"
-                />
-              </summary>
-
-              <div className="mt-5 text-xs text-neutral-600 leading-7">
-                <p>
-                  Free shipping on orders over ₹999.
-                </p>
-
-                <p>
-                  Delivery available across India.
-                </p>
-
-                <p>
-                  Easy returns according to our return policy.
-                </p>
-              </div>
-            </details>
-
-            <details className="group bg-white border border-[#EFE8DC] rounded-2xl p-5">
-              <summary className="cursor-pointer list-none flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
-                Care Instructions
-
-                <ChevronDown
-                  size={16}
-                  className="group-open:rotate-180 transition-transform"
-                />
-              </summary>
-
-              <div className="mt-5 text-xs text-neutral-600 leading-7">
-                <p>
-                  {product.care_instructions ||
-                    'Gentle wash and dry in shade. Follow the garment care label for best results.'}
-                </p>
-              </div>
-            </details>
-
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6">
+              <h4 className="text-xs font-bold uppercase tracking-wider mb-3 text-neutral-900">
+                Garment Care
+              </h4>
+              <p className="text-xs text-neutral-600 leading-relaxed">
+                {product.care_instructions || 'Gentle machine wash with similar colors. Do not bleach. Dry flat in shade to preserve textile longevity.'}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* ============================================
-            REVIEWS
-        ============================================ */}
-
-        <div className="mt-16 pt-12 border-t border-[#EBE3D5]">
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-
-            {/* REVIEW SUMMARY */}
-
+        {/* REVIEWS & RATINGS SECTION */}
+        <div className="mt-20 pt-12 border-t border-neutral-200">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
             <div className="lg:col-span-4">
-
-              <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
+              <h3 className="font-serif text-2xl text-neutral-900 mb-6">
                 Client Feedback
-              </span>
-
-              <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900 mb-6">
-                Ratings & Reviews
               </h3>
-
-              <div className="bg-white border border-[#EFE8DC] rounded-3xl p-6 shadow-sm">
-
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-serif text-neutral-900">
-                    {avgRating}
-                  </div>
-
-                  <div className="flex justify-center text-amber-500 my-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={16}
-                        className={
-                          star <= Math.round(averageRating)
-                            ? 'fill-amber-500'
-                            : 'text-neutral-300'
-                        }
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-[10px] uppercase tracking-widest text-neutral-400">
-                    {reviews.length} Client Reviews
-                  </p>
+              <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 text-center">
+                <div className="text-4xl font-serif font-bold text-neutral-900 mb-1">
+                  {avgRating}
                 </div>
+                <div className="flex justify-center text-amber-500 mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={15}
+                      className={
+                        star <= Math.round(averageRating)
+                          ? 'fill-amber-500'
+                          : 'text-neutral-300'
+                      }
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-neutral-500 uppercase tracking-wider mb-6">
+                  Based on {reviews.length} reviews
+                </p>
 
-                <div className="space-y-3">
+                <div className="space-y-2 text-left">
                   {ratingBreakdown.map((item) => (
-                    <div
-                      key={item.rating}
-                      className="flex items-center gap-3"
-                    >
-                      <span className="text-[10px] w-5 text-neutral-600">
-                        {item.rating}
-                      </span>
-
-                      <Star
-                        size={11}
-                        className="fill-amber-500 text-amber-500"
-                      />
-
-                      <div className="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                    <div key={item.rating} className="flex items-center gap-2 text-xs">
+                      <span className="w-3 text-neutral-600">{item.rating}</span>
+                      <Star size={10} className="fill-amber-500 text-amber-500" />
+                      <div className="flex-1 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[#C8A882] rounded-full transition-all"
-                          style={{
-                            width: `${item.percentage}%`,
-                          }}
+                          className="h-full bg-[#C8A882] rounded-full"
+                          style={{ width: `${item.percentage}%` }}
                         />
                       </div>
-
-                      <span className="text-[9px] text-neutral-400 w-5 text-right">
-                        {item.count}
-                      </span>
+                      <span className="w-6 text-right text-neutral-400 text-[10px]">{item.count}</span>
                     </div>
                   ))}
                 </div>
-
               </div>
             </div>
 
-            {/* REVIEW LIST */}
-
-            <div className="lg:col-span-8">
+            <div className="lg:col-span-8 space-y-6">
+              <h3 className="font-serif text-2xl text-neutral-900 mb-6">
+                Customer Reviews
+              </h3>
 
               {reviewsLoading ? (
-                <div className="flex items-center justify-center py-16">
-                  <div className="w-7 h-7 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
-                </div>
+                <div className="py-12 text-center text-xs text-neutral-400">Loading reviews...</div>
               ) : reviews.length === 0 ? (
-                <div className="bg-white border border-[#EFE8DC] rounded-3xl p-8 text-center">
-                  <Star
-                    size={25}
-                    className="mx-auto text-[#C8A882] mb-3"
-                  />
-
-                  <p className="font-serif text-lg text-neutral-800 mb-2">
-                    No reviews yet
-                  </p>
-
-                  <p className="text-xs text-neutral-500">
-                    Be the first client to share your experience.
-                  </p>
+                <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-8 text-center text-neutral-500 text-xs">
+                  No reviews submitted yet. Be the first to share your experience!
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
                   {reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="bg-white/80 border border-[#EFE8DC] p-5 sm:p-6 rounded-2xl shadow-sm"
-                    >
-                      <div className="flex justify-between items-start gap-4 mb-3">
-
+                    <div key={review.id} className="bg-neutral-50 border border-neutral-200 p-6 rounded-2xl">
+                      <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-serif text-sm font-semibold text-neutral-900">
-                            {review.user_name ||
-                              review.username ||
-                              'Verified Client'}
+                          <h4 className="font-medium text-sm text-neutral-900">
+                            {review.user_name || review.username || 'Verified Client'}
                           </h4>
-
                           <div className="flex text-amber-500 mt-1">
-                            {[1, 2, 3, 4, 5].map(
-                              (star) => (
-                                <Star
-                                  key={star}
-                                  size={12}
-                                  className={
-                                    star <=
-                                    Number(review.rating)
-                                      ? 'fill-amber-500'
-                                      : 'text-neutral-300'
-                                  }
-                                />
-                              )
-                            )}
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                size={11}
+                                className={
+                                  star <= Number(review.rating)
+                                    ? 'fill-amber-500'
+                                    : 'text-neutral-300'
+                                }
+                              />
+                            ))}
                           </div>
                         </div>
-
                         {review.created_at && (
-                          <span className="text-[9px] text-neutral-400 tracking-wider whitespace-nowrap">
-                            {new Date(
-                              review.created_at
-                            ).toLocaleDateString('en-IN')}
+                          <span className="text-[10px] text-neutral-400">
+                            {new Date(review.created_at).toLocaleDateString('en-IN')}
                           </span>
                         )}
                       </div>
-
-                      <p className="text-xs text-neutral-600 font-light leading-6">
+                      <p className="text-xs text-neutral-600 font-light mt-3 leading-relaxed">
                         {review.comment}
                       </p>
                     </div>
                   ))}
                 </div>
               )}
-
             </div>
+
           </div>
         </div>
 
-        {/* ============================================
-            WRITE REVIEW
-        ============================================ */}
-
-        <div className="mt-12">
-
-          <div className="max-w-2xl mx-auto bg-white border border-[#EFE8DC] p-6 sm:p-8 rounded-3xl shadow-sm">
-
-            <div className="text-center mb-6">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
-                Share Your Experience
-              </span>
-
-              <h3 className="font-serif text-2xl text-neutral-900">
-                Write a Review
-              </h3>
-            </div>
+        {/* WRITE A REVIEW FORM */}
+        <div className="mt-20 pt-12 border-t border-neutral-200 max-w-2xl mx-auto">
+          <div className="bg-neutral-50 border border-neutral-200 p-8 rounded-3xl">
+            <h3 className="font-serif text-2xl text-neutral-900 mb-2 text-center">
+              Leave a Review
+            </h3>
+            <p className="text-xs text-neutral-500 text-center mb-6">
+              Share your thoughts on fit, fabric quality, and styling.
+            </p>
 
             {reviewSubmitted && (
-              <div className="mb-5 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs tracking-wider text-center rounded-xl">
-                Thank you! Your review has been saved.
+              <div className="mb-4 p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs text-center rounded-xl">
+                Thank you! Your review has been published.
               </div>
             )}
 
             {reviewError && (
-              <div className="mb-5 p-3 bg-red-50 text-red-800 border border-red-200 text-xs tracking-wider text-center rounded-xl">
+              <div className="mb-4 p-3 bg-red-50 text-red-800 border border-red-200 text-xs text-center rounded-xl">
                 {reviewError}
               </div>
             )}
 
-            <form
-              onSubmit={handleReviewSubmit}
-              className="space-y-5"
-            >
-
-              {/* Rating */}
-
+            <form onSubmit={handleReviewSubmit} className="space-y-4">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-2">
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold mb-2">
                   Rating
                 </label>
-
                 <select
                   value={newReview.rating}
                   onChange={(e) =>
-                    setNewReview({
-                      ...newReview,
-                      rating: Number(e.target.value),
-                    })
+                    setNewReview({ ...newReview, rating: Number(e.target.value) })
                   }
-                  className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
+                  className="w-full bg-white border border-neutral-200 rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900"
                 >
-                  <option value={5}>
-                    ★★★★★ — Exceptional
-                  </option>
-
-                  <option value={4}>
-                    ★★★★☆ — Excellent
-                  </option>
-
-                  <option value={3}>
-                    ★★★☆☆ — Good
-                  </option>
-
-                  <option value={2}>
-                    ★★☆☆☆ — Fair
-                  </option>
-
-                  <option value={1}>
-                    ★☆☆☆☆ — Poor
-                  </option>
+                  <option value={5}>★★★★★ — Exceptional</option>
+                  <option value={4}>★★★★☆ — Great Quality</option>
+                  <option value={3}>★★★☆☆ — Average</option>
+                  <option value={2}>★★☆☆☆ — Below Expectations</option>
+                  <option value={1}>★☆☆☆☆ — Poor</option>
                 </select>
               </div>
 
-              {/* Comment */}
-
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-neutral-500 font-semibold mb-2">
-                  Your Review
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold mb-2">
+                  Review Comment
                 </label>
-
                 <textarea
-                  rows="5"
+                  rows="4"
                   required
                   maxLength={1000}
                   value={newReview.comment}
                   onChange={(e) =>
-                    setNewReview({
-                      ...newReview,
-                      comment: e.target.value,
-                    })
+                    setNewReview({ ...newReview, comment: e.target.value })
                   }
-                  placeholder="Describe the fabric quality, fitting, comfort and your overall experience..."
-                  className="w-full bg-[#FAF7F2] border border-[#E8DFD1] rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 resize-none"
+                  placeholder="Write your feedback here..."
+                  className="w-full bg-white border border-neutral-200 rounded-xl p-3 text-xs text-neutral-900 focus:outline-none focus:border-neutral-900 resize-none"
                 />
-
-                <div className="text-right text-[9px] text-neutral-400 mt-1">
-                  {newReview.comment.length}/1000
-                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={reviewSubmitting}
-                className="w-full bg-neutral-900 disabled:bg-neutral-400 disabled:cursor-not-allowed text-white py-4 text-[10px] font-semibold uppercase tracking-[0.25em] hover:bg-black transition rounded-xl shadow-md"
+                className="w-full bg-neutral-900 hover:bg-black disabled:bg-neutral-400 text-white py-4 text-xs font-bold uppercase tracking-widest rounded-xl transition shadow-sm"
               >
-                {reviewSubmitting
-                  ? 'Submitting Review...'
-                  : 'Submit Review'}
+                {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
               </button>
             </form>
           </div>
         </div>
 
-        {/* ============================================
-            TRUST BADGES
-        ============================================ */}
-
-        <div className="mt-16 pt-8 border-t border-[#EBE3D5] grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-          <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
-            <Sparkles
-              size={20}
-              className="text-[#C8A882] shrink-0"
-            />
-
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
-                Light & Breathable
-              </h4>
-
-              <p className="text-[10px] text-neutral-500 mt-1">
-                Comfort all day
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
-            <ShieldCheck
-              size={20}
-              className="text-[#C8A882] shrink-0"
-            />
-
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
-                Quality You Trust
-              </h4>
-
-              <p className="text-[10px] text-neutral-500 mt-1">
-                Premium materials
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 bg-white/60 p-5 rounded-2xl border border-[#EFE8DC]">
-            <Truck
-              size={20}
-              className="text-[#C8A882] shrink-0"
-            />
-
-            <div>
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-neutral-900">
-                Free Shipping
-              </h4>
-
-              <p className="text-[10px] text-neutral-500 mt-1">
-                On orders over ₹999
-              </p>
-            </div>
-          </div>
-
-        </div>
-
       </div>
 
-      {/* ==============================================
-          SIZE GUIDE MODAL
-      ============================================== */}
-
+      {/* SIZE GUIDE MODAL */}
       {isSizeGuideOpen && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsSizeGuideOpen(false);
-            }
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsSizeGuideOpen(false);
           }}
         >
-          <div className="bg-[#FAF7F2] border border-[#EBE3D5] max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative shadow-2xl rounded-3xl">
-
+          <div className="bg-white border border-neutral-200 max-w-lg w-full p-8 relative rounded-3xl shadow-2xl">
             <button
               onClick={() => setIsSizeGuideOpen(false)}
-              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white border border-[#E5DDD0] flex items-center justify-center text-neutral-500 hover:text-black transition"
-              aria-label="Close size guide"
+              className="absolute top-6 right-6 w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-700 hover:bg-neutral-200 transition"
             >
               <X size={16} />
             </button>
 
-            <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-400 font-bold block mb-1">
-              Atelier Measurements
-            </span>
-
-            <h3 className="font-serif text-2xl text-neutral-900 mb-6 pr-10">
+            <h3 className="font-serif text-2xl text-neutral-900 mb-6">
               Size Guide
             </h3>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs mb-6 border-collapse">
-
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-neutral-300 text-neutral-500 uppercase tracking-widest text-[9px]">
-                    <th className="py-3">
-                      Size
-                    </th>
-
-                    <th className="py-3">
-                      Chest
-                    </th>
-
-                    <th className="py-3">
-                      Waist
-                    </th>
-
-                    <th className="py-3">
-                      Length
-                    </th>
+                  <tr className="border-b border-neutral-200 text-neutral-400 uppercase tracking-widest text-[10px]">
+                    <th className="py-2">Size</th>
+                    <th className="py-2">Chest</th>
+                    <th className="py-2">Waist</th>
+                    <th className="py-2">Length</th>
                   </tr>
                 </thead>
-
-                <tbody className="divide-y divide-neutral-200 text-neutral-800">
-
+                <tbody className="divide-y divide-neutral-100 text-neutral-800">
                   <tr>
-                    <td className="py-3 font-bold">
-                      S
-                    </td>
-                    <td className="py-3">
-                      36-38"
-                    </td>
-                    <td className="py-3">
-                      30-32"
-                    </td>
-                    <td className="py-3">
-                      40"
-                    </td>
+                    <td className="py-3 font-bold">S</td>
+                    <td className="py-3">36-38"</td>
+                    <td className="py-3">30-32"</td>
+                    <td className="py-3">40"</td>
                   </tr>
-
                   <tr>
-                    <td className="py-3 font-bold">
-                      M
-                    </td>
-                    <td className="py-3">
-                      38-40"
-                    </td>
-                    <td className="py-3">
-                      32-34"
-                    </td>
-                    <td className="py-3">
-                      41"
-                    </td>
+                    <td className="py-3 font-bold">M</td>
+                    <td className="py-3">38-40"</td>
+                    <td className="py-3">32-34"</td>
+                    <td className="py-3">41"</td>
                   </tr>
-
                   <tr>
-                    <td className="py-3 font-bold">
-                      L
-                    </td>
-                    <td className="py-3">
-                      40-42"
-                    </td>
-                    <td className="py-3">
-                      34-36"
-                    </td>
-                    <td className="py-3">
-                      42"
-                    </td>
+                    <td className="py-3 font-bold">L</td>
+                    <td className="py-3">40-42"</td>
+                    <td className="py-3">34-36"</td>
+                    <td className="py-3">42"</td>
                   </tr>
-
                   <tr>
-                    <td className="py-3 font-bold">
-                      XL
-                    </td>
-                    <td className="py-3">
-                      42-44"
-                    </td>
-                    <td className="py-3">
-                      36-38"
-                    </td>
-                    <td className="py-3">
-                      43"
-                    </td>
+                    <td className="py-3 font-bold">XL</td>
+                    <td className="py-3">42-44"</td>
+                    <td className="py-3">36-38"</td>
+                    <td className="py-3">43"</td>
                   </tr>
-
                 </tbody>
               </table>
             </div>
 
-            <p className="text-[10px] text-neutral-500 font-light leading-relaxed">
-              * Measurements are given in inches. For custom
-              tailoring inquiries, please contact our concierge
-              support.
+            <p className="text-[10px] text-neutral-400">
+              * Measurements are listed in inches. Contact customer support for custom tailoring options.
             </p>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
