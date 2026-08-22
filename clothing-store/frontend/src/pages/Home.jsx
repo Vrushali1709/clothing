@@ -1315,16 +1315,16 @@ export default function Home() {
   const [wishlistMap, setWishlistMap] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Brand luxury gold accent
+  // Brand accent used consistently across the site — matches ProductDetail's gold (#C8A882)
   const GOLD = '#C8A882';
 
   const heroSlides = [
     {
-      subtitle: 'THE GRAND REVEAL: FOR EVERY JOURNEY',
-      title: 'Elegance Reimagined.\nFor The Whole Family.',
-      description: 'Discover the F/W Collection crafted with pure sophistication for Men, Women, and Kids.',
+      subtitle: 'THE HAUTE COUTURE EDIT',
+      title: 'Timeless Elegance\nModern Silhouettes',
+      description: 'Discover meticulously crafted pieces designed for the discerning wardrobe.',
       image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop',
-      btnText: 'SHOP THE COLLECTION',
+      btnText: 'EXPLORE COLLECTION',
       link: '/shop',
     },
     {
@@ -1424,7 +1424,7 @@ export default function Home() {
     }
   };
 
-  // Accessories section has been removed as requested
+  // Removed Accessories category as requested
   const categoriesList = [
     { name: 'Shirts', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=400', slug: 'shirts' },
     { name: 'T-Shirts', img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=400', slug: 't-shirts' },
@@ -1437,7 +1437,7 @@ export default function Home() {
   return (
     <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white pb-12">
 
-      {/* 1. LIGHT LUXURY HERO SLIDER */}
+      {/* 1. LUXURY HERO SLIDER */}
       <section className="relative w-full h-[85vh] min-h-[550px] max-h-[750px] bg-[#E8DFD5] flex items-center overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
@@ -1451,8 +1451,7 @@ export default function Home() {
               alt="Hero Slide"
               className="absolute inset-0 w-full h-full object-cover object-center scale-105"
             />
-            {/* Subtle light gradient for light theme */}
-            <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/50 via-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 w-full md:w-3/5 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
 
             <div className="relative z-10 px-8 sm:px-16 md:px-24 max-w-2xl text-white">
               <div className="flex items-center gap-2 mb-4">
@@ -1506,7 +1505,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MARQUEE */}
+      {/* SIGNATURE ELEMENT: Scrolling Atelier Assurance Marquee */}
       <div className="w-full bg-neutral-900 overflow-hidden py-3 relative z-30">
         <div className="flex whitespace-nowrap animate-[marquee_28s_linear_infinite]">
           {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, idx) => (
@@ -1527,28 +1526,9 @@ export default function Home() {
         `}</style>
       </div>
 
-      {/* 2. EDITORIAL GENDER CARDS: WOMEN, MEN, KIDS */}
+      {/* 2. EDITORIAL GENDER CARDS */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-10 relative z-20 max-w-[1500px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
-          <div
-            onClick={() => navigate('/shop?gender=women')}
-            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md hover:shadow-xl rounded-xl overflow-hidden"
-            onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
-          >
-            <div>
-              <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
-              <h3 className="font-serif text-xl tracking-tight text-neutral-900">WOMEN</h3>
-              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Haute Couture</p>
-              <span className="text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform" style={{ color: GOLD }}>
-                Discover <ArrowRight size={13} />
-              </span>
-            </div>
-            <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
-              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" alt="Women" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            </div>
-          </div>
 
           <div
             onClick={() => navigate('/shop?gender=men')}
@@ -1566,6 +1546,25 @@ export default function Home() {
             </div>
             <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
               <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?q=80&w=300" alt="Men" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            </div>
+          </div>
+
+          <div
+            onClick={() => navigate('/shop?gender=women')}
+            className="bg-white/95 backdrop-blur-md p-6 sm:p-8 flex items-center justify-between cursor-pointer group hover:bg-white transition-all duration-500 border border-neutral-200/80 shadow-md hover:shadow-xl rounded-xl overflow-hidden"
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = GOLD)}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = '')}
+          >
+            <div>
+              <span className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold block mb-1">ATELIER EDIT</span>
+              <h3 className="font-serif text-xl tracking-tight text-neutral-900">WOMEN</h3>
+              <p className="text-[10px] text-neutral-500 uppercase tracking-wider font-medium mt-0.5">Haute Couture</p>
+              <span className="text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 mt-4 group-hover:translate-x-2 transition-transform" style={{ color: GOLD }}>
+                Discover <ArrowRight size={13} />
+              </span>
+            </div>
+            <div className="w-24 h-32 bg-neutral-100 rounded-lg overflow-hidden shrink-0 shadow-sm">
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300" alt="Women" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
             </div>
           </div>
 
@@ -1591,7 +1590,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. CURATED CATEGORIES (WITHOUT ACCESSORIES) */}
+      {/* 3. CURATED CATEGORIES */}
       <section className="w-full px-6 sm:px-10 md:px-16 mt-16 max-w-[1500px] mx-auto">
         <div className="text-center mb-8">
           <span className="text-[10px] uppercase tracking-[0.35em] text-neutral-400 font-bold block mb-1.5">
