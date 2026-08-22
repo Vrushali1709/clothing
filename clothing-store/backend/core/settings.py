@@ -404,9 +404,9 @@ REST_FRAMEWORK = {
 # =========================
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'tamaru_cloud_name'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', 'tamaru_api_key'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'tamaru_api_secret')
+    'CLOUD_NAME': 'ew4ljorh',
+    'API_KEY': '822289387129993',
+    'API_SECRET': 'MBjAma0XdIh0LBeIAF7qcFkl_EM'
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
