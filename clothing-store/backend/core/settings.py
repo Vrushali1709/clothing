@@ -203,7 +203,6 @@
 
 
 
-
 from pathlib import Path
 import os
 import dj_database_url
@@ -238,7 +237,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         "ALLOWED_HOSTS",
-        "127.0.0.1,localhost,clothing-backend-gynt.onrender.com"
+        "127.0.0.1,localhost,clothing-backend-gynt.onrender.com",
     ).split(",")
     if host.strip()
 ]
@@ -309,19 +308,13 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
         "DIRS": [],
-
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -394,16 +387,43 @@ USE_TZ = True
 
 
 # =========================================================
-# STATIC FILES
+# STATIC + MEDIA STORAGE
 # =========================================================
 
 STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = (
-    "whitenoise.storage.CompressedManifestStaticFilesStorage"
-)
+
+# =========================================================
+# CLOUDINARY
+# =========================================================
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+    "SECURE": True,
+}
+
+
+# =========================================================
+# STORAGE CONFIGURATION
+# Django 5.2+
+# =========================================================
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
+# Keep MEDIA_URL for compatibility
+MEDIA_URL = "/media/"
 
 
 # =========================================================
@@ -450,39 +470,11 @@ REST_FRAMEWORK = {
 
 
 # =========================================================
-# CLOUDINARY
-# =========================================================
-
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get(
-        "CLOUDINARY_CLOUD_NAME",
-        "ew4ljorh",
-    ),
-
-    "API_KEY": os.environ.get(
-        "CLOUDINARY_API_KEY",
-        "822289837129993",
-    ),
-
-    "API_SECRET": os.environ.get(
-        "CLOUDINARY_API_SECRET",
-        "MBjAma0XdIh5rF7qcFkl_EM",
-    ),
-}
-
-
-DEFAULT_FILE_STORAGE = (
-    "cloudinary_storage.storage.MediaCloudinaryStorage"
-)
-
-MEDIA_URL = "/media/"
-
-
-# =========================================================
 # PRODUCTION SECURITY
 # =========================================================
 
 if not DEBUG:
+
     SECURE_PROXY_SSL_HEADER = (
         "HTTP_X_FORWARDED_PROTO",
         "https",
