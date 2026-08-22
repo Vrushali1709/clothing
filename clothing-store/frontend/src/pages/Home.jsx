@@ -2632,37 +2632,37 @@ export default function Home() {
   const categoriesList = [
     {
       name: 'Shirts',
-      img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=500',
+      img: 'https://i.pinimg.com/736x/71/1f/1d/711f1dd510cd9dea1b6582d77214ff57.jpg',
       slug: 'shirts',
     },
     {
       name: 'T-Shirts',
-      img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=500',
+      img: 'https://i.pinimg.com/1200x/88/84/77/8884771442f1a6b04115e996885afea3.jpg',
       slug: 't-shirts',
     },
     {
       name: 'Jeans',
-      img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=500',
+      img: 'https://i.pinimg.com/236x/3f/cd/33/3fcd33ddc3b1db0950953f8e417258eb.jpg',
       slug: 'jeans',
     },
     {
       name: 'Dresses',
-      img: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=500',
+      img: 'https://i.pinimg.com/736x/8e/77/2e/8e772ef9fb7336e361bf34216c92449e.jpg',
       slug: 'dresses',
     },
     {
       name: 'Kurtas',
-      img: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=500',
+      img: 'https://i.pinimg.com/736x/a1/46/00/a146006d6579d742fc9bdd615e043475.jpg',
       slug: 'kurtas',
     },
     {
       name: 'Jackets',
-      img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=500',
+      img: 'https://i.pinimg.com/736x/ff/fc/d4/fffcd466c4d20712e7eeca93f6424089.jpg',
       slug: 'jackets',
     },
     {
       name: 'Accessories',
-      img: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=500',
+      img: 'https://i.pinimg.com/736x/92/d7/7c/92d77c79d3d6f9a4250189a5a9aec475.jpg',
       slug: 'accessories',
     },
   ];
