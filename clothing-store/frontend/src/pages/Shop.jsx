@@ -483,6 +483,1002 @@
 
 
 
+// import React, { useEffect, useMemo, useState } from 'react';
+// import { useSearchParams, useNavigate } from 'react-router-dom';
+// import { Heart, Search, X, ArrowRight } from 'lucide-react';
+// import API, {
+//   addToWishlist,
+//   removeFromWishlist,
+//   getWishlist,
+// } from '../services/api';
+
+// export default function Shop() {
+//   const [products, setProducts] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [wishlistMap, setWishlistMap] = useState({});
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [selectedSize, setSelectedSize] = useState('');
+//   const [sortBy, setSortBy] = useState('default');
+
+//   const [searchParams, setSearchParams] = useSearchParams();
+//   const navigate = useNavigate();
+
+//   /* =========================================================
+//      URL FILTERS
+//   ========================================================= */
+
+//   const currentGender = searchParams.get('gender') || 'all';
+//   const currentCategory = searchParams.get('category') || '';
+//   const currentCollection = searchParams.get('collection') || '';
+
+//   /* =========================================================
+//      COLLECTION CONFIG
+     
+//      IMPORTANT:
+//      These collections work with your product data.
+//      If your backend has a "collection" field, that will be
+//      checked first. Otherwise keywords are used as fallback.
+//   ========================================================= */
+
+//   const collectionConfig = {
+//     monochrome: {
+//       title: 'The Monochrome Edit',
+//       subtitle: 'MINIMAL • REFINED • TIMELESS',
+
+//       keywords: [
+//         'monochrome',
+//         'black',
+//         'white',
+//         'grey',
+//         'gray',
+//         'minimal',
+//       ],
+//     },
+
+//     weekend: {
+//       title: 'Weekend Essentials',
+//       subtitle: 'EFFORTLESS EVERYDAY LUXURY',
+
+//       keywords: [
+//         'casual',
+//         'weekend',
+//         'everyday',
+//         'basic',
+//         't-shirt',
+//         'tshirt',
+//         'shirt',
+//         'top',
+//         'jeans',
+//       ],
+//     },
+
+//     occasion: {
+//       title: 'Occasion Edit',
+//       subtitle: 'MADE FOR YOUR MOMENTS',
+
+//       keywords: [
+//         'occasion',
+//         'party',
+//         'festive',
+//         'formal',
+//         'wedding',
+//         'ethnic',
+//         'lehenga',
+//         'saree',
+//         'anarkali',
+//         'suit',
+//         'blazer',
+//       ],
+//     },
+//   };
+
+//   const activeCollection = collectionConfig[currentCollection] || null;
+
+//   /* =========================================================
+//      IMAGE HELPER
+//   ========================================================= */
+
+//   const getImageUrl = (product) => {
+//     if (!product) {
+//       return 'https://placehold.co/600x800?text=Garment';
+//     }
+
+//     let imagePath =
+//       product.image ||
+//       product.image_url ||
+//       product.product_image ||
+//       (Array.isArray(product.images) && product.images[0]?.image) ||
+//       (Array.isArray(product.images) && product.images[0]) ||
+//       product.product?.image;
+
+//     // If image is object
+//     if (typeof imagePath === 'object' && imagePath !== null) {
+//       imagePath =
+//         imagePath.url ||
+//         imagePath.file ||
+//         imagePath.image ||
+//         '';
+//     }
+
+//     if (!imagePath || typeof imagePath !== 'string') {
+//       return 'https://placehold.co/600x800?text=Garment';
+//     }
+
+//     // Full URL
+//     if (
+//       imagePath.startsWith('http://') ||
+//       imagePath.startsWith('https://')
+//     ) {
+//       return imagePath;
+//     }
+
+//     // Backend URL
+//     const cleanPath = imagePath.startsWith('/')
+//       ? imagePath
+//       : `/${imagePath}`;
+
+//     return `https://clothing-backend-gynt.onrender.com${cleanPath}`;
+//   };
+
+//   /* =========================================================
+//      COLLECTION MATCHING
+//   ========================================================= */
+
+//   const matchesCollection = (product) => {
+//     if (!currentCollection) return true;
+
+//     const config = collectionConfig[currentCollection];
+
+//     if (!config) return true;
+
+//     /*
+//       1. If backend already provides collection field,
+//          use it first.
+//     */
+
+//     const backendCollection =
+//       product.collection ||
+//       product.collection_name ||
+//       product.collection_slug ||
+//       product.product_collection;
+
+//     if (backendCollection) {
+//       const normalizedBackendCollection = String(
+//         backendCollection
+//       )
+//         .toLowerCase()
+//         .replace(/\s+/g, '-');
+
+//       if (normalizedBackendCollection === currentCollection) {
+//         return true;
+//       }
+
+//       // If backend collection exists but doesn't match,
+//       // don't immediately reject because keyword fallback
+//       // may still be useful.
+//     }
+
+//     /*
+//       2. Keyword fallback.
+//     */
+
+//     const searchableText = [
+//       product.name,
+//       product.title,
+//       product.description,
+//       product.category_name,
+//       product.category,
+//       product.gender,
+//       product.color,
+//       product.colour,
+//       product.tags,
+//       product.collection,
+//     ]
+//       .filter(Boolean)
+//       .join(' ')
+//       .toLowerCase();
+
+//     return config.keywords.some((keyword) =>
+//       searchableText.includes(keyword.toLowerCase())
+//     );
+//   };
+
+//   /* =========================================================
+//      FETCH PRODUCTS
+//   ========================================================= */
+
+//   useEffect(() => {
+//     let isMounted = true;
+
+//     const fetchProducts = async () => {
+//       setLoading(true);
+
+//       try {
+//         /*
+//           Collection is intentionally NOT sent directly to backend
+//           because your current API may not have a collection filter.
+
+//           Gender/category/search/size continue using backend filters.
+//         */
+
+//         const params = new URLSearchParams();
+
+//         if (currentGender !== 'all') {
+//           params.append('gender', currentGender);
+//         }
+
+//         if (currentCategory) {
+//           params.append('category', currentCategory);
+//         }
+
+//         if (searchQuery.trim()) {
+//           params.append('search', searchQuery.trim());
+//         }
+
+//         if (selectedSize) {
+//           params.append('size', selectedSize);
+//         }
+
+//         const queryString = params.toString();
+
+//         const url = queryString
+//           ? `products/?${queryString}`
+//           : 'products/';
+
+//         const res = await API.get(url);
+
+//         const data = Array.isArray(res.data)
+//           ? res.data
+//           : res.data?.results || [];
+
+//         if (isMounted) {
+//           setProducts(data);
+//         }
+//       } catch (err) {
+//         console.error('Product fetch error:', err);
+
+//         if (isMounted) {
+//           setProducts([]);
+//         }
+//       } finally {
+//         if (isMounted) {
+//           setLoading(false);
+//         }
+//       }
+//     };
+
+//     fetchProducts();
+
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [
+//     currentGender,
+//     currentCategory,
+//     searchQuery,
+//     selectedSize,
+//   ]);
+
+//   /* =========================================================
+//      FETCH WISHLIST
+//   ========================================================= */
+
+//   useEffect(() => {
+//     const token = localStorage.getItem('access_token');
+
+//     if (!token) {
+//       setWishlistMap({});
+//       return;
+//     }
+
+//     getWishlist()
+//       .then((res) => {
+//         const list = Array.isArray(res.data)
+//           ? res.data
+//           : res.data?.results || [];
+
+//         const map = {};
+
+//         list.forEach((item) => {
+//           const productId =
+//             typeof item.product === 'object'
+//               ? item.product?.id
+//               : item.product;
+
+//           if (productId) {
+//             map[productId] = item.id;
+//           }
+//         });
+
+//         setWishlistMap(map);
+//       })
+//       .catch((err) => {
+//         console.error('Wishlist fetch error:', err);
+//       });
+//   }, []);
+
+//   /* =========================================================
+//      FILTER + SORT PRODUCTS
+//   ========================================================= */
+
+//   const filteredProducts = useMemo(() => {
+//     let result = [...products];
+
+//     /*
+//       Apply collection filter on frontend.
+//     */
+
+//     if (currentCollection) {
+//       result = result.filter(matchesCollection);
+//     }
+
+//     /*
+//       Sort
+//     */
+
+//     result.sort((a, b) => {
+//       if (sortBy === 'low-high') {
+//         return Number(a.price || 0) - Number(b.price || 0);
+//       }
+
+//       if (sortBy === 'high-low') {
+//         return Number(b.price || 0) - Number(a.price || 0);
+//       }
+
+//       if (sortBy === 'newest') {
+//         return Number(b.id || 0) - Number(a.id || 0);
+//       }
+
+//       return 0;
+//     });
+
+//     return result;
+//   }, [
+//     products,
+//     currentCollection,
+//     sortBy,
+//   ]);
+
+//   /* =========================================================
+//      WISHLIST TOGGLE
+//   ========================================================= */
+
+//   const handleWishlistToggle = async (e, productId) => {
+//     e.stopPropagation();
+
+//     const token = localStorage.getItem('access_token');
+
+//     if (!token) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     try {
+//       if (wishlistMap[productId]) {
+//         const wishlistId = wishlistMap[productId];
+
+//         await removeFromWishlist(wishlistId);
+
+//         setWishlistMap((prev) => {
+//           const updated = { ...prev };
+//           delete updated[productId];
+//           return updated;
+//         });
+//       } else {
+//         const res = await addToWishlist(productId);
+
+//         setWishlistMap((prev) => ({
+//           ...prev,
+//           [productId]: res.data.id,
+//         }));
+//       }
+//     } catch (err) {
+//       console.error('Wishlist update error:', err);
+
+//       const message =
+//         err?.response?.data?.detail ||
+//         'Failed to update wishlist. Please try again.';
+
+//       alert(message);
+//     }
+//   };
+
+//   /* =========================================================
+//      GENDER CHANGE
+//   ========================================================= */
+
+//   const handleGenderChange = (gender) => {
+//     setSearchQuery('');
+//     setSelectedSize('');
+//     setSortBy('default');
+
+//     if (gender === 'all') {
+//       setSearchParams({});
+//     } else {
+//       setSearchParams({
+//         gender,
+//       });
+//     }
+//   };
+
+//   /* =========================================================
+//      CLEAR COLLECTION
+//   ========================================================= */
+
+//   const clearCollection = () => {
+//     const params = {};
+
+//     if (currentGender !== 'all') {
+//       params.gender = currentGender;
+//     }
+
+//     if (currentCategory) {
+//       params.category = currentCategory;
+//     }
+
+//     setSearchParams(params);
+//   };
+
+//   /* =========================================================
+//      PAGE TITLE
+//   ========================================================= */
+
+//   const pageTitle = activeCollection
+//     ? activeCollection.title
+//     : currentCategory
+//       ? currentCategory
+//       : currentGender === 'all'
+//         ? 'Entire Collection'
+//         : `${currentGender} Wardrobe`;
+
+//   /* =========================================================
+//      RENDER
+//   ========================================================= */
+
+//   return (
+//     <div className="bg-[#FDFBF7] min-h-screen py-6 sm:py-10 md:py-12">
+//       <div className="container mx-auto px-4 sm:px-6 md:px-12">
+
+//         {/* =====================================================
+//             PAGE HEADER
+//         ===================================================== */}
+
+//         <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
+
+//           <span className="text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-neutral-500 font-semibold mb-1.5 sm:mb-2 block">
+//             {activeCollection
+//               ? 'Curated Collection'
+//               : 'Exclusive Collection'}
+//           </span>
+
+//           <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-neutral-900 capitalize px-2">
+//             {pageTitle}
+//           </h1>
+
+//           {activeCollection && (
+//             <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mt-2">
+//               {activeCollection.subtitle}
+//             </p>
+//           )}
+
+//           <div className="w-10 sm:w-12 h-[1px] bg-neutral-400 mx-auto mt-3 sm:mt-4" />
+
+//           {/* Collection Clear */}
+//           {activeCollection && (
+//             <button
+//               onClick={clearCollection}
+//               className="mt-4 inline-flex items-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-500 hover:text-black transition"
+//             >
+//               <X size={13} />
+//               Clear Collection
+//             </button>
+//           )}
+//         </div>
+
+//         {/* =====================================================
+//             SEARCH BAR
+//         ===================================================== */}
+
+//         <div className="max-w-md mx-auto mb-6 relative">
+
+//           <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
+//             <Search size={16} />
+//           </span>
+
+//           <input
+//             type="text"
+//             value={searchQuery}
+//             onChange={(e) =>
+//               setSearchQuery(e.target.value)
+//             }
+//             placeholder="Search garments, shirts, dresses..."
+//             className="
+//               w-full
+//               bg-white
+//               border
+//               border-neutral-300
+//               pl-11
+//               pr-10
+//               py-3
+//               text-xs
+//               tracking-wider
+//               uppercase
+//               focus:outline-none
+//               focus:border-neutral-900
+//               transition
+//               shadow-sm
+//               rounded-none
+//             "
+//           />
+
+//           {searchQuery && (
+//             <button
+//               type="button"
+//               onClick={() => setSearchQuery('')}
+//               className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
+//               aria-label="Clear search"
+//             >
+//               <X size={15} />
+//             </button>
+//           )}
+//         </div>
+
+//         {/* =====================================================
+//             SIZE FILTER + SORT
+//         ===================================================== */}
+
+//         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+
+//           {/* Size Filter */}
+
+//           <div className="flex items-center gap-2 flex-wrap justify-center">
+
+//             <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mr-2">
+//               Filter Size:
+//             </span>
+
+//             {['', 'S', 'M', 'L', 'XL'].map((size) => (
+//               <button
+//                 key={size || 'all'}
+//                 onClick={() => setSelectedSize(size)}
+//                 className={`
+//                   px-3.5
+//                   py-1.5
+//                   text-[10px]
+//                   uppercase
+//                   tracking-widest
+//                   transition-all
+//                   border
+//                   ${
+//                     selectedSize === size
+//                       ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
+//                       : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-900'
+//                   }
+//                 `}
+//               >
+//                 {size === '' ? 'All Sizes' : size}
+//               </button>
+//             ))}
+//           </div>
+
+//           {/* Sorting */}
+
+//           <div className="flex items-center gap-2">
+
+//             <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
+//               Sort By:
+//             </span>
+
+//             <select
+//               value={sortBy}
+//               onChange={(e) =>
+//                 setSortBy(e.target.value)
+//               }
+//               className="
+//                 bg-white
+//                 border
+//                 border-neutral-300
+//                 px-3
+//                 py-1.5
+//                 text-[10px]
+//                 uppercase
+//                 tracking-widest
+//                 text-neutral-800
+//                 focus:outline-none
+//                 focus:border-neutral-900
+//                 transition
+//                 shadow-sm
+//                 cursor-pointer
+//               "
+//             >
+//               <option value="default">
+//                 Featured / Default
+//               </option>
+
+//               <option value="low-high">
+//                 Price: Low to High
+//               </option>
+
+//               <option value="high-low">
+//                 Price: High to Low
+//               </option>
+
+//               <option value="newest">
+//                 Newest Arrivals
+//               </option>
+//             </select>
+//           </div>
+//         </div>
+
+//         {/* =====================================================
+//             GENDER TABS
+//         ===================================================== */}
+
+//         <div className="
+//           flex
+//           justify-start
+//           sm:justify-center
+//           items-center
+//           gap-4
+//           sm:gap-8
+//           mb-8
+//           sm:mb-12
+//           border-b
+//           border-neutral-200
+//           pb-3
+//           sm:pb-4
+//           overflow-x-auto
+//           scrollbar-none
+//           -mx-4
+//           px-4
+//           sm:mx-0
+//           sm:px-0
+//         ">
+
+//           {['all', 'women', 'men', 'kids', 'ethnic'].map(
+//             (gender) => (
+//               <button
+//                 key={gender}
+//                 onClick={() =>
+//                   handleGenderChange(gender)
+//                 }
+//                 className={`
+//                   text-[11px]
+//                   sm:text-xs
+//                   uppercase
+//                   tracking-[0.18em]
+//                   sm:tracking-[0.2em]
+//                   font-semibold
+//                   transition-all
+//                   pb-1
+//                   whitespace-nowrap
+//                   shrink-0
+//                   ${
+//                     currentGender === gender &&
+//                     !currentCategory &&
+//                     !currentCollection
+//                       ? 'text-black border-b-2 border-black'
+//                       : 'text-neutral-400 hover:text-black'
+//                   }
+//                 `}
+//               >
+//                 {gender}
+//               </button>
+//             )
+//           )}
+//         </div>
+
+//         {/* =====================================================
+//             ACTIVE FILTER INFO
+//         ===================================================== */}
+
+//         {(currentCollection ||
+//           currentCategory ||
+//           currentGender !== 'all' ||
+//           searchQuery ||
+//           selectedSize) && (
+//           <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+
+//             <div className="flex flex-wrap gap-2">
+
+//               {currentCollection && (
+//                 <span className="px-3 py-1.5 bg-neutral-900 text-white text-[9px] uppercase tracking-widest">
+//                   {activeCollection?.title}
+//                 </span>
+//               )}
+
+//               {currentCategory && (
+//                 <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+//                   {currentCategory}
+//                 </span>
+//               )}
+
+//               {currentGender !== 'all' && (
+//                 <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+//                   {currentGender}
+//                 </span>
+//               )}
+
+//               {selectedSize && (
+//                 <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+//                   Size {selectedSize}
+//                 </span>
+//               )}
+
+//               {searchQuery && (
+//                 <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+//                   Search: {searchQuery}
+//                 </span>
+//               )}
+//             </div>
+
+//             <span className="text-[10px] uppercase tracking-widest text-neutral-400">
+//               {filteredProducts.length}{' '}
+//               {filteredProducts.length === 1
+//                 ? 'Piece'
+//                 : 'Pieces'}
+//             </span>
+//           </div>
+//         )}
+
+//         {/* =====================================================
+//             PRODUCT GRID
+//         ===================================================== */}
+
+//         {loading ? (
+//           <div className="text-center py-16 sm:py-20 font-serif text-neutral-500 uppercase tracking-widest text-xs">
+//             Refining Garments...
+//           </div>
+//         ) : filteredProducts.length === 0 ? (
+//           <div className="text-center py-16 sm:py-20">
+
+//             <p className="font-serif text-neutral-500 text-sm sm:text-base mb-4">
+//               No clothing pieces found in this collection.
+//             </p>
+
+//             {currentCollection && (
+//               <button
+//                 onClick={clearCollection}
+//                 className="
+//                   inline-flex
+//                   items-center
+//                   gap-2
+//                   bg-neutral-900
+//                   text-white
+//                   px-5
+//                   py-3
+//                   text-[9px]
+//                   uppercase
+//                   tracking-[0.2em]
+//                   font-bold
+//                   hover:bg-black
+//                   transition
+//                 "
+//               >
+//                 Explore All Collection
+//                 <ArrowRight size={13} />
+//               </button>
+//             )}
+//           </div>
+//         ) : (
+//           <div className="
+//             grid
+//             grid-cols-2
+//             sm:grid-cols-2
+//             md:grid-cols-3
+//             lg:grid-cols-4
+//             gap-3
+//             sm:gap-6
+//             md:gap-8
+//           ">
+
+//             {filteredProducts.map((product) => (
+//               <div
+//                 key={product.id}
+//                 onClick={() =>
+//                   navigate(`/product/${product.id}`)
+//                 }
+//                 className="
+//                   group
+//                   cursor-pointer
+//                   flex
+//                   flex-col
+//                   relative
+//                 "
+//               >
+
+//                 {/* =================================================
+//                     PRODUCT IMAGE
+//                 ================================================= */}
+
+//                 <div className="
+//                   relative
+//                   aspect-[3/4]
+//                   overflow-hidden
+//                   bg-neutral-100
+//                   mb-2.5
+//                   sm:mb-4
+//                 ">
+
+//                   <img
+//                     src={getImageUrl(product)}
+//                     alt={product.name || 'Garment'}
+//                     className="
+//                       w-full
+//                       h-full
+//                       object-cover
+//                       object-top
+//                       group-hover:scale-105
+//                       transition
+//                       duration-700
+//                       ease-out
+//                     "
+//                     onError={(e) => {
+//                       e.currentTarget.onerror = null;
+//                       e.currentTarget.src =
+//                         'https://placehold.co/600x800?text=Image+Unavailable';
+//                     }}
+//                   />
+
+//                   {/* Wishlist */}
+
+//                   <button
+//                     onClick={(e) =>
+//                       handleWishlistToggle(
+//                         e,
+//                         product.id
+//                       )
+//                     }
+//                     className="
+//                       absolute
+//                       top-2
+//                       right-2
+//                       sm:top-3
+//                       sm:right-3
+//                       p-2
+//                       sm:p-2.5
+//                       bg-white/85
+//                       backdrop-blur
+//                       rounded-full
+//                       shadow-sm
+//                       hover:scale-110
+//                       active:scale-95
+//                       transition
+//                       duration-300
+//                       z-20
+//                       text-neutral-800
+//                     "
+//                     title={
+//                       wishlistMap[product.id]
+//                         ? 'Remove from Wishlist'
+//                         : 'Add to Wishlist'
+//                     }
+//                     aria-label={
+//                       wishlistMap[product.id]
+//                         ? 'Remove from Wishlist'
+//                         : 'Add to Wishlist'
+//                     }
+//                   >
+//                     <Heart
+//                       size={15}
+//                       className={
+//                         wishlistMap[product.id]
+//                           ? 'fill-red-600 text-red-600'
+//                           : 'text-neutral-800'
+//                       }
+//                     />
+//                   </button>
+
+//                   {/* Desktop View Piece */}
+
+//                   <div className="
+//                     absolute
+//                     inset-x-0
+//                     bottom-0
+//                     p-2
+//                     sm:p-3
+//                     opacity-0
+//                     group-hover:opacity-100
+//                     transition-opacity
+//                     duration-300
+//                     bg-gradient-to-t
+//                     from-black/50
+//                     to-transparent
+//                     hidden
+//                     sm:block
+//                   ">
+//                     <span className="
+//                       block
+//                       w-full
+//                       py-2
+//                       sm:py-2.5
+//                       bg-white
+//                       text-black
+//                       text-center
+//                       text-[9px]
+//                       sm:text-[10px]
+//                       font-bold
+//                       uppercase
+//                       tracking-[0.2em]
+//                     ">
+//                       View Piece
+//                     </span>
+//                   </div>
+//                 </div>
+
+//                 {/* =================================================
+//                     PRODUCT INFO
+//                 ================================================= */}
+
+//                 <div className="
+//                   flex
+//                   flex-col
+//                   sm:flex-row
+//                   justify-between
+//                   items-start
+//                   gap-1
+//                   sm:gap-2
+//                 ">
+
+//                   <div className="min-w-0 flex-1">
+
+//                     <h3 className="
+//                       font-serif
+//                       text-xs
+//                       sm:text-sm
+//                       text-neutral-900
+//                       truncate
+//                     ">
+//                       {product.name || 'Garment'}
+//                     </h3>
+
+//                     <p className="
+//                       text-[9px]
+//                       sm:text-[10px]
+//                       uppercase
+//                       tracking-widest
+//                       text-neutral-400
+//                       mt-0.5
+//                       sm:mt-1
+//                       truncate
+//                     ">
+//                       {product.category_name ||
+//                         product.category?.name ||
+//                         'Haute Couture'}
+//                     </p>
+
+//                   </div>
+
+//                   <span className="
+//                     text-xs
+//                     sm:text-sm
+//                     font-serif
+//                     text-neutral-900
+//                     font-medium
+//                     shrink-0
+//                   ">
+//                     ₹
+//                     {Number(
+//                       product.price || 0
+//                     ).toLocaleString('en-IN')}
+//                   </span>
+
+//                 </div>
+//               </div>
+//             ))}
+
+//           </div>
+//         )}
+
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Heart, Search, X, ArrowRight } from 'lucide-react';
@@ -513,18 +1509,12 @@ export default function Shop() {
 
   /* =========================================================
      COLLECTION CONFIG
-     
-     IMPORTANT:
-     These collections work with your product data.
-     If your backend has a "collection" field, that will be
-     checked first. Otherwise keywords are used as fallback.
   ========================================================= */
 
   const collectionConfig = {
     monochrome: {
       title: 'The Monochrome Edit',
-      subtitle: 'MINIMAL • REFINED • TIMELESS',
-
+      subtitle: 'Minimal • Refined • Timeless',
       keywords: [
         'monochrome',
         'black',
@@ -534,11 +1524,9 @@ export default function Shop() {
         'minimal',
       ],
     },
-
     weekend: {
       title: 'Weekend Essentials',
-      subtitle: 'EFFORTLESS EVERYDAY LUXURY',
-
+      subtitle: 'Effortless Everyday Luxury',
       keywords: [
         'casual',
         'weekend',
@@ -551,11 +1539,9 @@ export default function Shop() {
         'jeans',
       ],
     },
-
     occasion: {
       title: 'Occasion Edit',
-      subtitle: 'MADE FOR YOUR MOMENTS',
-
+      subtitle: 'Made For Your Moments',
       keywords: [
         'occasion',
         'party',
@@ -591,7 +1577,6 @@ export default function Shop() {
       (Array.isArray(product.images) && product.images[0]) ||
       product.product?.image;
 
-    // If image is object
     if (typeof imagePath === 'object' && imagePath !== null) {
       imagePath =
         imagePath.url ||
@@ -604,7 +1589,6 @@ export default function Shop() {
       return 'https://placehold.co/600x800?text=Garment';
     }
 
-    // Full URL
     if (
       imagePath.startsWith('http://') ||
       imagePath.startsWith('https://')
@@ -612,7 +1596,6 @@ export default function Shop() {
       return imagePath;
     }
 
-    // Backend URL
     const cleanPath = imagePath.startsWith('/')
       ? imagePath
       : `/${imagePath}`;
@@ -628,13 +1611,7 @@ export default function Shop() {
     if (!currentCollection) return true;
 
     const config = collectionConfig[currentCollection];
-
     if (!config) return true;
-
-    /*
-      1. If backend already provides collection field,
-         use it first.
-    */
 
     const backendCollection =
       product.collection ||
@@ -643,24 +1620,14 @@ export default function Shop() {
       product.product_collection;
 
     if (backendCollection) {
-      const normalizedBackendCollection = String(
-        backendCollection
-      )
+      const normalizedBackendCollection = String(backendCollection)
         .toLowerCase()
         .replace(/\s+/g, '-');
 
       if (normalizedBackendCollection === currentCollection) {
         return true;
       }
-
-      // If backend collection exists but doesn't match,
-      // don't immediately reject because keyword fallback
-      // may still be useful.
     }
-
-    /*
-      2. Keyword fallback.
-    */
 
     const searchableText = [
       product.name,
@@ -694,13 +1661,6 @@ export default function Shop() {
       setLoading(true);
 
       try {
-        /*
-          Collection is intentionally NOT sent directly to backend
-          because your current API may not have a collection filter.
-
-          Gender/category/search/size continue using backend filters.
-        */
-
         const params = new URLSearchParams();
 
         if (currentGender !== 'all') {
@@ -720,13 +1680,9 @@ export default function Shop() {
         }
 
         const queryString = params.toString();
-
-        const url = queryString
-          ? `products/?${queryString}`
-          : 'products/';
+        const url = queryString ? `products/?${queryString}` : 'products/';
 
         const res = await API.get(url);
-
         const data = Array.isArray(res.data)
           ? res.data
           : res.data?.results || [];
@@ -736,7 +1692,6 @@ export default function Shop() {
         }
       } catch (err) {
         console.error('Product fetch error:', err);
-
         if (isMounted) {
           setProducts([]);
         }
@@ -778,7 +1733,6 @@ export default function Shop() {
           : res.data?.results || [];
 
         const map = {};
-
         list.forEach((item) => {
           const productId =
             typeof item.product === 'object'
@@ -804,40 +1758,25 @@ export default function Shop() {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    /*
-      Apply collection filter on frontend.
-    */
-
     if (currentCollection) {
       result = result.filter(matchesCollection);
     }
-
-    /*
-      Sort
-    */
 
     result.sort((a, b) => {
       if (sortBy === 'low-high') {
         return Number(a.price || 0) - Number(b.price || 0);
       }
-
       if (sortBy === 'high-low') {
         return Number(b.price || 0) - Number(a.price || 0);
       }
-
       if (sortBy === 'newest') {
         return Number(b.id || 0) - Number(a.id || 0);
       }
-
       return 0;
     });
 
     return result;
-  }, [
-    products,
-    currentCollection,
-    sortBy,
-  ]);
+  }, [products, currentCollection, sortBy]);
 
   /* =========================================================
      WISHLIST TOGGLE
@@ -856,7 +1795,6 @@ export default function Shop() {
     try {
       if (wishlistMap[productId]) {
         const wishlistId = wishlistMap[productId];
-
         await removeFromWishlist(wishlistId);
 
         setWishlistMap((prev) => {
@@ -874,11 +1812,9 @@ export default function Shop() {
       }
     } catch (err) {
       console.error('Wishlist update error:', err);
-
       const message =
         err?.response?.data?.detail ||
         'Failed to update wishlist. Please try again.';
-
       alert(message);
     }
   };
@@ -895,92 +1831,55 @@ export default function Shop() {
     if (gender === 'all') {
       setSearchParams({});
     } else {
-      setSearchParams({
-        gender,
-      });
+      setSearchParams({ gender });
     }
   };
-
-  /* =========================================================
-     CLEAR COLLECTION
-  ========================================================= */
 
   const clearCollection = () => {
     const params = {};
-
-    if (currentGender !== 'all') {
-      params.gender = currentGender;
-    }
-
-    if (currentCategory) {
-      params.category = currentCategory;
-    }
-
+    if (currentGender !== 'all') params.gender = currentGender;
+    if (currentCategory) params.category = currentCategory;
     setSearchParams(params);
   };
-
-  /* =========================================================
-     PAGE TITLE
-  ========================================================= */
 
   const pageTitle = activeCollection
     ? activeCollection.title
     : currentCategory
-      ? currentCategory
-      : currentGender === 'all'
-        ? 'Entire Collection'
-        : `${currentGender} Wardrobe`;
-
-  /* =========================================================
-     RENDER
-  ========================================================= */
+    ? currentCategory
+    : currentGender === 'all'
+    ? 'Entire Collection'
+    : `${currentGender} Wardrobe`;
 
   return (
-    <div className="bg-[#FDFBF7] min-h-screen py-6 sm:py-10 md:py-12">
-      <div className="container mx-auto px-4 sm:px-6 md:px-12">
+    <div className="bg-[#FAF8F5] min-h-screen py-10 sm:py-14">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-7xl">
 
-        {/* =====================================================
-            PAGE HEADER
-        ===================================================== */}
-
-        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
-
-          <span className="text-[9px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-neutral-500 font-semibold mb-1.5 sm:mb-2 block">
-            {activeCollection
-              ? 'Curated Collection'
-              : 'Exclusive Collection'}
-          </span>
-
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-neutral-900 capitalize px-2">
+        {/* PAGE HEADER */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h1 className="text-3xl sm:text-4xl font-serif text-neutral-900 capitalize mb-3">
             {pageTitle}
           </h1>
 
           {activeCollection && (
-            <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mt-2">
+            <p className="text-xs uppercase tracking-widest text-neutral-500 mb-3 font-light">
               {activeCollection.subtitle}
             </p>
           )}
 
-          <div className="w-10 sm:w-12 h-[1px] bg-neutral-400 mx-auto mt-3 sm:mt-4" />
+          <div className="w-12 h-[1px] bg-[#C8A882] mx-auto" />
 
-          {/* Collection Clear */}
           {activeCollection && (
             <button
               onClick={clearCollection}
-              className="mt-4 inline-flex items-center gap-2 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-500 hover:text-black transition"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-900 transition underline underline-offset-4"
             >
-              <X size={13} />
-              Clear Collection
+              <X size={14} /> Clear Collection Filter
             </button>
           )}
         </div>
 
-        {/* =====================================================
-            SEARCH BAR
-        ===================================================== */}
-
-        <div className="max-w-md mx-auto mb-6 relative">
-
+        {/* SEARCH BAR */}
+        <div className="max-w-md mx-auto mb-8 relative">
           <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400">
             <Search size={16} />
           </span>
@@ -988,27 +1887,9 @@ export default function Shop() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) =>
-              setSearchQuery(e.target.value)
-            }
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search garments, shirts, dresses..."
-            className="
-              w-full
-              bg-white
-              border
-              border-neutral-300
-              pl-11
-              pr-10
-              py-3
-              text-xs
-              tracking-wider
-              uppercase
-              focus:outline-none
-              focus:border-neutral-900
-              transition
-              shadow-sm
-              rounded-none
-            "
+            className="w-full bg-white border border-neutral-200 pl-11 pr-10 py-3.5 text-xs tracking-wide focus:outline-none focus:border-neutral-900 transition rounded-xl shadow-sm"
           />
 
           {searchQuery && (
@@ -1016,457 +1897,178 @@ export default function Shop() {
               type="button"
               onClick={() => setSearchQuery('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
-              aria-label="Clear search"
             >
-              <X size={15} />
+              <X size={16} />
             </button>
           )}
         </div>
 
-        {/* =====================================================
-            SIZE FILTER + SORT
-        ===================================================== */}
-
+        {/* SIZE FILTER + SORT */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
-
           {/* Size Filter */}
-
           <div className="flex items-center gap-2 flex-wrap justify-center">
-
-            <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold mr-2">
-              Filter Size:
-            </span>
-
+            <span className="text-xs text-neutral-500 font-medium mr-1">Size:</span>
             {['', 'S', 'M', 'L', 'XL'].map((size) => (
               <button
                 key={size || 'all'}
                 onClick={() => setSelectedSize(size)}
-                className={`
-                  px-3.5
-                  py-1.5
-                  text-[10px]
-                  uppercase
-                  tracking-widest
-                  transition-all
-                  border
-                  ${
-                    selectedSize === size
-                      ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
-                      : 'bg-white text-neutral-700 border-neutral-300 hover:border-neutral-900'
-                  }
-                `}
+                className={`px-3.5 py-1.5 text-xs rounded-lg transition-all border ${
+                  selectedSize === size
+                    ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
+                    : 'bg-white text-neutral-700 border-neutral-200 hover:border-neutral-400'
+                }`}
               >
-                {size === '' ? 'All Sizes' : size}
+                {size === '' ? 'All' : size}
               </button>
             ))}
           </div>
 
           {/* Sorting */}
-
           <div className="flex items-center gap-2">
-
-            <span className="text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
-              Sort By:
-            </span>
-
+            <span className="text-xs text-neutral-500 font-medium">Sort:</span>
             <select
               value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value)
-              }
-              className="
-                bg-white
-                border
-                border-neutral-300
-                px-3
-                py-1.5
-                text-[10px]
-                uppercase
-                tracking-widest
-                text-neutral-800
-                focus:outline-none
-                focus:border-neutral-900
-                transition
-                shadow-sm
-                cursor-pointer
-              "
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-white border border-neutral-200 px-3 py-2 text-xs text-neutral-800 focus:outline-none focus:border-neutral-900 transition rounded-lg shadow-sm cursor-pointer"
             >
-              <option value="default">
-                Featured / Default
-              </option>
-
-              <option value="low-high">
-                Price: Low to High
-              </option>
-
-              <option value="high-low">
-                Price: High to Low
-              </option>
-
-              <option value="newest">
-                Newest Arrivals
-              </option>
+              <option value="default">Featured / Default</option>
+              <option value="low-high">Price: Low to High</option>
+              <option value="high-low">Price: High to Low</option>
+              <option value="newest">Newest Arrivals</option>
             </select>
           </div>
         </div>
 
-        {/* =====================================================
-            GENDER TABS
-        ===================================================== */}
-
-        <div className="
-          flex
-          justify-start
-          sm:justify-center
-          items-center
-          gap-4
-          sm:gap-8
-          mb-8
-          sm:mb-12
-          border-b
-          border-neutral-200
-          pb-3
-          sm:pb-4
-          overflow-x-auto
-          scrollbar-none
-          -mx-4
-          px-4
-          sm:mx-0
-          sm:px-0
-        ">
-
-          {['all', 'women', 'men', 'kids', 'ethnic'].map(
-            (gender) => (
-              <button
-                key={gender}
-                onClick={() =>
-                  handleGenderChange(gender)
-                }
-                className={`
-                  text-[11px]
-                  sm:text-xs
-                  uppercase
-                  tracking-[0.18em]
-                  sm:tracking-[0.2em]
-                  font-semibold
-                  transition-all
-                  pb-1
-                  whitespace-nowrap
-                  shrink-0
-                  ${
-                    currentGender === gender &&
-                    !currentCategory &&
-                    !currentCollection
-                      ? 'text-black border-b-2 border-black'
-                      : 'text-neutral-400 hover:text-black'
-                  }
-                `}
-              >
-                {gender}
-              </button>
-            )
-          )}
+        {/* GENDER TABS */}
+        <div className="flex justify-start sm:justify-center items-center gap-6 mb-10 border-b border-neutral-200 pb-4 overflow-x-auto scrollbar-none">
+          {['all', 'women', 'men', 'kids', 'ethnic'].map((gender) => (
+            <button
+              key={gender}
+              onClick={() => handleGenderChange(gender)}
+              className={`text-xs uppercase tracking-widest font-semibold transition-all pb-1 whitespace-nowrap shrink-0 ${
+                currentGender === gender && !currentCategory && !currentCollection
+                  ? 'text-neutral-900 border-b-2 border-neutral-900'
+                  : 'text-neutral-400 hover:text-neutral-900'
+              }`}
+            >
+              {gender}
+            </button>
+          ))}
         </div>
 
-        {/* =====================================================
-            ACTIVE FILTER INFO
-        ===================================================== */}
-
-        {(currentCollection ||
-          currentCategory ||
-          currentGender !== 'all' ||
-          searchQuery ||
-          selectedSize) && (
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-
+        {/* ACTIVE FILTER INFO */}
+        {(currentCollection || currentCategory || currentGender !== 'all' || searchQuery || selectedSize) && (
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6 text-xs text-neutral-500">
             <div className="flex flex-wrap gap-2">
-
               {currentCollection && (
-                <span className="px-3 py-1.5 bg-neutral-900 text-white text-[9px] uppercase tracking-widest">
+                <span className="px-3 py-1 bg-neutral-900 text-white rounded-md text-[10px] uppercase tracking-wider">
                   {activeCollection?.title}
                 </span>
               )}
-
               {currentCategory && (
-                <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+                <span className="px-3 py-1 bg-white border border-neutral-200 rounded-md text-[10px] uppercase tracking-wider">
                   {currentCategory}
                 </span>
               )}
-
               {currentGender !== 'all' && (
-                <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+                <span className="px-3 py-1 bg-white border border-neutral-200 rounded-md text-[10px] uppercase tracking-wider">
                   {currentGender}
                 </span>
               )}
-
               {selectedSize && (
-                <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
-                  Size {selectedSize}
+                <span className="px-3 py-1 bg-white border border-neutral-200 rounded-md text-[10px] uppercase tracking-wider">
+                  Size: {selectedSize}
                 </span>
               )}
-
               {searchQuery && (
-                <span className="px-3 py-1.5 bg-white border border-neutral-300 text-neutral-700 text-[9px] uppercase tracking-widest">
+                <span className="px-3 py-1 bg-white border border-neutral-200 rounded-md text-[10px] uppercase tracking-wider">
                   Search: {searchQuery}
                 </span>
               )}
             </div>
-
-            <span className="text-[10px] uppercase tracking-widest text-neutral-400">
-              {filteredProducts.length}{' '}
-              {filteredProducts.length === 1
-                ? 'Piece'
-                : 'Pieces'}
+            <span className="text-xs font-medium text-neutral-500">
+              Showing {filteredProducts.length} {filteredProducts.length === 1 ? 'piece' : 'pieces'}
             </span>
           </div>
         )}
 
-        {/* =====================================================
-            PRODUCT GRID
-        ===================================================== */}
-
+        {/* PRODUCT GRID */}
         {loading ? (
-          <div className="text-center py-16 sm:py-20 font-serif text-neutral-500 uppercase tracking-widest text-xs">
-            Refining Garments...
+          <div className="text-center py-20 font-serif text-neutral-400 text-sm">
+            Curating collection...
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-16 sm:py-20">
-
-            <p className="font-serif text-neutral-500 text-sm sm:text-base mb-4">
-              No clothing pieces found in this collection.
+          <div className="text-center py-20">
+            <p className="font-serif text-neutral-600 text-base mb-4">
+              No clothing pieces found matching your criteria.
             </p>
-
             {currentCollection && (
               <button
                 onClick={clearCollection}
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  bg-neutral-900
-                  text-white
-                  px-5
-                  py-3
-                  text-[9px]
-                  uppercase
-                  tracking-[0.2em]
-                  font-bold
-                  hover:bg-black
-                  transition
-                "
+                className="inline-flex items-center gap-2 bg-neutral-900 text-white px-6 py-3 text-xs uppercase tracking-wider font-semibold hover:bg-black transition rounded-xl"
               >
-                Explore All Collection
-                <ArrowRight size={13} />
+                View All Collection <ArrowRight size={14} />
               </button>
             )}
           </div>
         ) : (
-          <div className="
-            grid
-            grid-cols-2
-            sm:grid-cols-2
-            md:grid-cols-3
-            lg:grid-cols-4
-            gap-3
-            sm:gap-6
-            md:gap-8
-          ">
-
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                onClick={() =>
-                  navigate(`/product/${product.id}`)
-                }
-                className="
-                  group
-                  cursor-pointer
-                  flex
-                  flex-col
-                  relative
-                "
+                onClick={() => navigate(`/product/${product.id}`)}
+                className="group cursor-pointer flex flex-col bg-white border border-neutral-200/80 shadow-sm hover:shadow-xl transition-all duration-500 rounded-xl overflow-hidden"
               >
-
-                {/* =================================================
-                    PRODUCT IMAGE
-                ================================================= */}
-
-                <div className="
-                  relative
-                  aspect-[3/4]
-                  overflow-hidden
-                  bg-neutral-100
-                  mb-2.5
-                  sm:mb-4
-                ">
-
+                <div className="relative aspect-[3/4] bg-neutral-100 overflow-hidden">
                   <img
                     src={getImageUrl(product)}
                     alt={product.name || 'Garment'}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                      object-top
-                      group-hover:scale-105
-                      transition
-                      duration-700
-                      ease-out
-                    "
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src =
-                        'https://placehold.co/600x800?text=Image+Unavailable';
+                        'https://placehold.co/600x800?text=Unavailable';
                     }}
                   />
 
                   {/* Wishlist */}
-
                   <button
-                    onClick={(e) =>
-                      handleWishlistToggle(
-                        e,
-                        product.id
-                      )
-                    }
-                    className="
-                      absolute
-                      top-2
-                      right-2
-                      sm:top-3
-                      sm:right-3
-                      p-2
-                      sm:p-2.5
-                      bg-white/85
-                      backdrop-blur
-                      rounded-full
-                      shadow-sm
-                      hover:scale-110
-                      active:scale-95
-                      transition
-                      duration-300
-                      z-20
-                      text-neutral-800
-                    "
-                    title={
-                      wishlistMap[product.id]
-                        ? 'Remove from Wishlist'
-                        : 'Add to Wishlist'
-                    }
-                    aria-label={
-                      wishlistMap[product.id]
-                        ? 'Remove from Wishlist'
-                        : 'Add to Wishlist'
-                    }
+                    onClick={(e) => handleWishlistToggle(e, product.id)}
+                    className="absolute top-3 right-3 w-9 h-9 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-neutral-700 hover:scale-110 transition-transform shadow-md z-20"
+                    title={wishlistMap[product.id] ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   >
                     <Heart
                       size={15}
                       className={
                         wishlistMap[product.id]
-                          ? 'fill-red-600 text-red-600'
-                          : 'text-neutral-800'
+                          ? 'fill-red-500 text-red-500'
+                          : 'text-neutral-600'
                       }
                     />
                   </button>
+                </div>
 
-                  {/* Desktop View Piece */}
+                <div className="p-4 flex flex-col justify-between flex-1">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wider text-neutral-400 mb-1">
+                      {product.category_name || product.category?.name || 'Atelier Collection'}
+                    </p>
+                    <h3 className="text-xs sm:text-sm font-medium text-neutral-800 truncate">
+                      {product.name || 'Garment'}
+                    </h3>
+                  </div>
 
-                  <div className="
-                    absolute
-                    inset-x-0
-                    bottom-0
-                    p-2
-                    sm:p-3
-                    opacity-0
-                    group-hover:opacity-100
-                    transition-opacity
-                    duration-300
-                    bg-gradient-to-t
-                    from-black/50
-                    to-transparent
-                    hidden
-                    sm:block
-                  ">
-                    <span className="
-                      block
-                      w-full
-                      py-2
-                      sm:py-2.5
-                      bg-white
-                      text-black
-                      text-center
-                      text-[9px]
-                      sm:text-[10px]
-                      font-bold
-                      uppercase
-                      tracking-[0.2em]
-                    ">
-                      View Piece
+                  <div className="mt-3 pt-3 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-sm font-serif font-bold text-[#8A6D46]">
+                      ₹{Number(product.price || 0).toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-400 group-hover:text-neutral-900 transition">
+                      View →
                     </span>
                   </div>
                 </div>
-
-                {/* =================================================
-                    PRODUCT INFO
-                ================================================= */}
-
-                <div className="
-                  flex
-                  flex-col
-                  sm:flex-row
-                  justify-between
-                  items-start
-                  gap-1
-                  sm:gap-2
-                ">
-
-                  <div className="min-w-0 flex-1">
-
-                    <h3 className="
-                      font-serif
-                      text-xs
-                      sm:text-sm
-                      text-neutral-900
-                      truncate
-                    ">
-                      {product.name || 'Garment'}
-                    </h3>
-
-                    <p className="
-                      text-[9px]
-                      sm:text-[10px]
-                      uppercase
-                      tracking-widest
-                      text-neutral-400
-                      mt-0.5
-                      sm:mt-1
-                      truncate
-                    ">
-                      {product.category_name ||
-                        product.category?.name ||
-                        'Haute Couture'}
-                    </p>
-
-                  </div>
-
-                  <span className="
-                    text-xs
-                    sm:text-sm
-                    font-serif
-                    text-neutral-900
-                    font-medium
-                    shrink-0
-                  ">
-                    ₹
-                    {Number(
-                      product.price || 0
-                    ).toLocaleString('en-IN')}
-                  </span>
-
-                </div>
               </div>
             ))}
-
           </div>
         )}
 
