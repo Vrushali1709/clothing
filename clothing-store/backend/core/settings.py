@@ -556,17 +556,17 @@ REST_FRAMEWORK = {
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.environ.get(
         "CLOUDINARY_CLOUD_NAME",
-        "ew4ljorh",
+        "ur9szzxx",
     ),
 
     "API_KEY": os.environ.get(
         "CLOUDINARY_API_KEY",
-        "822289837129993",
+        "653472174721196",
     ),
 
     "API_SECRET": os.environ.get(
         "CLOUDINARY_API_SECRET",
-        "MBjAma0XdIh5rF7qcFkl_EM",
+        "_bNbrDRcbw19wPZqjuBugY8bf8A",
     ),
 }
 
