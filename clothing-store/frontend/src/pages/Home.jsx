@@ -2997,10 +2997,10 @@ export default function Home() {
 
       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5]">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
+          {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
             <Sparkles size={13} style={{ color: GOLD }} />
             <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-700">Royal Celebrations</span>
-          </div>
+          </div> */}
           <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 tracking-wide">
             Bring on the Festivities
           </h2>
