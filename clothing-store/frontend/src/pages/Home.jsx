@@ -2913,7 +2913,7 @@ export default function Home() {
           1. HERO SECTION
       ===================================================== */}
 
-      <section className="relative w-full h-[85vh] min-h-[200px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
+      <section className="relative w-full h-[85vh] min-h-[580px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
