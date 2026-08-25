@@ -3404,7 +3404,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Heart,
   ArrowRight,
-  Sparkles,
   Star,
   Check,
   Mail,
@@ -3431,52 +3430,58 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
   const [email, setEmail] = useState('');
+
   const [timeLeft, setTimeLeft] = useState({
     hours: 12,
     minutes: 45,
     seconds: 30,
   });
 
-  const GOLD = '#C8A882';
-  const DARK = '#171717';
+  const GOLD = '#B89A72';
+  const INK = '#191817';
+  const IVORY = '#F8F6F2';
+  const BORDER = '#E7E1D8';
 
-  /* =======================================================
-     HERO SLIDES
-  ======================================================= */
+  /* =========================================================
+     HERO
+  ========================================================= */
 
   const heroSlides = [
     {
-      title: 'Timeless Elegance\nModern Silhouettes',
+      eyebrow: 'Autumn / Winter 2026',
+      title: 'Quiet luxury,\nmade to last.',
       description:
-        'Discover meticulously crafted pieces designed for the discerning wardrobe.',
+        'Thoughtfully designed essentials with considered details, refined fabrics and an effortless fit.',
       image:
-        'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1800&auto=format&fit=crop',
-      btnText: 'Explore Collection',
+        'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2000&auto=format&fit=crop',
+      btnText: 'Shop the collection',
       link: '/shop',
     },
     {
-      title: 'Refined Luxury\nUncompromised Quality',
+      eyebrow: 'New arrivals',
+      title: 'A considered\nway to dress.',
       description:
-        'Immerse yourself in exceptional textiles and bespoke tailoring.',
+        'Discover new silhouettes created for everyday wardrobes and special occasions alike.',
       image:
-        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1800&auto=format&fit=crop',
-      btnText: 'Shop New Arrivals',
+        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2000&auto=format&fit=crop',
+      btnText: 'View new arrivals',
       link: '/new-arrivals',
     },
     {
-      title: 'Grace Redefined\nEvery Single Day',
+      eyebrow: 'The occasion edit',
+      title: 'For moments\nworth remembering.',
       description:
-        'Elevate your personal style with pieces curated for pure sophistication.',
+        'Elegant pieces designed with a modern point of view and an understated sense of occasion.',
       image:
-        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1800&auto=format&fit=crop',
-      btnText: 'View Lookbook',
+        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2000&auto=format&fit=crop',
+      btnText: 'Explore occasion wear',
       link: '/shop',
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      CATEGORIES
-  ======================================================= */
+  ========================================================= */
 
   const categoriesList = [
     {
@@ -3516,124 +3521,124 @@ export default function Home() {
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      FESTIVE EDITS
-  ======================================================= */
+  ========================================================= */
 
   const festiveEdits = [
     {
-      title: 'Janmashtami Special',
-      subtitle: 'Divine Ethnic Grace',
+      title: 'Janmashtami',
+      subtitle: 'Traditional silhouettes',
       image:
         'https://i.pinimg.com/736x/74/1e/21/741e21e406bd4213fbd8e3abd98cbc4a.jpg',
       link: '/shop?collection=janmashtami',
     },
     {
-      title: 'Rakshabandhan Edit',
-      subtitle: 'Tradition Meets Modernity',
+      title: 'Raksha Bandhan',
+      subtitle: 'Modern festive dressing',
       image:
         'https://i.pinimg.com/1200x/b2/de/72/b2de7213adeede3215ae979316d5818d.jpg',
       link: '/shop?collection=rakshabandhan',
     },
     {
       title: 'Ganesh Chaturthi',
-      subtitle: 'Festive Celebrations',
+      subtitle: 'Celebration edit',
       image:
         'https://i.pinimg.com/736x/e9/ce/d3/e9ced3f0bcdd3050528163e81529b8fb.jpg',
       link: '/shop?collection=ganesh-chaturthi',
     },
     {
-      title: 'Diwali Royal Gala',
-      subtitle: 'Opulent Silk & Brocades',
+      title: 'Diwali',
+      subtitle: 'Silk, texture & evening wear',
       image:
         'https://i.pinimg.com/736x/21/99/0e/21990e4669d897c77e1ad9d37815d3f8.jpg',
       link: '/shop?collection=diwali',
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      COLLECTIONS
-  ======================================================= */
+  ========================================================= */
 
   const collections = [
     {
       title: 'The Monochrome Edit',
-      subtitle: 'Minimal • Refined • Timeless',
+      subtitle: 'Clean lines. Quiet confidence.',
       image:
-        'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200',
+        'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1400',
       link: '/shop?collection=monochrome',
     },
     {
-      title: 'Weekend Essentials',
-      subtitle: 'Effortless Everyday Luxury',
+      title: 'Weekend Dressing',
+      subtitle: 'Easy pieces for slower days.',
       image:
-        'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200',
+        'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1400',
       link: '/shop?collection=weekend',
     },
     {
       title: 'Occasion Edit',
-      subtitle: 'Made For Your Moments',
+      subtitle: 'Made for evenings that matter.',
       image:
-        'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1200',
+        'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1400',
       link: '/shop?collection=occasion',
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      OCCASIONS
-  ======================================================= */
+  ========================================================= */
 
   const occasions = [
     {
       title: 'Casual',
       image:
-        'https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=900',
+        'https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1000',
       link: '/shop?occasion=casual',
     },
     {
-      title: 'Office Wear',
+      title: 'Office',
       image:
-        'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=900',
+        'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000',
       link: '/shop?occasion=office',
     },
     {
-      title: 'Party',
+      title: 'Evening',
       image:
-        'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=900',
+        'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000',
       link: '/shop?occasion=party',
     },
     {
       title: 'Wedding',
       image:
-        'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=900',
+        'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000',
       link: '/shop?occasion=wedding',
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      SHOP THE LOOK
-  ======================================================= */
+  ========================================================= */
 
   const shopLooks = [
     {
       title: 'The Everyday Edit',
-      subtitle: 'Relaxed. Refined. Effortless.',
+      subtitle: 'Simple pieces, beautifully considered.',
       image:
-        'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200',
+        'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1400',
       link: '/shop?collection=everyday',
     },
     {
       title: 'Weekend Statement',
-      subtitle: 'Designed for effortless confidence.',
+      subtitle: 'A little more character for off-duty days.',
       image:
-        'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1200',
+        'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1400',
       link: '/shop?collection=weekend',
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      FAQ
-  ======================================================= */
+  ========================================================= */
 
   const faqs = [
     {
@@ -3658,48 +3663,48 @@ export default function Home() {
     },
   ];
 
-  /* =======================================================
+  /* =========================================================
      TRUST FEATURES
-  ======================================================= */
+  ========================================================= */
 
   const trustFeatures = [
     {
       icon: Truck,
-      title: 'Fast Delivery',
+      title: 'Fast delivery',
       text: '3–7 business days',
     },
     {
       icon: RotateCcw,
-      title: 'Easy Returns',
+      title: 'Easy returns',
       text: '14-day return window',
     },
     {
       icon: ShieldCheck,
-      title: 'Secure Payments',
-      text: '100% protected checkout',
+      title: 'Secure payments',
+      text: 'Protected checkout',
     },
     {
       icon: Headphones,
-      title: 'Dedicated Support',
-      text: 'We are here to help',
+      title: 'Customer care',
+      text: 'Here when you need us',
     },
   ];
 
-  /* =======================================================
-     HERO AUTO SLIDER
-  ======================================================= */
+  /* =========================================================
+     HERO SLIDER
+  ========================================================= */
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  /* =======================================================
-     FLASH SALE TIMER
-  ======================================================= */
+  /* =========================================================
+     SALE TIMER
+  ========================================================= */
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -3722,16 +3727,20 @@ export default function Home() {
           }
         }
 
-        return { hours, minutes, seconds };
+        return {
+          hours,
+          minutes,
+          seconds,
+        };
       });
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
 
-  /* =======================================================
+  /* =========================================================
      IMAGE URL
-  ======================================================= */
+  ========================================================= */
 
   const getImageUrl = (product) => {
     let imagePath = product?.image;
@@ -3760,9 +3769,9 @@ export default function Home() {
     return `https://clothing-backend-gynt.onrender.com${cleanPath}`;
   };
 
-  /* =======================================================
+  /* =========================================================
      LOAD PRODUCTS + WISHLIST
-  ======================================================= */
+  ========================================================= */
 
   useEffect(() => {
     API.get('products/')
@@ -3796,9 +3805,9 @@ export default function Home() {
     }
   }, []);
 
-  /* =======================================================
+  /* =========================================================
      RECENTLY VIEWED
-  ======================================================= */
+  ========================================================= */
 
   const recentlyViewed = useMemo(() => {
     try {
@@ -3817,9 +3826,9 @@ export default function Home() {
     }
   }, [products]);
 
-  /* =======================================================
+  /* =========================================================
      WISHLIST
-  ======================================================= */
+  ========================================================= */
 
   const handleWishlistToggle = async (e, productId) => {
     e.stopPropagation();
@@ -3839,9 +3848,9 @@ export default function Home() {
         await removeFromWishlist(wishlistId);
 
         setWishlistMap((prev) => {
-          const newMap = { ...prev };
-          delete newMap[productId];
-          return newMap;
+          const updated = { ...prev };
+          delete updated[productId];
+          return updated;
         });
       } else {
         const res = await addToWishlist(productId);
@@ -3856,90 +3865,88 @@ export default function Home() {
     }
   };
 
-  /* =======================================================
+  /* =========================================================
      PRODUCT CARD
-  ======================================================= */
+  ========================================================= */
 
-  const ProductCard = ({ product, badge = 'New' }) => (
-    <div
+  const ProductCard = ({ product, badge }) => (
+    <article
       onClick={() => navigate(`/product/${product.id}`)}
-      className="group cursor-pointer flex flex-col bg-white border border-neutral-200/80 shadow-sm hover:shadow-xl transition-all duration-500 rounded-xl overflow-hidden"
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = GOLD;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = '';
-      }}
+      className="group cursor-pointer"
     >
-      <div className="relative aspect-[3/4] bg-neutral-100 overflow-hidden">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#F0EDE8]">
         <img
           src={getImageUrl(product)}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]"
           onError={(e) => {
             e.target.src =
               'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800';
           }}
         />
 
-        <button
-          onClick={(e) => handleWishlistToggle(e, product.id)}
-          className="absolute top-3 right-3 w-9 h-9 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-neutral-700 hover:scale-110 transition-transform shadow-md"
-          aria-label="Wishlist"
-        >
-          <Heart
-            size={15}
-            className={
-              wishlistMap[product.id]
-                ? 'fill-red-500 text-red-500'
-                : 'text-neutral-600'
-            }
-          />
-        </button>
+        {/* Image bottom fade */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/15 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
+        {/* Badge */}
         {badge && (
-          <span
-            className="absolute top-3 left-3 px-2.5 py-1 bg-white/95 text-[9px] uppercase tracking-wider font-bold"
-            style={{ color: DARK }}
-          >
+          <span className="absolute top-4 left-4 bg-white/95 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-neutral-700">
             {badge}
           </span>
         )}
+
+        {/* Wishlist */}
+        <button
+          onClick={(e) => handleWishlistToggle(e, product.id)}
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/95 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white"
+          aria-label="Wishlist"
+        >
+          <Heart
+            size={16}
+            strokeWidth={1.5}
+            className={
+              wishlistMap[product.id]
+                ? 'fill-[#A34B4B] text-[#A34B4B]'
+                : 'text-neutral-700'
+            }
+          />
+        </button>
       </div>
 
-      <div className="p-4">
-        <h4 className="text-xs sm:text-sm font-medium text-neutral-800 truncate">
-          {product.name}
-        </h4>
+      <div className="pt-4 pb-2">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h3 className="text-[13px] sm:text-sm text-neutral-800 font-medium truncate">
+              {product.name}
+            </h3>
 
-        <div className="flex items-center justify-between mt-2">
+            <p className="text-[10px] text-neutral-400 mt-1 uppercase tracking-[0.08em]">
+              Available now
+            </p>
+          </div>
+
           <p
-            className="text-sm font-serif font-bold"
-            style={{ color: '#8A6D46' }}
+            className="text-sm whitespace-nowrap font-medium"
+            style={{ color: '#806744' }}
           >
             ₹{Number(product.price).toLocaleString('en-IN')}
           </p>
-
-          <div className="flex items-center gap-1 text-[10px] text-neutral-500">
-            <Star size={11} fill={GOLD} style={{ color: GOLD }} />
-            4.8
-          </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 
-  /* =======================================================
+  /* =========================================================
      PRODUCT SLICES
-  ======================================================= */
+  ========================================================= */
 
   const newProducts = products.slice(0, 4);
   const trendingProducts = products.slice(0, 4);
   const bestProducts = products.slice(4, 8);
 
-  /* =======================================================
+  /* =========================================================
      SUBSCRIBE
-  ======================================================= */
+  ========================================================= */
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -3954,17 +3961,22 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white overflow-hidden">
-
+    <div
+      className="min-h-screen bg-[#FAF9F6] text-[#191817] font-sans antialiased overflow-hidden"
+      style={{
+        '--luxury-gold': GOLD,
+        '--luxury-border': BORDER,
+      }}
+    >
       {/* =====================================================
           HERO
       ===================================================== */}
 
-      <section className="relative w-full h-[85vh] min-h-[580px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
+      <section className="relative h-[78vh] min-h-[600px] max-h-[850px] overflow-hidden bg-neutral-900">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ${
+            className={`absolute inset-0 transition-opacity duration-[1200ms] ${
               index === currentSlide
                 ? 'opacity-100 z-10'
                 : 'opacity-0 z-0 pointer-events-none'
@@ -3973,118 +3985,123 @@ export default function Home() {
             <img
               src={slide.image}
               alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+              className="absolute inset-0 w-full h-full object-cover object-center"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+            {/* More natural image treatment */}
+            <div className="absolute inset-0 bg-black/25" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
 
-            <div className="relative z-10 px-6 sm:px-12 md:px-20 lg:px-28 max-w-3xl text-white">
-              <div className="flex items-center gap-2 mb-5">
-                <Sparkles size={14} style={{ color: GOLD }} />
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/80">
-                  The New Season
-                </span>
+            <div className="relative z-10 h-full flex items-center">
+              <div className="px-6 sm:px-10 md:px-16 lg:px-24 max-w-[720px] text-white">
+                <p
+                  className="text-[10px] uppercase tracking-[0.28em] mb-6"
+                  style={{ color: '#D8C1A0' }}
+                >
+                  {slide.eyebrow}
+                </p>
+
+                <h1 className="font-serif text-[44px] sm:text-[58px] md:text-[72px] lg:text-[82px] leading-[0.98] font-light tracking-[-0.025em] whitespace-pre-line">
+                  {slide.title}
+                </h1>
+
+                <p className="mt-7 max-w-[470px] text-sm leading-7 text-white/75 font-light">
+                  {slide.description}
+                </p>
+
+                <button
+                  onClick={() => navigate(slide.link)}
+                  className="mt-9 inline-flex items-center gap-4 border border-white/70 px-7 py-4 text-[10px] uppercase tracking-[0.2em] font-medium hover:bg-white hover:text-neutral-900 transition-all duration-300"
+                >
+                  {slide.btnText}
+                  <ArrowRight size={14} strokeWidth={1.5} />
+                </button>
               </div>
-
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] mb-6 tracking-tight whitespace-pre-line">
-                {slide.title}
-              </h1>
-
-              <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-8 max-w-md">
-                {slide.description}
-              </p>
-
-              <button
-                onClick={() => navigate(slide.link)}
-                className="bg-white text-neutral-900 px-8 sm:px-10 py-4 text-[10px] uppercase tracking-[0.25em] font-medium shadow-xl hover:bg-[#C8A882] hover:text-white transition-all"
-              >
-                {slide.btnText}
-              </button>
             </div>
           </div>
         ))}
 
-        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
-          {heroSlides.map((_, idx) => (
-            <React.Fragment key={idx}>
-              <span
-                onClick={() => setCurrentSlide(idx)}
-                className="text-xs font-serif tracking-widest cursor-pointer transition-all"
-                style={
-                  idx === currentSlide
-                    ? {
-                        fontWeight: 700,
-                        color: GOLD,
-                        borderBottom: `1px solid ${GOLD}`,
-                        paddingBottom: '4px',
-                      }
-                    : {
-                        color: 'rgba(255,255,255,0.4)',
-                      }
-                }
-              >
-                0{idx + 1}
-              </span>
-
-              {idx < heroSlides.length - 1 && (
-                <div className="w-[1px] h-6 bg-white/20" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {/* Slide numbers */}
+        <div className="absolute right-7 md:right-12 bottom-10 z-30 flex items-center gap-5 text-white">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`h-[2px] transition-all ${
-                index === currentSlide ? 'w-10' : 'w-5 bg-white/40'
-              }`}
-              style={
-                index === currentSlide
-                  ? { backgroundColor: GOLD }
-                  : undefined
-              }
-            />
+              className="relative pb-2 text-[10px] tracking-[0.15em] transition-all"
+              style={{
+                color:
+                  currentSlide === index
+                    ? '#E1C6A0'
+                    : 'rgba(255,255,255,.45)',
+              }}
+            >
+              0{index + 1}
+
+              {currentSlide === index && (
+                <span
+                  className="absolute bottom-0 left-0 h-px w-full"
+                  style={{ backgroundColor: GOLD }}
+                />
+              )}
+            </button>
           ))}
+        </div>
+
+        {/* Bottom progress */}
+        <div className="absolute bottom-0 left-0 right-0 z-30 h-px bg-white/20">
+          <div
+            className="h-full transition-all duration-700"
+            style={{
+              backgroundColor: GOLD,
+              width: `${((currentSlide + 1) / heroSlides.length) * 100}%`,
+            }}
+          />
         </div>
       </section>
 
       {/* =====================================================
-          ANNOUNCEMENT BAR
+          ANNOUNCEMENT
       ===================================================== */}
 
-      <div className="w-full bg-neutral-900 text-white py-3 px-4 text-center">
-        <p className="text-[10px] sm:text-xs tracking-[0.2em] font-light text-neutral-300">
-          Complimentary express shipping on all orders above ₹999
-          <span className="mx-3 text-[#C8A882]">✦</span>
-          14-day effortless returns
+      <div className="bg-[#1B1A18] text-white py-3.5 px-5 text-center">
+        <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.18em] text-white/70">
+          Complimentary shipping on orders above ₹999
+          <span className="mx-4" style={{ color: GOLD }}>
+            /
+          </span>
+          Easy 14-day returns
         </p>
       </div>
 
       {/* =====================================================
-          TRUST FEATURES
+          TRUST STRIP
       ===================================================== */}
 
-      <section className="bg-white border-b border-neutral-200">
-        <div className="max-w-[1550px] mx-auto grid grid-cols-2 md:grid-cols-4">
+      <section className="bg-white border-b" style={{ borderColor: BORDER }}>
+        <div className="max-w-[1450px] mx-auto grid grid-cols-2 lg:grid-cols-4">
           {trustFeatures.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <div
                 key={item.title}
-                className={`flex items-center justify-center gap-3 py-6 px-4 ${
+                className={`flex items-center justify-center gap-3 py-6 px-5 ${
                   index !== trustFeatures.length - 1
-                    ? 'md:border-r border-neutral-200'
+                    ? 'lg:border-r'
                     : ''
                 }`}
+                style={{
+                  borderColor: BORDER,
+                }}
               >
-                <Icon size={19} style={{ color: GOLD }} />
+                <Icon
+                  size={18}
+                  strokeWidth={1.3}
+                  style={{ color: GOLD }}
+                />
 
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest font-bold">
+                  <p className="text-[10px] uppercase tracking-[0.12em] font-medium text-neutral-800">
                     {item.title}
                   </p>
 
@@ -4102,47 +4119,52 @@ export default function Home() {
           CATEGORIES
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
-        <div className="text-center mb-12">
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
-            style={{ color: GOLD }}
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20 md:py-24 max-w-[1500px] mx-auto">
+        <div className="flex items-end justify-between mb-12">
+          <div>
+            <p
+              className="text-[9px] uppercase tracking-[0.25em] mb-3"
+              style={{ color: GOLD }}
+            >
+              Browse
+            </p>
+
+            <h2 className="font-serif text-3xl sm:text-4xl font-normal">
+              Shop by category
+            </h2>
+          </div>
+
+          <button
+            onClick={() => navigate('/shop')}
+            className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-neutral-600 hover:text-neutral-900 transition-colors"
           >
-            Explore
-          </p>
-
-          <h2 className="text-3xl sm:text-4xl font-serif">
-            Shop By Category
-          </h2>
-
-          <div
-            className="w-10 h-[1px] mx-auto mt-4"
-            style={{ backgroundColor: GOLD }}
-          />
+            All products
+            <ArrowRight size={13} strokeWidth={1.5} />
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-x-5 gap-y-9">
           {categoriesList.map((cat) => (
-            <div
+            <button
               key={cat.slug}
               onClick={() => navigate(`/shop?category=${cat.slug}`)}
-              className="flex flex-col items-center gap-3 cursor-pointer group"
+              className="group text-center"
             >
               <div
-                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden p-1 border shadow-sm transition-all group-hover:shadow-md"
-                style={{ borderColor: '#E5DDD0' }}
+                className="aspect-square rounded-full overflow-hidden bg-[#EEEAE3] mb-4 mx-auto max-w-[145px] border"
+                style={{ borderColor: '#DED6CA' }}
               >
                 <img
                   src={cat.img}
                   alt={cat.name}
-                  className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
 
-              <span className="text-xs font-medium tracking-widest uppercase mt-1">
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.14em] text-neutral-700">
                 {cat.name}
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </section>
@@ -4152,28 +4174,34 @@ export default function Home() {
       ===================================================== */}
 
       {newProducts.length > 0 && (
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
-          <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+        <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-16 max-w-[1500px] mx-auto">
+          <div
+            className="flex items-end justify-between pb-5 mb-9 border-b"
+            style={{ borderColor: BORDER }}
+          >
             <div>
               <p
-                className="text-[9px] uppercase tracking-[0.3em] mb-2"
+                className="text-[9px] uppercase tracking-[0.25em] mb-2"
                 style={{ color: GOLD }}
               >
-                Just In
+                Just in
               </p>
 
-              <h2 className="text-3xl font-serif">New Arrivals</h2>
+              <h2 className="font-serif text-3xl">
+                New arrivals
+              </h2>
             </div>
 
             <button
               onClick={() => navigate('/new-arrivals')}
-              className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold hover:text-[#C8A882] transition-colors"
+              className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] hover:text-[#B89A72] transition-colors"
             >
-              View All <ArrowRight size={13} />
+              View all
+              <ArrowRight size={13} strokeWidth={1.5} />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {newProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -4186,32 +4214,104 @@ export default function Home() {
       )}
 
       {/* =====================================================
+          EDITORIAL BANNER
+      ===================================================== */}
+
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20">
+        <div className="max-w-[1500px] mx-auto grid md:grid-cols-2 bg-[#ECE7DF]">
+          <div className="min-h-[420px] md:min-h-[560px] overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1500"
+              alt="Craftsmanship"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          <div className="flex items-center px-8 sm:px-12 lg:px-20 py-14">
+            <div className="max-w-[500px]">
+              <p
+                className="text-[9px] uppercase tracking-[0.25em] mb-5"
+                style={{ color: GOLD }}
+              >
+                The details matter
+              </p>
+
+              <h2 className="font-serif text-4xl sm:text-5xl leading-[1.05]">
+                Designed with
+                <br />
+                intention.
+              </h2>
+
+              <p className="mt-6 text-sm leading-7 text-neutral-600 font-light">
+                We believe good clothing should feel effortless. From fabric
+                selection to finishing details, each piece is considered for
+                the way it looks, feels and lives with you.
+              </p>
+
+              <div className="mt-8 space-y-3">
+                {[
+                  'Selected fabrics',
+                  'Thoughtful construction',
+                  'Comfortable, considered fits',
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 text-[11px] text-neutral-700"
+                  >
+                    <Check
+                      size={14}
+                      strokeWidth={1.5}
+                      style={{ color: GOLD }}
+                    />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => navigate('/about')}
+                className="mt-9 border-b border-neutral-800 pb-2 text-[10px] uppercase tracking-[0.2em] font-medium hover:border-[#B89A72] hover:text-[#8D7049] transition-colors"
+              >
+                Our story
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
           TRENDING
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
-        <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-16 max-w-[1500px] mx-auto">
+        <div
+          className="flex items-end justify-between pb-5 mb-9 border-b"
+          style={{ borderColor: BORDER }}
+        >
           <div>
             <p
-              className="text-[9px] uppercase tracking-[0.3em] mb-2"
+              className="text-[9px] uppercase tracking-[0.25em] mb-2"
               style={{ color: GOLD }}
             >
-              Most Wanted
+              Selected now
             </p>
 
-            <h2 className="text-3xl font-serif">Trending Pieces</h2>
+            <h2 className="font-serif text-3xl">
+              Trending pieces
+            </h2>
           </div>
 
           <button
             onClick={() => navigate('/shop')}
-            className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold hover:text-[#C8A882] transition-colors"
+            className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] hover:text-[#B89A72]"
           >
-            View Collection <ArrowRight size={13} />
+            Shop collection
+            <ArrowRight size={13} strokeWidth={1.5} />
           </button>
         </div>
 
         {trendingProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {trendingProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -4231,60 +4331,57 @@ export default function Home() {
           SHOP THE LOOK
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto">
-        <div className="text-center mb-12">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20 max-w-[1500px] mx-auto">
+        <div className="mb-11">
           <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
+            className="text-[9px] uppercase tracking-[0.25em] mb-3"
             style={{ color: GOLD }}
           >
-            Style Inspiration
+            Styling
           </p>
 
-          <h2 className="text-3xl sm:text-4xl font-serif">
-            Shop The Look
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <h2 className="font-serif text-3xl sm:text-4xl">
+              How we would wear it
+            </h2>
 
-          <p className="text-xs text-neutral-500 mt-3 max-w-lg mx-auto">
-            Curated looks designed to make everyday dressing effortless.
-          </p>
+            <p className="text-xs text-neutral-500 max-w-sm leading-6">
+              Easy combinations built around pieces from the current
+              collection.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+        <div className="grid md:grid-cols-2 gap-5">
           {shopLooks.map((look) => (
-            <div
+            <article
               key={look.title}
               onClick={() => navigate(look.link)}
-              className="group relative h-[520px] overflow-hidden rounded-2xl cursor-pointer"
+              className="group relative h-[500px] sm:h-[580px] overflow-hidden cursor-pointer"
             >
               <img
                 src={look.image}
                 alt={look.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.035]"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                <p
-                  className="text-[9px] uppercase tracking-[0.3em] mb-2"
-                  style={{ color: GOLD }}
-                >
-                  Curated Look
-                </p>
-
-                <h3 className="text-3xl font-serif mb-2">
+              <div className="absolute left-7 right-7 bottom-8 text-white">
+                <h3 className="font-serif text-3xl">
                   {look.title}
                 </h3>
 
-                <p className="text-xs text-white/70 mb-5">
+                <p className="mt-2 text-xs text-white/70">
                   {look.subtitle}
                 </p>
 
-                <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold">
-                  Shop This Look <ArrowRight size={14} />
+                <span className="mt-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] border-b border-white/50 pb-2">
+                  Explore
+                  <ArrowRight size={13} strokeWidth={1.4} />
                 </span>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>
@@ -4293,113 +4390,116 @@ export default function Home() {
           FESTIVE EDIT
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5]">
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-4">
-            <Sparkles size={13} style={{ color: GOLD }} />
+      <section className="bg-[#F0ECE5] border-y py-20 px-5 sm:px-8 md:px-12 lg:px-20">
+        <div className="max-w-[1500px] mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-11">
+            <div>
+              <p
+                className="text-[9px] uppercase tracking-[0.25em] mb-3"
+                style={{ color: GOLD }}
+              >
+                Festive dressing
+              </p>
 
-            <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-neutral-700">
-              Royal Celebrations
-            </span>
+              <h2 className="font-serif text-3xl sm:text-4xl">
+                For the season ahead
+              </h2>
+            </div>
+
+            <p className="text-xs text-neutral-500 max-w-sm leading-6">
+              A selection of traditional influences interpreted through a
+              contemporary wardrobe.
+            </p>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 tracking-wide">
-            Bring on the Festivities
-          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            {festiveEdits.map((fest) => (
+              <article
+                key={fest.title}
+                onClick={() => navigate(fest.link)}
+                className="group cursor-pointer"
+              >
+                <div className="relative aspect-[3/4] overflow-hidden bg-neutral-200">
+                  <img
+                    src={fest.image}
+                    alt={fest.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.035]"
+                  />
 
-          <p className="text-xs sm:text-sm text-neutral-600 font-light mt-3 max-w-lg mx-auto">
-            Explore our curated luxury edits designed for every celebration.
-          </p>
-        </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {festiveEdits.map((fest) => (
-            <div
-              key={fest.title}
-              onClick={() => navigate(fest.link)}
-              className="group relative h-[480px] rounded-2xl overflow-hidden cursor-pointer shadow-lg border border-[#E3DAC9] transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl"
-            >
-              <img
-                src={fest.image}
-                alt={fest.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-              />
+                  <div className="absolute left-5 right-5 bottom-5 text-white">
+                    <p className="text-[9px] uppercase tracking-[0.16em] text-white/70 mb-2">
+                      {fest.subtitle}
+                    </p>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                    <h3 className="font-serif text-xl sm:text-2xl">
+                      {fest.title}
+                    </h3>
 
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight size={14} style={{ color: GOLD }} />
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-center text-white">
-                <p
-                  className="text-[10px] uppercase tracking-[0.3em] font-semibold mb-1"
-                  style={{ color: GOLD }}
-                >
-                  {fest.subtitle}
-                </p>
-
-                <h3 className="text-xl sm:text-2xl font-serif mb-4 tracking-wide">
-                  {fest.title}
-                </h3>
-
-                <span className="inline-block px-5 py-2.5 bg-white/10 hover:bg-white hover:text-neutral-900 text-white text-[10px] uppercase tracking-[0.2em] font-bold rounded-lg backdrop-blur-md border border-white/20 transition-all duration-300">
-                  Explore Edit
-                </span>
-              </div>
-            </div>
-          ))}
+                    <span className="mt-3 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.18em]">
+                      View edit
+                      <ArrowRight size={12} />
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* =====================================================
-          FLASH SALE
+          SALE
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16">
-        <div className="max-w-[1550px] mx-auto bg-neutral-900 text-white rounded-2xl overflow-hidden relative">
-          <div className="absolute inset-0 opacity-20">
-            <img
-              src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1600"
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20">
+        <div className="max-w-[1500px] mx-auto relative overflow-hidden bg-[#20201E]">
+          <img
+            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1800"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          />
 
-          <div className="relative z-10 py-16 px-6 text-center">
+          <div className="absolute inset-0 bg-black/40" />
+
+          <div className="relative z-10 py-16 sm:py-20 px-6 text-center text-white">
             <Clock3
-              size={24}
+              size={21}
+              strokeWidth={1.3}
               className="mx-auto mb-5"
               style={{ color: GOLD }}
             />
 
             <p
-              className="text-[9px] uppercase tracking-[0.35em] mb-3"
-              style={{ color: GOLD }}
+              className="text-[9px] uppercase tracking-[0.28em] mb-3"
+              style={{ color: '#D2B891' }}
             >
-              Limited Time
+              Limited time
             </p>
 
-            <h2 className="text-4xl sm:text-5xl font-serif mb-4">
-              The Mid-Season Edit
+            <h2 className="font-serif text-4xl sm:text-5xl">
+              The mid-season edit
             </h2>
 
-            <p className="text-xs sm:text-sm text-neutral-300 mb-8">
-              Enjoy up to 40% off selected styles.
+            <p className="text-xs text-white/60 mt-4">
+              Selected styles, up to 40% off.
             </p>
 
-            <div className="flex justify-center gap-3 sm:gap-5 mb-8">
+            <div className="flex justify-center gap-3 sm:gap-5 mt-9 mb-9">
               {[
                 ['Hours', timeLeft.hours],
                 ['Minutes', timeLeft.minutes],
                 ['Seconds', timeLeft.seconds],
               ].map(([label, value]) => (
                 <div key={label} className="text-center">
-                  <div className="w-20 sm:w-24 h-16 sm:h-20 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center text-2xl sm:text-3xl font-serif">
-                    {String(value).padStart(2, '0')}
+                  <div className="w-[72px] sm:w-[88px] h-[65px] sm:h-[76px] border border-white/20 flex items-center justify-center">
+                    <span className="font-serif text-2xl sm:text-3xl">
+                      {String(value).padStart(2, '0')}
+                    </span>
                   </div>
 
-                  <p className="text-[8px] uppercase tracking-widest text-neutral-500 mt-2">
+                  <p className="text-[8px] uppercase tracking-[0.15em] text-white/40 mt-2">
                     {label}
                   </p>
                 </div>
@@ -4408,118 +4508,59 @@ export default function Home() {
 
             <button
               onClick={() => navigate('/shop?sale=true')}
-              className="px-8 py-4 bg-[#C8A882] text-neutral-900 text-[10px] uppercase tracking-[0.25em] font-bold hover:bg-white transition-colors"
+              className="px-8 py-4 bg-white text-neutral-900 text-[10px] uppercase tracking-[0.2em] font-medium hover:bg-[#C8A882] transition-colors"
             >
-              Shop Sale
+              Shop the sale
             </button>
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          SHOP BY OCCASION
+          OCCASIONS
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
-        <div className="text-center mb-12">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-16 max-w-[1500px] mx-auto">
+        <div className="mb-11">
           <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
+            className="text-[9px] uppercase tracking-[0.25em] mb-3"
             style={{ color: GOLD }}
           >
-            Dress For The Moment
+            Shop by mood
           </p>
 
-          <h2 className="text-3xl sm:text-4xl font-serif">
-            Shop By Occasion
+          <h2 className="font-serif text-3xl sm:text-4xl">
+            Dress for the moment
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {occasions.map((occasion) => (
-            <div
+            <article
               key={occasion.title}
               onClick={() => navigate(occasion.link)}
-              className="relative h-[280px] sm:h-[380px] rounded-xl overflow-hidden cursor-pointer group"
+              className="group relative aspect-[4/5] overflow-hidden cursor-pointer"
             >
               <img
                 src={occasion.image}
                 alt={occasion.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                className="w-full h-full object-cover transition-transform duration-900 group-hover:scale-[1.04]"
               />
 
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
 
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <h3 className="text-xl sm:text-2xl font-serif">
-                    {occasion.title}
-                  </h3>
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                <h3 className="font-serif text-2xl">
+                  {occasion.title}
+                </h3>
 
-                  <div className="w-8 h-[1px] bg-[#C8A882] mx-auto mt-3 group-hover:w-14 transition-all duration-500" />
-                </div>
+                <div
+                  className="w-8 h-px mt-3 group-hover:w-12 transition-all duration-500"
+                  style={{ backgroundColor: GOLD }}
+                />
               </div>
-            </div>
+            </article>
           ))}
-        </div>
-      </section>
-
-      {/* =====================================================
-          BRAND STORY
-      ===================================================== */}
-
-      <section className="my-20 bg-[#EBE5DC] border-y border-neutral-200">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="h-[400px] sm:h-[550px] overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1400"
-              alt="Atelier Philosophy"
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
-            />
-          </div>
-
-          <div className="flex items-center p-8 sm:p-14 lg:p-20">
-            <div className="max-w-xl">
-              <p
-                className="text-[9px] uppercase tracking-[0.3em] mb-4"
-                style={{ color: GOLD }}
-              >
-                Our Philosophy
-              </p>
-
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-6 leading-tight">
-                Crafted For <br /> Enduring Elegance
-              </h2>
-
-              <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8">
-                Every garment we create is an ode to refined luxury, using
-                carefully selected fabrics and uncompromising attention to
-                detail to match your distinctive lifestyle.
-              </p>
-
-              <div className="space-y-3 mb-8">
-                {[
-                  'Premium fabric selection',
-                  'Thoughtful craftsmanship',
-                  'Timeless silhouettes',
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-3 text-xs uppercase tracking-wider text-neutral-700 font-medium"
-                  >
-                    <Check size={14} style={{ color: GOLD }} />
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => navigate('/about')}
-                className="bg-neutral-900 text-white px-8 py-4 text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-[#C8A882] transition-colors"
-              >
-                Discover Our Story
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -4527,52 +4568,59 @@ export default function Home() {
           COLLECTIONS
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
-        <div className="text-center mb-12">
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
-            style={{ color: GOLD }}
-          >
-            Explore More
-          </p>
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20 max-w-[1500px] mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-11">
+          <div>
+            <p
+              className="text-[9px] uppercase tracking-[0.25em] mb-3"
+              style={{ color: GOLD }}
+            >
+              Collections
+            </p>
 
-          <h2 className="text-3xl sm:text-4xl font-serif">
-            Curated Collections
-          </h2>
+            <h2 className="font-serif text-3xl sm:text-4xl">
+              A closer look
+            </h2>
+          </div>
+
+          <button
+            onClick={() => navigate('/shop')}
+            className="self-start md:self-auto text-[10px] uppercase tracking-[0.18em] border-b border-neutral-400 pb-2 hover:border-neutral-900"
+          >
+            Shop everything
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5">
           {collections.map((collection) => (
-            <div
+            <article
               key={collection.title}
               onClick={() => navigate(collection.link)}
-              className="relative h-[450px] overflow-hidden cursor-pointer group rounded-xl"
+              className="group relative h-[470px] overflow-hidden cursor-pointer"
             >
               <img
                 src={collection.image}
                 alt={collection.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                className="w-full h-full object-cover transition-transform duration-900 group-hover:scale-[1.04]"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                <h3 className="text-2xl font-serif mb-1">
+              <div className="absolute bottom-7 left-7 right-7 text-white">
+                <h3 className="font-serif text-2xl">
                   {collection.title}
                 </h3>
 
-                <p className="text-xs uppercase tracking-wider text-white/70 mb-4">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-white/65 mt-2">
                   {collection.subtitle}
                 </p>
 
-                <span
-                  className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold"
-                  style={{ color: '#E7D3B8' }}
-                >
-                  Explore Edit <ArrowRight size={13} />
+                <span className="inline-flex items-center gap-2 mt-5 text-[9px] uppercase tracking-[0.18em]">
+                  Explore
+                  <ArrowRight size={12} />
                 </span>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>
@@ -4582,35 +4630,39 @@ export default function Home() {
       ===================================================== */}
 
       {bestProducts.length > 0 && (
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
-          <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+        <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-16 max-w-[1500px] mx-auto">
+          <div
+            className="flex items-end justify-between pb-5 mb-9 border-b"
+            style={{ borderColor: BORDER }}
+          >
             <div>
               <p
-                className="text-[9px] uppercase tracking-[0.3em] mb-2"
+                className="text-[9px] uppercase tracking-[0.25em] mb-2"
                 style={{ color: GOLD }}
               >
-                Customer Favorites
+                Customer favourites
               </p>
 
-              <h2 className="text-3xl font-serif">
-                Most Loved Best Sellers
+              <h2 className="font-serif text-3xl">
+                Best sellers
               </h2>
             </div>
 
             <button
               onClick={() => navigate('/shop')}
-              className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold hover:text-[#C8A882] transition-colors"
+              className="hidden sm:flex items-center gap-2 text-[10px] uppercase tracking-[0.18em]"
             >
-              Shop All <ArrowRight size={13} />
+              Shop all
+              <ArrowRight size={13} />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {bestProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
-                badge="Best Seller"
+                badge="Best seller"
               />
             ))}
           </div>
@@ -4622,23 +4674,26 @@ export default function Home() {
       ===================================================== */}
 
       {recentlyViewed.length > 0 && (
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
-          <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+        <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-16 max-w-[1500px] mx-auto">
+          <div
+            className="flex items-end justify-between pb-5 mb-9 border-b"
+            style={{ borderColor: BORDER }}
+          >
             <div>
               <p
-                className="text-[9px] uppercase tracking-[0.3em] mb-2"
+                className="text-[9px] uppercase tracking-[0.25em] mb-2"
                 style={{ color: GOLD }}
               >
-                Continue Browsing
+                Continue shopping
               </p>
 
-              <h2 className="text-3xl font-serif">
-                Recently Viewed
+              <h2 className="font-serif text-3xl">
+                Recently viewed
               </h2>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
             {recentlyViewed.map((product) => (
               <ProductCard
                 key={product.id}
@@ -4651,67 +4706,66 @@ export default function Home() {
       )}
 
       {/* =====================================================
-          TESTIMONIALS
+          COMMUNITY / TESTIMONIALS
       ===================================================== */}
 
-      <section className="my-20 bg-[#F1ECE5] py-20 px-5">
-        <div className="max-w-[1100px] mx-auto text-center">
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
-            style={{ color: GOLD }}
-          >
-            Real Experiences
-          </p>
+      <section className="bg-[#F1EEE8] border-y py-20 px-5 sm:px-8">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="text-center mb-12">
+            <p
+              className="text-[9px] uppercase tracking-[0.25em] mb-3"
+              style={{ color: GOLD }}
+            >
+              From our customers
+            </p>
 
-          <h2 className="text-3xl sm:text-4xl font-serif mb-12">
-            Loved By Our Community
-          </h2>
+            <h2 className="font-serif text-3xl sm:text-4xl">
+              What they say
+            </h2>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-0 border-y border-neutral-300">
             {[
               {
-                name: 'Aarav Mehta',
+                name: 'Aarav',
                 text: 'Beautiful quality and excellent finishing. The shirt looks even better in person.',
               },
               {
-                name: 'Riya Shah',
-                text: 'The entire shopping experience feels premium. Packaging and quality were exceptional.',
+                name: 'Riya',
+                text: 'The shopping experience feels thoughtful from start to finish. The quality was exceptional.',
               },
               {
-                name: 'Kabir Patel',
-                text: 'The fit is perfect and delivery was much faster than expected. Will definitely shop again.',
+                name: 'Kabir',
+                text: 'The fit was exactly what I expected and delivery was much faster than anticipated.',
               },
-            ].map((review) => (
+            ].map((review, index) => (
               <div
                 key={review.name}
-                className="bg-white p-8 shadow-sm rounded-xl text-left flex flex-col justify-between"
+                className={`p-8 sm:p-10 ${
+                  index !== 2
+                    ? 'md:border-r border-b md:border-b-0 border-neutral-300'
+                    : ''
+                }`}
               >
-                <div>
-                  <div className="flex gap-1 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={12}
-                        fill={GOLD}
-                        style={{ color: GOLD }}
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-sm font-serif leading-relaxed text-neutral-700">
-                    “{review.text}”
-                  </p>
+                <div className="flex gap-1 mb-6">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      size={11}
+                      fill={GOLD}
+                      strokeWidth={1}
+                      style={{ color: GOLD }}
+                    />
+                  ))}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-neutral-100">
-                  <p className="text-xs uppercase tracking-widest font-bold text-neutral-900">
-                    {review.name}
-                  </p>
+                <p className="font-serif text-lg leading-7 text-neutral-700">
+                  “{review.text}”
+                </p>
 
-                  <p className="text-[10px] text-neutral-400 mt-0.5">
-                    Verified Customer
-                  </p>
-                </div>
+                <p className="mt-7 text-[10px] uppercase tracking-[0.16em] text-neutral-500">
+                  {review.name}
+                </p>
               </div>
             ))}
           </div>
@@ -4719,62 +4773,30 @@ export default function Home() {
       </section>
 
       {/* =====================================================
-          INSTAGRAM STYLE SECTION
+          INSTAGRAM
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
-        <div className="text-center mb-10">
-         <div
-  className="mx-auto mb-3 w-[22px] h-[22px] flex items-center justify-center"
-  style={{ color: GOLD }}
-  aria-label="Instagram"
->
-  <svg
-    width="22"
-    height="22"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect
-      x="3"
-      y="3"
-      width="18"
-      height="18"
-      rx="5"
-      stroke="currentColor"
-      strokeWidth="1.8"
-    />
-    <circle
-      cx="12"
-      cy="12"
-      r="4"
-      stroke="currentColor"
-      strokeWidth="1.8"
-    />
-    <circle
-      cx="17.3"
-      cy="6.8"
-      r="1"
-      fill="currentColor"
-    />
-  </svg>
-</div>
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20 max-w-[1500px] mx-auto">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p
+              className="text-[9px] uppercase tracking-[0.25em] mb-3"
+              style={{ color: GOLD }}
+            >
+              Follow along
+            </p>
 
+            <h2 className="font-serif text-3xl">
+              @YourBrand
+            </h2>
+          </div>
 
-          <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-2"
-            style={{ color: GOLD }}
-          >
-            Follow Our Style
-          </p>
-
-          <h2 className="text-3xl font-serif">
-            @YourBrand
-          </h2>
+          <span className="hidden sm:block text-[10px] uppercase tracking-[0.15em] text-neutral-400">
+            Instagram
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1.5">
           {[
             'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?q=80&w=700',
             'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=700',
@@ -4785,15 +4807,13 @@ export default function Home() {
           ].map((image, index) => (
             <div
               key={index}
-              className="aspect-square overflow-hidden cursor-pointer group"
+              className="aspect-square overflow-hidden bg-neutral-100 group cursor-pointer"
             >
               <img
                 src={image}
                 alt={`Style ${index + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-
-              <div className="absolute" />
             </div>
           ))}
         </div>
@@ -4803,49 +4823,63 @@ export default function Home() {
           FAQ
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[950px] mx-auto">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 py-20 max-w-[950px] mx-auto">
         <div className="text-center mb-12">
           <p
-            className="text-[9px] uppercase tracking-[0.3em] mb-3"
+            className="text-[9px] uppercase tracking-[0.25em] mb-3"
             style={{ color: GOLD }}
           >
-            Need To Know
+            Information
           </p>
 
-          <h2 className="text-3xl sm:text-4xl font-serif">
-            Frequently Asked Questions
+          <h2 className="font-serif text-3xl sm:text-4xl">
+            Frequently asked
           </h2>
         </div>
 
-        <div className="border-t border-neutral-200">
+        <div
+          className="border-t"
+          style={{ borderColor: BORDER }}
+        >
           {faqs.map((faq, index) => (
-            <div key={faq.question} className="border-b border-neutral-200">
+            <div
+              key={faq.question}
+              className="border-b"
+              style={{ borderColor: BORDER }}
+            >
               <button
                 onClick={() =>
                   setOpenFaq(openFaq === index ? null : index)
                 }
-                className="w-full flex items-center justify-between py-6 text-left"
+                className="w-full flex items-center justify-between gap-5 py-6 text-left"
               >
-                <span className="text-sm font-medium">
+                <span className="text-sm text-neutral-800">
                   {faq.question}
                 </span>
 
                 <ChevronDown
-                  size={18}
-                  className={`transition-transform duration-300 ${
+                  size={17}
+                  strokeWidth={1.3}
+                  className={`shrink-0 transition-transform duration-300 ${
                     openFaq === index ? 'rotate-180' : ''
                   }`}
                   style={{ color: GOLD }}
                 />
               </button>
 
-              {openFaq === index && (
-                <div className="pb-6 pr-8">
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
+              <div
+                className={`grid transition-all duration-300 ${
+                  openFaq === index
+                    ? 'grid-rows-[1fr] opacity-100'
+                    : 'grid-rows-[0fr] opacity-0'
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="pb-6 pr-10 text-sm text-neutral-500 leading-7 font-light">
                     {faq.answer}
                   </p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
@@ -4855,38 +4889,45 @@ export default function Home() {
           NEWSLETTER
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16">
-        <div className="max-w-[1550px] mx-auto bg-neutral-900 text-white py-16 px-6 text-center rounded-2xl">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 pb-20">
+        <div className="max-w-[1500px] mx-auto bg-[#22211F] text-white px-6 py-16 sm:py-20 text-center">
           <Mail
-            size={24}
-            className="mx-auto mb-4"
+            size={21}
+            strokeWidth={1.3}
+            className="mx-auto mb-5"
             style={{ color: GOLD }}
           />
 
-          <h2 className="text-3xl sm:text-4xl font-serif mb-3">
-            Join The Atelier Private List
+          <p
+            className="text-[9px] uppercase tracking-[0.25em] mb-3"
+            style={{ color: '#CDB38F' }}
+          >
+            Stay in the know
+          </p>
+
+          <h2 className="font-serif text-3xl sm:text-4xl">
+            Join our private list
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-400 max-w-md mx-auto mb-8 font-light leading-relaxed">
-            Be the first to discover new collections, private sales, and
-            exclusive seasonal edits.
+          <p className="text-xs sm:text-sm text-white/50 max-w-md mx-auto mt-4 leading-6">
+            New collections, early access and occasional notes from us.
           </p>
 
           <form
             onSubmit={handleSubscribe}
-            className="flex flex-col sm:flex-row max-w-md mx-auto gap-3"
+            className="flex flex-col sm:flex-row max-w-[500px] mx-auto mt-8"
           >
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email address"
-              className="flex-1 bg-white/10 border border-white/20 text-white px-5 py-4 text-xs outline-none focus:border-[#C8A882] rounded-lg"
+              placeholder="Email address"
+              className="flex-1 bg-transparent border border-white/25 px-5 py-4 text-xs text-white outline-none placeholder:text-white/40 focus:border-[#B89A72]"
             />
 
             <button
               type="submit"
-              className="px-8 py-4 bg-[#C8A882] text-neutral-900 text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-white transition-colors rounded-lg"
+              className="px-7 py-4 bg-white text-neutral-900 text-[10px] uppercase tracking-[0.18em] font-medium hover:bg-[#C8A882] transition-colors"
             >
               Subscribe
             </button>
@@ -4898,28 +4939,32 @@ export default function Home() {
           FINAL CTA
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 pb-20">
-        <div className="max-w-[1550px] mx-auto text-center border-t border-neutral-200 pt-16">
+      <section className="px-5 sm:px-8 md:px-12 lg:px-20 pb-24">
+        <div
+          className="max-w-[1500px] mx-auto border-t pt-16 text-center"
+          style={{ borderColor: BORDER }}
+        >
           <ShoppingBag
-            size={22}
-            className="mx-auto mb-4"
+            size={21}
+            strokeWidth={1.3}
+            className="mx-auto mb-5"
             style={{ color: GOLD }}
           />
 
-          <h2 className="text-3xl sm:text-4xl font-serif mb-4">
-            Find Something You’ll Love
+          <h2 className="font-serif text-3xl sm:text-4xl">
+            Find your next favourite
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-500 max-w-md mx-auto mb-7">
-            Explore our complete collection and discover your next signature
-            piece.
+          <p className="text-xs sm:text-sm text-neutral-500 max-w-md mx-auto mt-4 leading-6">
+            Explore the full collection and discover pieces made to become
+            part of your everyday wardrobe.
           </p>
 
           <button
             onClick={() => navigate('/shop')}
-            className="bg-neutral-900 text-white px-10 py-4 text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-[#C8A882] transition-colors"
+            className="mt-7 bg-[#1B1A18] text-white px-9 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-[#B89A72] transition-colors"
           >
-            Shop All Products
+            Shop all products
           </button>
         </div>
       </section>
