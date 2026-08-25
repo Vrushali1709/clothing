@@ -2517,7 +2517,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -2624,7 +2623,7 @@ export default function Home() {
   ];
 
   /* -------------------------------------------------------
-     LUXURY FESTIVE EDIT (Janmashtami, Rakshabandhan, Ganesh Chaturthi, Diwali)
+     LUXURY FESTIVE EDITS (Compact Horizontal Banner Cards)
   ------------------------------------------------------- */
 
   const festiveEdits = [
@@ -2992,11 +2991,66 @@ export default function Home() {
       </div>
 
       {/* =====================================================
+          3. LUXURY FESTIVE EDITS (Compact Horizontal Banner Strip)
+      ===================================================== */}
+
+      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-10 max-w-[1550px] mx-auto bg-[#FAF8F5]">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-4 mb-8">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900">
+              Bring on the Festivities
+            </h2>
+            <p className="text-xs text-neutral-500 mt-1">
+              Curated luxury styles for Janmashtami, Rakshabandhan, Ganesh Chaturthi & Diwali
+            </p>
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C8A882] hidden sm:block">
+            Festive Edit 2026
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {festiveEdits.map((fest) => (
+            <div
+              key={fest.title}
+              onClick={() => navigate(fest.link)}
+              className="group relative h-[240px] rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-md border border-[#E3DAC9] transition-all duration-300"
+            >
+              {/* Background Image */}
+              <img
+                src={fest.image}
+                alt={fest.title}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+              {/* Content Info */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-left text-white flex justify-between items-end">
+                <div>
+                  <p className="text-[8px] uppercase tracking-[0.25em] font-semibold mb-0.5 text-[#C8A882]">
+                    {fest.subtitle}
+                  </p>
+                  <h3 className="text-base sm:text-lg font-serif mb-2">
+                    {fest.title}
+                  </h3>
+                  <span className="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.15em] font-bold text-white group-hover:text-[#C8A882] transition-colors">
+                    Explore Edit <ArrowRight size={11} />
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* =====================================================
           4. CATEGORIES GRID
       ===================================================== */}
 
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
-        <div className="text-center mb-12">
+      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
+        <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-serif">
             Shop By Category
           </h2>
@@ -3059,66 +3113,6 @@ export default function Home() {
           </div>
         )}
       </section>
-
-
-      
-      {/* =====================================================
-          3. LUXURY FESTIVE EDIT SECTION (New Unique Design)
-      ===================================================== */}
-
-      <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5]">
-        <div className="text-center mb-14">
-          {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
-            <Sparkles size={13} style={{ color: GOLD }} />
-            <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-700">Royal Celebrations</span>
-          </div> */}
-          <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 tracking-wide">
-            Bring on the Festivities
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-600 font-light mt-3 max-w-lg mx-auto">
-            Explore our curated luxury edits designed for Janmashtami, Rakshabandhan, Ganesh Chaturthi, and Diwali.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {festiveEdits.map((fest) => (
-            <div
-              key={fest.title}
-              onClick={() => navigate(fest.link)}
-              className="group relative h-[480px] rounded-2xl overflow-hidden cursor-pointer shadow-lg border border-[#E3DAC9] transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl"
-            >
-              {/* Background Image with Zoom */}
-              <img
-                src={fest.image}
-                alt={fest.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-              />
-
-              {/* Luxury Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-
-              {/* Top Gold Accents */}
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight size={14} style={{ color: GOLD }} />
-              </div>
-
-              {/* Content Information */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-center text-white">
-                <p className="text-[10px] uppercase tracking-[0.3em] font-semibold mb-1" style={{ color: GOLD }}>
-                  {fest.subtitle}
-                </p>
-                <h3 className="text-xl sm:text-2xl font-serif mb-4 tracking-wide">
-                  {fest.title}
-                </h3>
-                <span className="inline-block px-5 py-2.5 bg-white/10 hover:bg-white hover:text-neutral-900 text-white text-[10px] uppercase tracking-[0.2em] font-bold rounded-lg backdrop-blur-md border border-white/20 transition-all duration-300">
-                  Explore Edit
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
 
       {/* =====================================================
           6. EDITORIAL BRAND STORY
