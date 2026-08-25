@@ -2522,7 +2522,890 @@
 
 
 
-import React, { useEffect, useMemo, useState } from 'react';
+
+  // import React, { useEffect, useState } from 'react';
+  // import { useNavigate } from 'react-router-dom';
+  // import {
+  //   Heart,
+  //   ArrowRight,
+  //   Sparkles,
+  //   Star,
+  //   Check,
+  //   Mail,
+  //   ChevronDown,
+  // } from 'lucide-react';
+
+  // import API, {
+  //   addToWishlist,
+  //   removeFromWishlist,
+  //   getWishlist,
+  // } from '../services/api';
+
+  // export default function Home() {
+  //   const navigate = useNavigate();
+
+  //   const [products, setProducts] = useState([]);
+  //   const [wishlistMap, setWishlistMap] = useState({});
+  //   const [currentSlide, setCurrentSlide] = useState(0);
+  //   const [openFaq, setOpenFaq] = useState(null);
+
+  //   const GOLD = '#C8A882';
+  //   const DARK = '#171717';
+
+  //   /* -------------------------------------------------------
+  //     HERO SLIDES
+  //   ------------------------------------------------------- */
+
+  //   const heroSlides = [
+  //     {
+  //       title: 'Timeless Elegance\nModern Silhouettes',
+  //       description:
+  //         'Discover meticulously crafted pieces designed for the discerning wardrobe.',
+  //       image:
+  //         'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1800&auto=format&fit=crop',
+  //       btnText: 'Explore Collection',
+  //       link: '/shop',
+  //     },
+  //     {
+  //       title: 'Refined Luxury\nUncompromised Quality',
+  //       description:
+  //         'Immerse yourself in exceptional textiles and bespoke tailoring.',
+  //       image:
+  //         'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1800&auto=format&fit=crop',
+  //       btnText: 'Shop New Arrivals',
+  //       link: '/new-arrivals',
+  //     },
+  //     {
+  //       title: 'Grace Redefined\nEvery Single Day',
+  //       description:
+  //         'Elevate your personal style with pieces curated for pure sophistication.',
+  //       image:
+  //         'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1800&auto=format&fit=crop',
+  //       btnText: 'View Lookbook',
+  //       link: '/shop',
+  //     },
+  //   ];
+
+  //   /* -------------------------------------------------------
+  //     CATEGORIES
+  //   ------------------------------------------------------- */
+
+  //   const categoriesList = [
+  //     {
+  //       name: 'Shirts',
+  //       img: 'https://i.pinimg.com/736x/71/1f/1d/711f1dd510cd9dea1b6582d77214ff57.jpg',
+  //       slug: 'shirts',
+  //     },
+  //     {
+  //       name: 'T-Shirts',
+  //       img: 'https://i.pinimg.com/1200x/88/84/77/8884771442f1a6b04115e996885afea3.jpg',
+  //       slug: 't-shirts',
+  //     },
+  //     {
+  //       name: 'Jeans',
+  //       img: 'https://i.pinimg.com/236x/3f/cd/33/3fcd33ddc3b1db0950953f8e417258eb.jpg',
+  //       slug: 'jeans',
+  //     },
+  //     {
+  //       name: 'Dresses',
+  //       img: 'https://i.pinimg.com/736x/8e/77/2e/8e772ef9fb7336e361bf34216c92449e.jpg',
+  //       slug: 'dresses',
+  //     },
+  //     {
+  //       name: 'Kurtas',
+  //       img: 'https://i.pinimg.com/736x/a1/46/00/a146006d6579d742fc9bdd615e043475.jpg',
+  //       slug: 'kurtas',
+  //     },
+  //     {
+  //       name: 'Jackets',
+  //       img: 'https://i.pinimg.com/736x/ff/fc/d4/fffcd466c4d20712e7eeca93f6424089.jpg',
+  //       slug: 'jackets',
+  //     },
+  //     {
+  //       name: 'Accessories',
+  //       img: 'https://i.pinimg.com/736x/92/d7/7c/92d77c79d3d6f9a4250189a5a9aec475.jpg',
+  //       slug: 'accessories',
+  //     },
+  //   ];
+
+  //   /* -------------------------------------------------------
+  //     LUXURY FESTIVE EDIT (Janmashtami, Rakshabandhan, Ganesh Chaturthi, Diwali)
+  //   ------------------------------------------------------- */
+
+  //   const festiveEdits = [
+  //     {
+  //       title: 'Janmashtami Special',
+  //       subtitle: 'Divine Ethnic Grace',
+  //       image: 'https://i.pinimg.com/736x/74/1e/21/741e21e406bd4213fbd8e3abd98cbc4a.jpg',
+  //       link: '/shop?collection=janmashtami',
+  //     },
+  //     {
+  //       title: 'Rakshabandhan Edit',
+  //       subtitle: 'Tradition Meets Modernity',
+  //       image: 'https://i.pinimg.com/1200x/b2/de/72/b2de7213adeede3215ae979316d5818d.jpg',
+  //       link: '/shop?collection=rakshabandhan',
+  //     },
+  //     {
+  //       title: 'Ganesh Chaturthi',
+  //       subtitle: 'Festive Celebrations',
+  //       image: 'https://i.pinimg.com/736x/e9/ce/d3/e9ced3f0bcdd3050528163e81529b8fb.jpg',
+  //       link: '/shop?collection=ganesh-chaturthi',
+  //     },
+  //     {
+  //       title: 'Diwali Royal Gala',
+  //       subtitle: 'Opulent Silk & Brocades',
+  //       image: 'https://i.pinimg.com/736x/21/99/0e/21990e4669d897c77e1ad9d37815d3f8.jpg',
+  //       link: '/shop?collection=diwali',
+  //     },
+  //   ];
+
+  //   /* -------------------------------------------------------
+  //     COLLECTIONS
+  //   ------------------------------------------------------- */
+
+  //   const collections = [
+  //     {
+  //       title: 'The Monochrome Edit',
+  //       subtitle: 'Minimal • Refined • Timeless',
+  //       image:
+  //         'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200',
+  //       link: '/shop?collection=monochrome',
+  //     },
+  //     {
+  //       title: 'Weekend Essentials',
+  //       subtitle: 'Effortless Everyday Luxury',
+  //       image:
+  //         'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200',
+  //       link: '/shop?collection=weekend',
+  //     },
+  //     {
+  //       title: 'Occasion Edit',
+  //       subtitle: 'Made For Your Moments',
+  //       image:
+  //         'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1200',
+  //       link: '/shop?collection=occasion',
+  //     },
+  //   ];
+
+  //   /* -------------------------------------------------------
+  //     FAQ
+  //   ------------------------------------------------------- */
+
+  //   const faqs = [
+  //     {
+  //       question: 'What is your return policy?',
+  //       answer:
+  //         'We offer a 14-day return and exchange window on eligible products. Items should be unused and returned with their original packaging and tags.',
+  //     },
+  //     {
+  //       question: 'How long does delivery take?',
+  //       answer:
+  //         'Orders are generally delivered within 3–7 business days depending on your location. Express delivery may be available for selected pin codes.',
+  //     },
+  //     {
+  //       question: 'How can I find my correct size?',
+  //       answer:
+  //         'Every eligible product includes a detailed size guide. We recommend checking the measurements before placing your order.',
+  //     },
+  //     {
+  //       question: 'Do you offer Cash on Delivery?',
+  //       answer:
+  //         'Cash on Delivery can be available for selected locations and order values. Availability is shown during checkout.',
+  //     },
+  //   ];
+
+  //   /* -------------------------------------------------------
+  //     HERO AUTO SLIDER
+  //   ------------------------------------------------------- */
+
+  //   useEffect(() => {
+  //     const timer = setInterval(() => {
+  //       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  //     }, 5000);
+
+  //     return () => clearInterval(timer);
+  //   }, [heroSlides.length]);
+
+  //   /* -------------------------------------------------------
+  //     IMAGE URL
+  //   ------------------------------------------------------- */
+
+  //   const getImageUrl = (product) => {
+  //     let imagePath = product?.image;
+
+  //     if (!imagePath && product?.images?.length > 0) {
+  //       imagePath = product.images[0]?.image || product.images[0];
+  //     }
+
+  //     if (!imagePath) {
+  //       return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800';
+  //     }
+
+  //     if (
+  //       typeof imagePath === 'string' &&
+  //       (imagePath.startsWith('http://') ||
+  //         imagePath.startsWith('https://'))
+  //     ) {
+  //       return imagePath;
+  //     }
+
+  //     const cleanPath =
+  //       typeof imagePath === 'string' && imagePath.startsWith('/')
+  //         ? imagePath
+  //         : `/${imagePath}`;
+
+  //     return `https://clothing-backend-gynt.onrender.com${cleanPath}`;
+  //   };
+
+  //   /* -------------------------------------------------------
+  //     LOAD PRODUCTS + WISHLIST
+  //   ------------------------------------------------------- */
+
+  //   useEffect(() => {
+  //     API.get('products/')
+  //       .then((res) => {
+  //         const data = Array.isArray(res.data)
+  //           ? res.data
+  //           : res.data.results || [];
+
+  //         setProducts(data);
+  //       })
+  //       .catch((err) => console.error('Products:', err));
+
+  //     const token = localStorage.getItem('access_token');
+
+  //     if (token) {
+  //       getWishlist()
+  //         .then((res) => {
+  //           const list = Array.isArray(res.data)
+  //             ? res.data
+  //             : res.data.results || [];
+
+  //           const map = {};
+
+  //           list.forEach((item) => {
+  //             map[item.product] = item.id;
+  //           });
+
+  //           setWishlistMap(map);
+  //         })
+  //         .catch((err) => console.error('Wishlist:', err));
+  //     }
+  //   }, []);
+
+  //   /* -------------------------------------------------------
+  //     WISHLIST
+  //   ------------------------------------------------------- */
+
+  //   const handleWishlistToggle = async (e, productId) => {
+  //     e.stopPropagation();
+
+  //     const token = localStorage.getItem('access_token');
+
+  //     if (!token) {
+  //       alert('Please login to add items to your wishlist.');
+  //       navigate('/login');
+  //       return;
+  //     }
+
+  //     try {
+  //       if (wishlistMap[productId]) {
+  //         const wishlistId = wishlistMap[productId];
+
+  //         await removeFromWishlist(wishlistId);
+
+  //         setWishlistMap((prev) => {
+  //           const newMap = { ...prev };
+  //           delete newMap[productId];
+  //           return newMap;
+  //         });
+  //       } else {
+  //         const res = await addToWishlist(productId);
+
+  //         setWishlistMap((prev) => ({
+  //           ...prev,
+  //           [productId]: res.data.id,
+  //         }));
+  //       }
+  //     } catch (err) {
+  //       console.error('Wishlist error:', err);
+  //     }
+  //   };
+
+  //   /* -------------------------------------------------------
+  //     PRODUCT CARD
+  //   ------------------------------------------------------- */
+
+  //   const ProductCard = ({ product }) => (
+  //     <div
+  //       onClick={() => navigate(`/product/${product.id}`)}
+  //       className="group cursor-pointer flex flex-col bg-white border border-neutral-200/80 shadow-sm hover:shadow-xl transition-all duration-500 rounded-xl overflow-hidden"
+  //       onMouseEnter={(e) => {
+  //         e.currentTarget.style.borderColor = GOLD;
+  //       }}
+  //       onMouseLeave={(e) => {
+  //         e.currentTarget.style.borderColor = '';
+  //       }}
+  //     >
+  //       <div className="relative aspect-[3/4] bg-neutral-100 overflow-hidden">
+  //         <img
+  //           src={getImageUrl(product)}
+  //           alt={product.name}
+  //           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+  //           onError={(e) => {
+  //             e.target.src =
+  //               'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800';
+  //           }}
+  //         />
+
+  //         {/* Wishlist */}
+  //         <button
+  //           onClick={(e) => handleWishlistToggle(e, product.id)}
+  //           className="absolute top-3 right-3 w-9 h-9 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-neutral-700 hover:scale-110 transition-transform shadow-md"
+  //         >
+  //           <Heart
+  //             size={15}
+  //             className={
+  //               wishlistMap[product.id]
+  //                 ? 'fill-red-500 text-red-500'
+  //                 : 'text-neutral-600'
+  //             }
+  //           />
+  //         </button>
+
+  //         {/* New Badge */}
+  //         <span
+  //           className="absolute top-3 left-3 px-2.5 py-1 bg-white/95 text-[9px] uppercase tracking-wider font-bold"
+  //           style={{ color: DARK }}
+  //         >
+  //           New
+  //         </span>
+  //       </div>
+
+  //       <div className="p-4">
+  //         <h4 className="text-xs sm:text-sm font-medium text-neutral-800 truncate">
+  //           {product.name}
+  //         </h4>
+
+  //         <div className="flex items-center justify-between mt-2">
+  //           <p
+  //             className="text-sm font-serif font-bold"
+  //             style={{ color: '#8A6D46' }}
+  //           >
+  //             ₹{Number(product.price).toLocaleString('en-IN')}
+  //           </p>
+
+  //           <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+  //             <Star size={11} fill={GOLD} style={{ color: GOLD }} />
+  //             4.8
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
+  //   /* -------------------------------------------------------
+  //     PRODUCTS SLICES
+  //   ------------------------------------------------------- */
+
+  //   const trendingProducts = products.slice(0, 4);
+  //   const bestProducts = products.slice(4, 8);
+
+  //   return (
+  //     <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white overflow-hidden">
+
+  //       {/* =====================================================
+  //           1. HERO SECTION
+  //       ===================================================== */}
+
+  //       <section className="relative w-full h-[85vh] min-h-[580px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
+  //         {heroSlides.map((slide, index) => (
+  //           <div
+  //             key={index}
+  //             className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ${
+  //               index === currentSlide
+  //                 ? 'opacity-100 z-10'
+  //                 : 'opacity-0 z-0 pointer-events-none'
+  //             }`}
+  //           >
+  //             <img
+  //               src={slide.image}
+  //               alt={slide.title}
+  //               className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+  //             />
+
+  //             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+
+  //             <div className="relative z-10 px-6 sm:px-12 md:px-20 lg:px-28 max-w-3xl text-white">
+  //               <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] mb-6 tracking-tight whitespace-pre-line">
+  //                 {slide.title}
+  //               </h1>
+
+  //               <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-8 max-w-md">
+  //                 {slide.description}
+  //               </p>
+
+  //               <button
+  //                 onClick={() => navigate(slide.link)}
+  //                 className="bg-white text-neutral-900 px-8 sm:px-10 py-4 text-[10px] uppercase tracking-[0.25em] font-medium shadow-xl hover:bg-[#C8A882] hover:text-white transition-all"
+  //               >
+  //                 {slide.btnText}
+  //               </button>
+  //             </div>
+  //           </div>
+  //         ))}
+
+  //         {/* Slider navigation */}
+  //         <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
+  //           {heroSlides.map((_, idx) => (
+  //             <React.Fragment key={idx}>
+  //               <span
+  //                 onClick={() => setCurrentSlide(idx)}
+  //                 className="text-xs font-serif tracking-widest cursor-pointer transition-all"
+  //                 style={
+  //                   idx === currentSlide
+  //                     ? {
+  //                         fontWeight: 700,
+  //                         color: GOLD,
+  //                         borderBottom: `1px solid ${GOLD}`,
+  //                         paddingBottom: '4px',
+  //                       }
+  //                     : {
+  //                         color: 'rgba(255,255,255,0.4)',
+  //                       }
+  //                 }
+  //               >
+  //                 0{idx + 1}
+  //               </span>
+
+  //               {idx < heroSlides.length - 1 && (
+  //                 <div className="w-[1px] h-6 bg-white/20" />
+  //               )}
+  //             </React.Fragment>
+  //           ))}
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           2. CLEAN ANNOUNCEMENT BAR
+  //       ===================================================== */}
+
+  //       <div className="w-full bg-neutral-900 text-white py-3 px-4 text-center">
+  //         <p className="text-[10px] sm:text-xs tracking-[0.2em] font-light text-neutral-300">
+  //           Complimentary express shipping on all orders above ₹999 <span className="mx-3 text-[#C8A882]">✦</span> 14-day effortless returns
+  //         </p>
+  //       </div>
+
+  //       {/* =====================================================
+  //           4. CATEGORIES GRID
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
+  //         <div className="text-center mb-12">
+  //           <h2 className="text-3xl sm:text-4xl font-serif">
+  //             Shop By Category
+  //           </h2>
+  //           <div className="w-10 h-[1px] mx-auto mt-4" style={{ backgroundColor: GOLD }} />
+  //         </div>
+
+  //         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-6">
+  //           {categoriesList.map((cat) => (
+  //             <div
+  //               key={cat.slug}
+  //               onClick={() => navigate(`/shop?category=${cat.slug}`)}
+  //               className="flex flex-col items-center gap-3 cursor-pointer group"
+  //             >
+  //               <div
+  //                 className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden p-1 border shadow-sm transition-all group-hover:shadow-md"
+  //                 style={{ borderColor: '#E5DDD0' }}
+  //               >
+  //                 <img
+  //                   src={cat.img}
+  //                   alt={cat.name}
+  //                   className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-700"
+  //                 />
+  //               </div>
+
+  //               <span className="text-xs font-medium tracking-widest uppercase mt-1">
+  //                 {cat.name}
+  //               </span>
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           5. TRENDING PIECES
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
+  //         <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+  //           <div>
+  //             <h2 className="text-3xl font-serif">Trending Pieces</h2>
+  //           </div>
+
+  //           <button
+  //             onClick={() => navigate('/shop')}
+  //             className="hidden sm:block text-[10px] uppercase tracking-[0.2em] font-bold hover:text-[#C8A882] transition-colors"
+  //           >
+  //             View All Collection →
+  //           </button>
+  //         </div>
+
+  //         {trendingProducts.length > 0 ? (
+  //           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  //             {trendingProducts.map((product) => (
+  //               <ProductCard key={product.id} product={product} />
+  //             ))}
+  //           </div>
+  //         ) : (
+  //           <div className="py-20 text-center text-neutral-400 text-sm">
+  //             Products loading...
+  //           </div>
+  //         )}
+  //       </section>
+
+
+        
+  //       {/* =====================================================
+  //           3. LUXURY FESTIVE EDIT SECTION (New Unique Design)
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5]">
+  //         <div className="text-center mb-14">
+  //           {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
+  //             <Sparkles size={13} style={{ color: GOLD }} />
+  //             <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-700">Royal Celebrations</span>
+  //           </div> */}
+  //           <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 tracking-wide">
+  //             Bring on the Festivities
+  //           </h2>
+  //           <p className="text-xs sm:text-sm text-neutral-600 font-light mt-3 max-w-lg mx-auto">
+  //             Explore our curated luxury edits designed for Janmashtami, Rakshabandhan, Ganesh Chaturthi, and Diwali.
+  //           </p>
+  //         </div>
+
+  //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+  //           {festiveEdits.map((fest) => (
+  //             <div
+  //               key={fest.title}
+  //               onClick={() => navigate(fest.link)}
+  //               className="group relative h-[480px] rounded-2xl overflow-hidden cursor-pointer shadow-lg border border-[#E3DAC9] transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl"
+  //             >
+  //               {/* Background Image with Zoom */}
+  //               <img
+  //                 src={fest.image}
+  //                 alt={fest.title}
+  //                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+  //               />
+
+  //               {/* Luxury Gradient Overlay */}
+  //               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+  //               {/* Top Gold Accents */}
+  //               <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+  //                 <ArrowRight size={14} style={{ color: GOLD }} />
+  //               </div>
+
+  //               {/* Content Information */}
+  //               <div className="absolute bottom-0 left-0 right-0 p-6 text-center text-white">
+  //                 <p className="text-[10px] uppercase tracking-[0.3em] font-semibold mb-1" style={{ color: GOLD }}>
+  //                   {fest.subtitle}
+  //                 </p>
+  //                 <h3 className="text-xl sm:text-2xl font-serif mb-4 tracking-wide">
+  //                   {fest.title}
+  //                 </h3>
+  //                 <span className="inline-block px-5 py-2.5 bg-white/10 hover:bg-white hover:text-neutral-900 text-white text-[10px] uppercase tracking-[0.2em] font-bold rounded-lg backdrop-blur-md border border-white/20 transition-all duration-300">
+  //                   Explore Edit
+  //                 </span>
+  //               </div>
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </section>
+
+
+  //       {/* =====================================================
+  //           6. EDITORIAL BRAND STORY
+  //       ===================================================== */}
+
+  //       <section className="my-20 bg-[#EBE5DC] border-y border-neutral-200">
+  //         <div className="grid grid-cols-1 md:grid-cols-2">
+  //           <div className="h-[400px] sm:h-[550px] overflow-hidden">
+  //             <img
+  //               src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1400"
+  //               alt="Atelier Philosophy"
+  //               className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000"
+  //             />
+  //           </div>
+
+  //           <div className="flex items-center p-8 sm:p-14 lg:p-20">
+  //             <div className="max-w-xl">
+  //               <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-6 leading-tight">
+  //                 Crafted For <br /> Enduring Elegance
+  //               </h2>
+
+  //               <p className="text-xs sm:text-sm text-neutral-600 font-light leading-relaxed mb-8">
+  //                 Every garment we create is an ode to refined luxury, using carefully selected fabrics and uncompromising attention to detail to match your distinctive lifestyle.
+  //               </p>
+
+  //               <div className="space-y-3 mb-8">
+  //                 {[
+  //                   'Premium fabric selection',
+  //                   'Thoughtful craftsmanship',
+  //                   'Timeless silhouettes',
+  //                 ].map((item) => (
+  //                   <div
+  //                     key={item}
+  //                     className="flex items-center gap-3 text-xs uppercase tracking-wider text-neutral-700 font-medium"
+  //                   >
+  //                     <Check size={14} style={{ color: GOLD }} />
+  //                     {item}
+  //                   </div>
+  //                 ))}
+  //               </div>
+
+  //               <button
+  //                 onClick={() => navigate('/about')}
+  //                 className="bg-neutral-900 text-white px-8 py-4 text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-[#C8A882] transition-colors"
+  //               >
+  //                 Discover Our Story
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           7. COLLECTIONS EDIT
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
+  //         <div className="text-center mb-12">
+  //           <h2 className="text-3xl sm:text-4xl font-serif">
+  //             Curated Collections
+  //           </h2>
+  //         </div>
+
+  //         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  //           {collections.map((collection) => (
+  //             <div
+  //               key={collection.title}
+  //               onClick={() => navigate(collection.link)}
+  //               className="relative h-[450px] overflow-hidden cursor-pointer group rounded-xl"
+  //             >
+  //               <img
+  //                 src={collection.image}
+  //                 alt={collection.title}
+  //                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+  //               />
+
+  //               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+  //               <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+  //                 <h3 className="text-2xl font-serif mb-1">
+  //                   {collection.title}
+  //                 </h3>
+  //                 <p className="text-xs uppercase tracking-wider text-white/70 mb-4">
+  //                   {collection.subtitle}
+  //                 </p>
+  //                 <span
+  //                   className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold"
+  //                   style={{ color: '#E7D3B8' }}
+  //                 >
+  //                   Explore Edit <ArrowRight size={13} />
+  //                 </span>
+  //               </div>
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           8. BEST SELLERS
+  //       ===================================================== */}
+
+  //       {bestProducts.length > 0 && (
+  //         <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
+  //           <div className="flex items-end justify-between border-b border-neutral-200 pb-5 mb-10">
+  //             <div>
+  //               <h2 className="text-3xl font-serif">Most Loved Best Sellers</h2>
+  //             </div>
+
+  //             <button
+  //               onClick={() => navigate('/shop')}
+  //               className="hidden sm:block text-[10px] uppercase tracking-[0.2em] font-bold hover:text-[#C8A882] transition-colors"
+  //             >
+  //               Shop All →
+  //             </button>
+  //           </div>
+
+  //           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  //             {bestProducts.map((product) => (
+  //               <ProductCard key={product.id} product={product} />
+  //             ))}
+  //           </div>
+  //         </section>
+  //       )}
+
+  //       {/* =====================================================
+  //           9. TESTIMONIALS
+  //       ===================================================== */}
+
+  //       <section className="my-20 bg-[#F1ECE5] py-20 px-5">
+  //         <div className="max-w-[1100px] mx-auto text-center">
+  //           <h2 className="text-3xl sm:text-4xl font-serif mb-12">
+  //             Loved By Our Community
+  //           </h2>
+
+  //           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+  //             {[
+  //               {
+  //                 name: 'Aarav Mehta',
+  //                 text: 'Beautiful quality and excellent finishing. The shirt looks even better in person.',
+  //               },
+  //               {
+  //                 name: 'Riya Shah',
+  //                 text: 'The entire shopping experience feels premium. Packaging and quality were exceptional.',
+  //               },
+  //               {
+  //                 name: 'Kabir Patel',
+  //                 text: 'The fit is perfect and delivery was much faster than expected. Will definitely shop again.',
+  //               },
+  //             ].map((review) => (
+  //               <div
+  //                 key={review.name}
+  //                 className="bg-white p-8 shadow-sm rounded-xl text-left flex flex-col justify-between"
+  //               >
+  //                 <div>
+  //                   <div className="flex gap-1 mb-4">
+  //                     {[1, 2, 3, 4, 5].map((star) => (
+  //                       <Star
+  //                         key={star}
+  //                         size={12}
+  //                         fill={GOLD}
+  //                         style={{ color: GOLD }}
+  //                       />
+  //                     ))}
+  //                   </div>
+  //                   <p className="text-sm font-serif leading-relaxed text-neutral-700">
+  //                     “{review.text}”
+  //                   </p>
+  //                 </div>
+
+  //                 <div className="mt-6 pt-4 border-t border-neutral-100">
+  //                   <p className="text-xs uppercase tracking-widest font-bold text-neutral-900">
+  //                     {review.name}
+  //                   </p>
+  //                   <p className="text-[10px] text-neutral-400 mt-0.5">Verified Customer</p>
+  //                 </div>
+  //               </div>
+  //             ))}
+  //           </div>
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           10. FAQ SECTION
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[950px] mx-auto">
+  //         <div className="text-center mb-12">
+  //           <h2 className="text-3xl sm:text-4xl font-serif">
+  //             Frequently Asked Questions
+  //           </h2>
+  //         </div>
+
+  //         <div className="border-t border-neutral-200">
+  //           {faqs.map((faq, index) => (
+  //             <div key={faq.question} className="border-b border-neutral-200">
+  //               <button
+  //                 onClick={() =>
+  //                   setOpenFaq(openFaq === index ? null : index)
+  //                 }
+  //                 className="w-full flex items-center justify-between py-6 text-left"
+  //               >
+  //                 <span className="text-sm font-medium">
+  //                   {faq.question}
+  //                 </span>
+
+  //                 <ChevronDown
+  //                   size={18}
+  //                   className={`transition-transform duration-300 ${
+  //                     openFaq === index ? 'rotate-180' : ''
+  //                   }`}
+  //                   style={{ color: GOLD }}
+  //                 />
+  //               </button>
+
+  //               {openFaq === index && (
+  //                 <div className="pb-6 pr-8">
+  //                   <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
+  //                     {faq.answer}
+  //                   </p>
+  //                 </div>
+  //               )}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </section>
+
+  //       {/* =====================================================
+  //           11. NEWSLETTER SIGNUP
+  //       ===================================================== */}
+
+  //       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16">
+  //         <div className="max-w-[1550px] mx-auto bg-neutral-900 text-white py-16 px-6 text-center rounded-2xl">
+  //           <Mail
+  //             size={24}
+  //             className="mx-auto mb-4"
+  //             style={{ color: GOLD }}
+  //           />
+
+  //           <h2 className="text-3xl sm:text-4xl font-serif mb-3">
+  //             Join The Atelier Private List
+  //           </h2>
+
+  //           <p className="text-xs sm:text-sm text-neutral-400 max-w-md mx-auto mb-8 font-light leading-relaxed">
+  //             Be the first to discover new collections, private sales, and exclusive seasonal edits.
+  //           </p>
+
+  //           <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-3">
+  //             <input
+  //               type="email"
+  //               placeholder="Enter your email address"
+  //               className="flex-1 bg-white/10 border border-white/20 text-white px-5 py-4 text-xs outline-none focus:border-[#C8A882] rounded-lg"
+  //             />
+
+  //             <button className="px-8 py-4 bg-[#C8A882] text-neutral-900 text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-white transition-colors rounded-lg">
+  //               Subscribe
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </section>
+
+  //     </div>
+  //   );
+  // } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Heart,
@@ -3847,11 +4730,43 @@ export default function Home() {
 
       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
         <div className="text-center mb-10">
-          <Instagram
-            size={22}
-            className="mx-auto mb-3"
-            style={{ color: GOLD }}
-          />
+        <div
+  className="mx-auto mb-3 w-[22px] h-[22px] flex items-center justify-center"
+  style={{ color: GOLD }}
+  aria-label="Instagram"
+>
+  <svg
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="3"
+      y="3"
+      width="18"
+      height="18"
+      rx="5"
+      stroke="currentColor"
+      strokeWidth="1.8"
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r="4"
+      stroke="currentColor"
+      strokeWidth="1.8"
+    />
+    <circle
+      cx="17.3"
+      cy="6.8"
+      r="1"
+      fill="currentColor"
+    />
+  </svg>
+</div>
+
 
           <p
             className="text-[9px] uppercase tracking-[0.3em] mb-2"
