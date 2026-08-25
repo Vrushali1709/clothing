@@ -3415,7 +3415,6 @@ import {
   ShieldCheck,
   Headphones,
   ShoppingBag,
-  Instagram,
 } from 'lucide-react';
 
 import API, {
