@@ -2631,25 +2631,25 @@ export default function Home() {
     {
       title: 'Janmashtami Special',
       subtitle: 'Divine Ethnic Grace',
-      image: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=1000&auto=format&fit=crop',
+      image: 'https://i.pinimg.com/736x/74/1e/21/741e21e406bd4213fbd8e3abd98cbc4a.jpg',
       link: '/shop?collection=janmashtami',
     },
     {
       title: 'Rakshabandhan Edit',
       subtitle: 'Tradition Meets Modernity',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1000&auto=format&fit=crop',
+      image: 'https://i.pinimg.com/1200x/b2/de/72/b2de7213adeede3215ae979316d5818d.jpg',
       link: '/shop?collection=rakshabandhan',
     },
     {
       title: 'Ganesh Chaturthi',
       subtitle: 'Festive Celebrations',
-      image: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1000&auto=format&fit=crop',
+      image: 'https://i.pinimg.com/736x/e9/ce/d3/e9ced3f0bcdd3050528163e81529b8fb.jpg',
       link: '/shop?collection=ganesh-chaturthi',
     },
     {
       title: 'Diwali Royal Gala',
       subtitle: 'Opulent Silk & Brocades',
-      image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1000&auto=format&fit=crop',
+      image: 'https://i.pinimg.com/736x/21/99/0e/21990e4669d897c77e1ad9d37815d3f8.jpg',
       link: '/shop?collection=diwali',
     },
   ];
