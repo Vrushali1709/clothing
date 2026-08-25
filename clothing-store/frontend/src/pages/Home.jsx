@@ -4770,7 +4770,7 @@ export default function Home() {
           </p>
 
           <h2 className="text-3xl font-serif">
-            @YourBrand
+            @Clothing
           </h2>
         </div>
 
