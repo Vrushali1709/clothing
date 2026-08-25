@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
             Data Protection
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif tracking-tight mb-4">
-            Privacy Policy
+            Privacy Policyv
           </h1>
           <div className="w-12 h-[1px] bg-neutral-400 mx-auto mt-4 mb-4"></div>
           <p className="text-xs sm:text-sm font-light text-neutral-600 leading-relaxed">
