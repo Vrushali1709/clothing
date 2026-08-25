@@ -3406,7 +3406,6 @@ import {
   Heart,
   ArrowRight,
   Sparkles,
-  Star,
   Check,
   Mail,
   ChevronDown,
@@ -3422,6 +3421,56 @@ import API, {
   removeFromWishlist,
   getWishlist,
 } from '../services/api';
+
+/* =====================================================
+   INSTAGRAM ICON
+   Inline SVG avoids lucide-react Instagram export issues.
+   ===================================================== */
+
+function InstagramIcon({
+  size = 18,
+  strokeWidth = 1.2,
+  className = '',
+  style = {},
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+      aria-hidden="true"
+    >
+      <rect
+        x="3"
+        y="3"
+        width="18"
+        height="18"
+        rx="5"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+      />
+
+      <circle
+        cx="12"
+        cy="12"
+        r="4"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+      />
+
+      <circle
+        cx="17.5"
+        cy="6.5"
+        r="1"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 
 export default function Home() {
   const navigate = useNavigate();
@@ -3445,7 +3494,7 @@ export default function Home() {
 
   /* =====================================================
      HERO
-  ===================================================== */
+     ===================================================== */
 
   const heroSlides = [
     {
@@ -3482,7 +3531,7 @@ export default function Home() {
 
   /* =====================================================
      CATEGORIES
-  ===================================================== */
+     ===================================================== */
 
   const categories = [
     {
@@ -3531,7 +3580,7 @@ export default function Home() {
 
   /* =====================================================
      EDITORIAL COLLECTIONS
-  ===================================================== */
+     ===================================================== */
 
   const editorialCollections = [
     {
@@ -3565,7 +3614,7 @@ export default function Home() {
 
   /* =====================================================
      FESTIVE EDIT
-  ===================================================== */
+     ===================================================== */
 
   const festiveEdit = {
     image:
@@ -3578,7 +3627,7 @@ export default function Home() {
 
   /* =====================================================
      OCCASIONS
-  ===================================================== */
+     ===================================================== */
 
   const occasions = [
     {
@@ -3609,7 +3658,7 @@ export default function Home() {
 
   /* =====================================================
      FAQ
-  ===================================================== */
+     ===================================================== */
 
   const faqs = [
     {
@@ -3636,7 +3685,7 @@ export default function Home() {
 
   /* =====================================================
      TRUST FEATURES
-  ===================================================== */
+     ===================================================== */
 
   const trustFeatures = [
     {
@@ -3663,7 +3712,7 @@ export default function Home() {
 
   /* =====================================================
      HERO SLIDER
-  ===================================================== */
+     ===================================================== */
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -3675,7 +3724,7 @@ export default function Home() {
 
   /* =====================================================
      IMAGE URL
-  ===================================================== */
+     ===================================================== */
 
   const getImageUrl = (product) => {
     let imagePath = product?.image;
@@ -3706,7 +3755,7 @@ export default function Home() {
 
   /* =====================================================
      LOAD PRODUCTS + WISHLIST
-  ===================================================== */
+     ===================================================== */
 
   useEffect(() => {
     API.get('products/')
@@ -3746,7 +3795,7 @@ export default function Home() {
 
   /* =====================================================
      RECENTLY VIEWED
-  ===================================================== */
+     ===================================================== */
 
   const recentlyViewed = useMemo(() => {
     try {
@@ -3767,7 +3816,7 @@ export default function Home() {
 
   /* =====================================================
      WISHLIST
-  ===================================================== */
+     ===================================================== */
 
   const handleWishlistToggle = async (e, productId) => {
     e.stopPropagation();
@@ -3806,7 +3855,7 @@ export default function Home() {
 
   /* =====================================================
      PRODUCT CARD
-  ===================================================== */
+     ===================================================== */
 
   const ProductCard = ({ product, badge }) => {
     return (
@@ -3873,7 +3922,7 @@ export default function Home() {
 
   /* =====================================================
      PRODUCT SLICES
-  ===================================================== */
+     ===================================================== */
 
   const newProducts = products.slice(0, 4);
   const trendingProducts = products.slice(0, 4);
@@ -3881,7 +3930,7 @@ export default function Home() {
 
   /* =====================================================
      NEWSLETTER
-  ===================================================== */
+     ===================================================== */
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -3968,7 +4017,6 @@ export default function Home() {
           </div>
         ))}
 
-        {/* Slide controls */}
         <div className="absolute bottom-8 left-6 sm:left-12 md:left-20 lg:left-28 z-30 flex items-center gap-4">
           {heroSlides.map((slide, index) => (
             <button
@@ -4438,7 +4486,9 @@ export default function Home() {
               <div
                 key={collection.number}
                 className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
-                  index % 2 !== 0 ? 'lg:[&>*:first-child]:order-2' : ''
+                  index % 2 !== 0
+                    ? 'lg:[&>*:first-child]:order-2'
+                    : ''
                 }`}
               >
                 <button
@@ -4566,7 +4616,8 @@ export default function Home() {
         <div className="max-w-[1500px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-5">
             <div>
-              <Instagram
+              {/* FIXED: no lucide Instagram import */}
+              <InstagramIcon
                 size={18}
                 strokeWidth={1.2}
                 style={{ color: COLORS.gold }}
@@ -4769,7 +4820,6 @@ export default function Home() {
 
       {/* =================================================
           SMALL FOOTER NOTE
-          Main footer can remain in your existing Footer.jsx
       ================================================= */}
 
       <div className="border-t border-[#DED9D1] bg-[#F7F5F1] px-6 py-8 text-center">
