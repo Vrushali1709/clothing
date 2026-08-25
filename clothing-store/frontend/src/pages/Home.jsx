@@ -2916,84 +2916,73 @@ export default function Home() {
           1. HERO SECTION
       ===================================================== */}
 
-{/* =====================================================
-    1. HERO SECTION - UPDATED
-===================================================== */}
+      <section className="relative w-full h-[85vh] min-h-[580px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
+        {heroSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ${
+              index === currentSlide
+                ? 'opacity-100 z-10'
+                : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          >
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="absolute inset-0 w-full h-full object-cover object-center scale-105"
+            />
 
-<section className="relative w-full bg-[#E8DFD5] flex items-center overflow-hidden hero-container">
-  {heroSlides.map((slide, index) => (
-    <div
-      key={index}
-      className={`absolute inset-0 w-full h-full flex items-center transition-opacity duration-1000 ${
-        index === currentSlide
-          ? 'opacity-100 z-10'
-          : 'opacity-0 z-0 pointer-events-none'
-      }`}
-    >
-      <div className="absolute inset-0 w-full h-full overflow-hidden">
-        <img
-          src={slide.image}
-          alt={slide.title}
-          className="w-full h-full object-cover object-center hero-image"
-        />
-      </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+            <div className="relative z-10 px-6 sm:px-12 md:px-20 lg:px-28 max-w-3xl text-white">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] mb-6 tracking-tight whitespace-pre-line">
+                {slide.title}
+              </h1>
 
-      <div className="relative z-10 px-6 sm:px-12 md:px-20 lg:px-28 max-w-3xl hero-content">
-        <h1 className="hero-title">
-          {slide.title.split('\n').map((line, i) => (
-            <React.Fragment key={i}>
-              {line}
-              {i < slide.title.split('\n').length - 1 && <br />}
+              <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-8 max-w-md">
+                {slide.description}
+              </p>
+
+              <button
+                onClick={() => navigate(slide.link)}
+                className="bg-white text-neutral-900 px-8 sm:px-10 py-4 text-[10px] uppercase tracking-[0.25em] font-medium shadow-xl hover:bg-[#C8A882] hover:text-white transition-all"
+              >
+                {slide.btnText}
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Slider navigation */}
+        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
+          {heroSlides.map((_, idx) => (
+            <React.Fragment key={idx}>
+              <span
+                onClick={() => setCurrentSlide(idx)}
+                className="text-xs font-serif tracking-widest cursor-pointer transition-all"
+                style={
+                  idx === currentSlide
+                    ? {
+                        fontWeight: 700,
+                        color: GOLD,
+                        borderBottom: `1px solid ${GOLD}`,
+                        paddingBottom: '4px',
+                      }
+                    : {
+                        color: 'rgba(255,255,255,0.4)',
+                      }
+                }
+              >
+                0{idx + 1}
+              </span>
+
+              {idx < heroSlides.length - 1 && (
+                <div className="w-[1px] h-6 bg-white/20" />
+              )}
             </React.Fragment>
           ))}
-        </h1>
-
-        <p className="hero-description">
-          {slide.description}
-        </p>
-
-        <button
-          onClick={() => navigate(slide.link)}
-          className="hero-cta"
-        >
-          {slide.btnText}
-        </button>
-      </div>
-    </div>
-  ))}
-
-  {/* Slider navigation */}
-  <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
-    {heroSlides.map((_, idx) => (
-      <React.Fragment key={idx}>
-        <span
-          onClick={() => setCurrentSlide(idx)}
-          className="hero-nav-number"
-          style={
-            idx === currentSlide
-              ? {
-                  fontWeight: 700,
-                  color: GOLD,
-                  borderBottom: `1px solid ${GOLD}`,
-                  paddingBottom: '4px',
-                }
-              : {
-                  color: 'rgba(255,255,255,0.4)',
-                }
-          }
-        >
-          0{idx + 1}
-        </span>
-
-        {idx < heroSlides.length - 1 && (
-          <div className="w-[1px] h-6 bg-white/20" />
-        )}
-      </React.Fragment>
-    ))}
-  </div>
-</section>
+        </div>
+      </section>
 
       {/* =====================================================
           2. CLEAN ANNOUNCEMENT BAR
