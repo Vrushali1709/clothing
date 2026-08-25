@@ -2520,6 +2520,7 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -2550,7 +2551,7 @@ export default function Home() {
   const DARK = '#171717';
 
   /* -------------------------------------------------------
-     HERO SLIDES (Compact Height Version)
+     HERO SLIDES
   ------------------------------------------------------- */
 
   const heroSlides = [
@@ -2912,10 +2913,10 @@ export default function Home() {
     <div className="bg-[#FAF8F5] text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white overflow-hidden">
 
       {/* =====================================================
-          1. HERO SECTION (Compact Height: h-[60vh] / min-h-[480px])
+          1. HERO SECTION
       ===================================================== */}
 
-      <section className="relative w-full h-[60vh] min-h-[480px] max-h-[600px] bg-[#E8DFD5] flex items-center overflow-hidden">
+      <section className="relative w-full h-[85vh] min-h-[580px] max-h-[800px] bg-[#E8DFD5] flex items-center overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -2934,17 +2935,17 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
 
             <div className="relative z-10 px-6 sm:px-12 md:px-20 lg:px-28 max-w-3xl text-white">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-light leading-[1.1] mb-4 tracking-tight whitespace-pre-line">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.05] mb-6 tracking-tight whitespace-pre-line">
                 {slide.title}
               </h1>
 
-              <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-6 max-w-md">
+              <p className="text-xs sm:text-sm font-light leading-relaxed text-neutral-200 mb-8 max-w-md">
                 {slide.description}
               </p>
 
               <button
                 onClick={() => navigate(slide.link)}
-                className="bg-white text-neutral-900 px-7 py-3.5 text-[10px] uppercase tracking-[0.25em] font-medium shadow-xl hover:bg-[#C8A882] hover:text-white transition-all"
+                className="bg-white text-neutral-900 px-8 sm:px-10 py-4 text-[10px] uppercase tracking-[0.25em] font-medium shadow-xl hover:bg-[#C8A882] hover:text-white transition-all"
               >
                 {slide.btnText}
               </button>
@@ -2953,7 +2954,7 @@ export default function Home() {
         ))}
 
         {/* Slider navigation */}
-        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-3 text-white z-20">
+        <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-4 text-white z-20">
           {heroSlides.map((_, idx) => (
             <React.Fragment key={idx}>
               <span
@@ -2976,7 +2977,7 @@ export default function Home() {
               </span>
 
               {idx < heroSlides.length - 1 && (
-                <div className="w-[1px] h-5 bg-white/20" />
+                <div className="w-[1px] h-6 bg-white/20" />
               )}
             </React.Fragment>
           ))}
@@ -2994,7 +2995,7 @@ export default function Home() {
       </div>
 
       {/* =====================================================
-          3. CATEGORIES GRID
+          4. CATEGORIES GRID
       ===================================================== */}
 
       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-16 max-w-[1550px] mx-auto">
@@ -3032,7 +3033,7 @@ export default function Home() {
       </section>
 
       {/* =====================================================
-          4. TRENDING PIECES
+          5. TRENDING PIECES
       ===================================================== */}
 
       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-12 max-w-[1550px] mx-auto">
@@ -3062,16 +3063,18 @@ export default function Home() {
         )}
       </section>
 
+
+      
       {/* =====================================================
-          5. LUXURY FESTIVE EDIT SECTION (Original Luxury Design)
+          3. LUXURY FESTIVE EDIT SECTION (New Unique Design)
       ===================================================== */}
 
       <section className="px-5 sm:px-8 md:px-14 lg:px-20 py-20 max-w-[1550px] mx-auto bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5]">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
+          {/* <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE8DC] border border-[#D9CEBC] mb-3">
             <Sparkles size={13} style={{ color: GOLD }} />
             <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-700">Royal Celebrations</span>
-          </div>
+          </div> */}
           <h2 className="text-3xl sm:text-5xl font-serif text-neutral-900 tracking-wide">
             Bring on the Festivities
           </h2>
@@ -3118,6 +3121,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+
 
       {/* =====================================================
           6. EDITORIAL BRAND STORY
